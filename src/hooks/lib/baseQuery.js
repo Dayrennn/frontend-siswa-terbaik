@@ -1,4 +1,4 @@
-import BACKEND_URL from "../lib/backendUrl";
+import BACKEND_URL from "./backendUrl";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseQuery = fetchBaseQuery({
