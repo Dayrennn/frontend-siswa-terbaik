@@ -1,64 +1,61 @@
-import BACKEND_URL from "../lib/backendUrl";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQuery } from "../lib/baseQuery";
 
 export const userAPI = createApi({
   reducerPath: "userAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery: fetchBaseQuery({
-    baseUrl: BACKEND_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery,
   tagTypes: ["userAPI"],
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "auth/register",
+        url: "/auth/register",
         method: "POST",
         body: data,
       }),
-      invalidateTags: ["userAPI"],
+      invalidatesTags: ["userAPI"],
     }),
     verifyOtp: builder.mutation({
       query: (data) => ({
-        url: "auth/verify-otp",
+        url: "/auth/verify-otp",
         method: "POST",
         body: data,
       }),
-      invalidateTags: ["userAPI"],
+      invalidatesTags: ["userAPI"],
     }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: "auth/login",
+        url: "/auth/login",
         method: "POST",
         body: credentials,
       }),
-      invalidateTags: ["userAPI"],
     }),
     update: builder.mutation({
-      query: (id, ...data) => ({
-        url: `auth/users/${id}`,
-        method: "POST",
+      query: ({ id, ...data }) => ({
+        url: `/auth/users/${id}`,
+        method: "PUT",
         body: data,
       }),
-      invalidateTags: ["userAPI"],
+      invalidatesTags: ["userAPI"],
     }),
-    getUser: builder.query({
-      query: () => ({
-        url: "auth/users",
-        method: "GET",
-      }),
-      invalidateTags: ["userAPI"],
+    getUsers: builder.query({
+      query: () => "/auth/users",
+      providesTags: ["userAPI"],
     }),
     getUserById: builder.query({
       query: (id) => ({
-        url: `auth/users/${id}`,
+        url: `/auth/users/${id}`,
       }),
     }),
   }),
 });
+
+export const {
+  useRegisterMutation,
+  useVerifyOtpMutation,
+  useLoginMutation,
+  useUpdateMutation,
+  useGetUsersQuery,
+  useGetUserByIdQuery,
+} = userAPI;
