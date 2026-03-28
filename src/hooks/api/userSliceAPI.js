@@ -10,7 +10,7 @@ export const userAPI = createApi({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "/auth/register",
+        url: "/auth/login",
         method: "POST",
         body: data,
       }),
@@ -53,8 +53,8 @@ export const userAPI = createApi({
 
 export const {
   useRegisterMutation,
-  useVerifyOtpMutation,
   useLoginMutation,
+  useVerifyOtpMutation,
   useUpdateMutation,
   useGetUsersQuery,
   useGetUserByIdQuery,
