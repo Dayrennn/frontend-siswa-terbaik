@@ -43,7 +43,7 @@ export const userAPI = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["userAPI"],
+      invalidatesTags: ["userAPI", "me"],
     }),
     getUsers: builder.query({
       query: () => "/auth/users",
@@ -59,11 +59,12 @@ export const userAPI = createApi({
         url: "/auth/me",
         method: "GET",
       }),
+      providesTags: ["me"],
     }),
     removeUser: builder.mutation({
       query: (id) => ({
         url: `/auth/users/${id}`,
-        method: "POST",
+        method: "DELETE",
       }),
       invalidatesTags: ["userAPI"],
     }),
