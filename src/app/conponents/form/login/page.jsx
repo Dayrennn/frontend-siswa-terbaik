@@ -17,10 +17,36 @@ export default function FormLogin() {
     e.preventDefault();
     try {
       const result = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ user: result.user }));
-      router.push("/admin");
-    } catch (error) {
-      console.error("Login gagal", error);
+      const user = result.data;
+      dispatch(setCredentials({ user }));
+
+      // redirect sesuai role
+      switch (user.role) {
+        case "Admin":
+          router.push("/dashboard/admin");
+          break;
+
+        case "Guru":
+          router.push("/dashboard/guru");
+          break;
+
+        case "WaliKelas":
+          router.push("/dashboard/wali-kelas");
+          break;
+
+        case "KepalaSekolah":
+          router.push("/dashboard/kepala-sekolah");
+          break;
+
+        case "WakilKepalaSekolah":
+          router.push("/dashboard/wakil-kepala-sekolah");
+          break;
+
+        default:
+          router.push("/login");
+      }
+    } catch (err) {
+      console.error("Login gagal", err);
     }
   };
   return (

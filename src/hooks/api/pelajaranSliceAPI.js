@@ -25,7 +25,7 @@ export const pelajaranAPI = createApi({
       invalidatesTags: ["pelajaranAPI"],
     }),
     seeAllPelajaran: builder.query({
-      query: () => "/kriteria",
+      query: () => "/pelajaran",
       providesTags: ["pelajaranAPI"],
     }),
     getPelajaranById: builder.query({

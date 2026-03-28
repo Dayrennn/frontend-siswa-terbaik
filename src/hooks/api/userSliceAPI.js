@@ -10,7 +10,7 @@ export const userAPI = createApi({
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "/auth/login",
+        url: "/auth/register",
         method: "POST",
         body: data,
       }),
@@ -31,6 +31,12 @@ export const userAPI = createApi({
         body: credentials,
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
     update: builder.mutation({
       query: ({ id, ...data }) => ({
         url: `/auth/users/${id}`,
@@ -48,6 +54,19 @@ export const userAPI = createApi({
         url: `/auth/users/${id}`,
       }),
     }),
+    getMe: builder.query({
+      query: () => ({
+        url: "/auth/me",
+        method: "GET",
+      }),
+    }),
+    removeUser: builder.mutation({
+      query: (id) => ({
+        url: `/auth/users/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["userAPI"],
+    }),
   }),
 });
 
@@ -58,4 +77,7 @@ export const {
   useUpdateMutation,
   useGetUsersQuery,
   useGetUserByIdQuery,
+  useGetMeQuery,
+  useLogoutMutation,
+  useRemoveUserMutation,
 } = userAPI;
