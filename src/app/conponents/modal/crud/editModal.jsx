@@ -1,11 +1,11 @@
-import SuccessModal from "./successModal";
+import SuccessModal from "../successModal";
 import { useState } from "react";
 
 export default function EditModal({
   onCancel,
   icon,
   title,
-  formEditUser: FormEditUser,
+  formEdit: FormEditUser,
   initialData,
   successTitle,
   successMessage,
@@ -41,6 +41,7 @@ export default function EditModal({
             ✕
           </button>
         </div>
+        {/* defau;t form */}
         <div className="p-5 overflow-y-auto">
           <FormEditUser
             onCancel={onCancel}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRegisterMutation } from "../../../../hooks/api/userSliceAPI";
+import { useRegisterMutation } from "../../../../../hooks/api/userSliceAPI";
 
 export default function FormDataUser({ onSuccess, onCancel }) {
   const [username, setUsername] = useState("");
@@ -22,6 +22,7 @@ export default function FormDataUser({ onSuccess, onCancel }) {
         telephone,
       }).unwrap();
 
+      // simpan sementara
       const emailValue = email;
 
       setUsername("");
@@ -29,6 +30,7 @@ export default function FormDataUser({ onSuccess, onCancel }) {
       setPassword("");
       setTelephone("");
 
+      // jika sukses (untuk triger modal sukses)
       if (onSuccess) {
         onSuccess(result, {
           email: emailValue,

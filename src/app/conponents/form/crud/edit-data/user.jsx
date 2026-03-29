@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useUpdateMutation } from "../../../../hooks/api/userSliceAPI";
-import { useSeeAllPelajaranQuery } from "../../../../hooks/api/pelajaranSliceAPI";
+import { useUpdateMutation } from "../../../../../hooks/api/userSliceAPI";
+import { useSeeAllPelajaranQuery } from "../../../../../hooks/api/pelajaranSliceAPI";
 
 const ROLE_OPTIONS = [
   { value: "Admin", label: "Admin" },

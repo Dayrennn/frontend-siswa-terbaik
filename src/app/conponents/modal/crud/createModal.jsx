@@ -1,14 +1,16 @@
 "use client";
 
-import SuccessModal from "./successModal";
+import SuccessModal from "../successModal";
 import { useState } from "react";
 
 export default function CreateModal({
   onCancel,
   icon,
   title,
-  formTambahUser: FormTambahUser,
+  formTambah: FormTambahUser,
   otpComponent: OtpComponent,
+  successTitle = "Berhasil",
+  successMessage = "Data berhasil disimpan",
 }) {
   const [step, setStep] = useState("form");
   const [email, setEmail] = useState("");
@@ -18,6 +20,8 @@ export default function CreateModal({
     if (OtpComponent) {
       setEmail(formData.email);
       setStep("otp");
+    } else {
+      setShowSuccess(true);
     }
   };
 
@@ -28,8 +32,8 @@ export default function CreateModal({
   if (showSuccess) {
     return (
       <SuccessModal
-        title="User Berhasil Dibuat"
-        message="Akun telah aktif dan siap digunakan"
+        title={successTitle}
+        message={successMessage}
         onClose={onCancel}
       />
     );
@@ -58,7 +62,7 @@ export default function CreateModal({
           </button>
         </div>
 
-        {/* Body */}
+        {/* Body Default */}
         <div className="p-5">
           {step === "form" && (
             <FormTambahUser onSuccess={handleFormSuccess} onCancel={onCancel} />

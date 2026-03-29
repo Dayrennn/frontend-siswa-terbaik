@@ -1,15 +1,18 @@
 "use client";
 
-import { useGetUsersQuery } from "../../../../hooks/api/userSliceAPI";
-import CreateModal from "../../../conponents/modal/createModal";
-import EditModal from "../../../conponents/modal/editModal";
+import {
+  useGetUsersQuery,
+  useRemoveUserMutation,
+} from "../../../../hooks/api/userSliceAPI";
+import CreateModal from "../../../conponents/modal/crud/createModal";
+import EditModal from "../../../conponents/modal/crud/editModal";
 import Table from "../../../conponents/table/page";
 import { useState } from "react";
 import { FaUserPlus } from "react-icons/fa";
-import FormTambahUser from "../../../conponents/form/tambah-data/user";
-import FormEditUser from "../../../conponents/form/edit-data/user";
+import FormTambahUser from "../../../conponents/form/crud/tambah-data/user";
+import FormEditUser from "../../../conponents/form/crud/edit-data/user";
 import FormOtp from "../../../conponents/form/form-otp/page";
-import RemoveModal from "../../../conponents/modal/deleteModal";
+import RemoveModal from "../../../conponents/modal/crud/deleteModal";
 
 export default function DataUser() {
   // modal
@@ -18,10 +21,17 @@ export default function DataUser() {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   // hapus user
+  const [deleteUser] = useRemoveUserMutation();
   const [removeUser, setRemoveUser] = useState(null);
+  // simpan data dan buka modal
   const handleRemove = (user) => {
     setRemoveUser(user);
     setShowRemoveModal(true);
+  };
+
+  // hit api delete
+  const handleDelete = async (id) => {
+    await deleteUser(id).unwrap();
   };
 
   // edit user
@@ -31,6 +41,7 @@ export default function DataUser() {
     setShowEditModal(true);
   };
 
+  // ambil data dari api
   const { data, isLoading, isError } = useGetUsersQuery();
   const tableData =
     data?.data?.map((user, index) => {
@@ -119,7 +130,7 @@ export default function DataUser() {
           onCancel={() => setShowCreateModal(false)}
           icon={<FaUserPlus />}
           title="Tambah User"
-          formTambahUser={FormTambahUser}
+          formTambah={FormTambahUser}
           otpComponent={FormOtp}
           successTitle="User Berhasil Dibuat"
           successMessage="Akun telah aktif dan siap digunakan"
@@ -130,7 +141,7 @@ export default function DataUser() {
           onCancel={() => setShowEditModal(false)}
           icon={<FaUserPlus />}
           title="Edit User"
-          formEditUser={FormEditUser}
+          formEdit={FormEditUser}
           initialData={selectedUser}
           successTitle="User Berhasil di Update"
           successMessage="User telah di update"
@@ -142,6 +153,8 @@ export default function DataUser() {
           icon={<FaUserPlus />}
           title="Hapus User"
           initialData={removeUser}
+          onConfirm={handleDelete}
+          displayName="username"
           successTitle="User Berhasil di Update"
           successMessage="User telah di update"
         />

@@ -32,6 +32,13 @@ export const pelajaranAPI = createApi({
       query: (id) => `/update/${id}`,
       providesTags: ["pelajaranAPI"],
     }),
+    removePelajaran: builder.mutation({
+      query: (id) => ({
+        url: `/pelajaran/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["pelajaranAPI"],
+    }),
   }),
 });
 
@@ -40,4 +47,5 @@ export const {
   useModifyPelajaranMutation,
   useSeeAllPelajaranQuery,
   useGetPelajaranByIdQuery,
+  useRemovePelajaranMutation,
 } = pelajaranAPI;

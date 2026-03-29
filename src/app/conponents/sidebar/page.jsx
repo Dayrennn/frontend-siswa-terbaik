@@ -42,7 +42,7 @@ const menuItems = [
   },
   {
     menu: "Data Pelajaran",
-    link: "/dashboard/data-Pelajaran",
+    link: "/page/data-pelajaran",
     icon: FaUsers,
     roles: [
       "Admin",
@@ -96,7 +96,7 @@ const menuItems = [
   },
   {
     menu: "Data User",
-    link: "/dashboard/admin/data-user",
+    link: "/page/data-user",
     icon: FaClipboardList,
     roles: ["Admin"],
   },

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import SuccessModal from "./successModal";
-import { useRemoveUserMutation } from "../../../hooks/api/userSliceAPI";
+import SuccessModal from "../successModal";
 
 export default function RemoveModal({
   onCancel,
@@ -9,16 +8,25 @@ export default function RemoveModal({
   successTitle,
   initialData,
   successMessage,
+  displayName,
+  onConfirm,
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
-  const [deleteUser, { isLoading, isError, error }] = useRemoveUserMutation();
 
   const handleRemove = async () => {
     try {
-      await deleteUser(initialData.id).unwrap();
+      setIsLoading(true);
+      setIsError(false);
+      await onConfirm(initialData.id); // parent yang urus sliceAPI
       setShowSuccess(true);
     } catch (err) {
-      console.error("Error", err);
+      setIsError(true);
+      setErrorMsg(err?.data?.message || "Terjadi kesalahan");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -32,14 +40,16 @@ export default function RemoveModal({
     );
   }
 
+  const namaItem = initialData?.[displayName] || "item ini";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onCancel}
       />
-      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 p-5 text-white flex items-center justify-between shrink-0">
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 p-5 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
             {icon}
             <h2 className="font-semibold">{title}</h2>
@@ -51,22 +61,18 @@ export default function RemoveModal({
             ✕
           </button>
         </div>
+
         <div className="p-5 space-y-4">
           <p className="text-gray-600 text-sm text-center">
-            Apakah kamu yakin ingin menghapus user{" "}
-            <span className="font-semibold text-gray-800">
-              {initialData?.username}
-            </span>
-            ? Tindakan ini tidak dapat dibatalkan.
+            Apakah kamu yakin ingin menghapus{" "}
+            <span className="font-semibold text-gray-800">{namaItem}</span>?{" "}
+            Tindakan ini tidak dapat dibatalkan.
           </p>
 
           {isError && (
-            <p className="text-red-500 text-sm text-center">
-              {error?.data?.message || "Terjadi kesalahan"}
-            </p>
+            <p className="text-red-500 text-sm text-center">{errorMsg}</p>
           )}
 
-          {/* Buttons */}
           <div className="flex gap-3">
             <button
               onClick={onCancel}

@@ -1,4 +1,4 @@
-import StatsCard from "../../conponents/stats/statsCard";
+import StatsCard from "../../../conponents/stats/statsCard";
 import { IoMdPeople } from "react-icons/io";
 import { FaChalkboardTeacher, FaClipboardList, FaTrophy } from "react-icons/fa";
 
