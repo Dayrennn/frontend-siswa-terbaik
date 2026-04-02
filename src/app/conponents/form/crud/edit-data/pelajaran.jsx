@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  useCreatePelajaranMutation,
-  useModifyPelajaranMutation,
-} from "../../../../../hooks/api/pelajaranSliceAPI";
+import { useModifyPelajaranMutation } from "../../../../../hooks/api/pelajaranSliceAPI";
 
 export default function FormEditDataPelajaran({
   initialData,
@@ -31,7 +28,7 @@ export default function FormEditDataPelajaran({
 
       // trigger modal sukses
       if (onSuccess) onSuccess(result);
-    } catch (error) {
+    } catch (err) {
       console.error("ERROR", err);
     }
   };

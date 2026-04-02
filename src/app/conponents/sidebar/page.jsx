@@ -54,7 +54,7 @@ const menuItems = [
   },
   {
     menu: "Data Siswa",
-    link: "/dashboard/data-siswa",
+    link: "/page/data-siswa",
     icon: FaChalkboardTeacher,
     roles: [
       "Admin",

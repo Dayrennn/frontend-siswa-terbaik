@@ -6,7 +6,7 @@ export const siswaAPI = createApi({
   refetchOnFocus: true,
   refetchOnReconnect: true,
   baseQuery,
-  tagTyoes: ["siswaAPI"],
+  tagTypes: ["siswaAPI"],
   endpoints: (builder) => ({
     createSiswa: builder.mutation({
       query: (data) => ({
@@ -26,11 +26,18 @@ export const siswaAPI = createApi({
     }),
     seeAllSiswa: builder.query({
       query: () => "/siswa",
-      provideTags: ["siswaAPI"],
+      providesTags: ["siswaAPI"],
     }),
     getSiswaById: builder.query({
       query: (id) => `/siswa/${id}`,
-      provideTags: ["siswaAPI"],
+      providesTags: ["siswaAPI"],
+    }),
+    removeSiswa: builder.mutation({
+      query: (id) => ({
+        url: `/siswa/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["siswaAPI"],
     }),
   }),
 });
@@ -40,4 +47,5 @@ export const {
   useModifySiswaMutation,
   useSeeAllSiswaQuery,
   useGetSiswaByIdQuery,
+  useRemoveSiswaMutation,
 } = siswaAPI;
