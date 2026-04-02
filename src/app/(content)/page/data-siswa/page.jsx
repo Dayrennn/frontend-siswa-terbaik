@@ -50,6 +50,28 @@ export default function DataSiswa() {
         ...siswa,
       };
     }) ?? [];
+
+  // ambil semua pelajaran
+  const pelajaranMap = new Map();
+  data?.data?.forEach((siswa) => {
+    siswa.nilai?.forEach((n) => {
+      pelajaranMap.set(n.pelajaran.kodePelajaran, n.pelajaran.namaPelajaran);
+    });
+  });
+  const pelajaranList = Array.from(pelajaranMap.entries()).map(
+    ([key, label]) => ({ key, label }),
+  );
+
+  // kolom dinamis
+  const pelajaranColumns = pelajaranList.map((p) => ({
+    key: p.key,
+    label: p.key,
+    render: (row) => {
+      const found = row.nilai?.find((n) => n.pelajaran.kodePelajaran === p.key);
+      return <span className="text-gray-700">{found?.nilai ?? "-"}</span>;
+    },
+  }));
+
   const columns = [
     { key: "no", label: "No" },
     {
@@ -75,19 +97,7 @@ export default function DataSiswa() {
         <span className="text-gray-700">{row.kelas || "-"}</span>
       ),
     },
-    {
-      key: "nilai",
-      label: "Nilai",
-      render: (row) => (
-        <div className="flex flex-col gap-1">
-          {row.nilai?.map((n) => (
-            <span key={n.id} className="text-gray-700 text-xs">
-              {n.pelajaran.namaPelajaran}: <b>{n.nilai}</b>
-            </span>
-          ))}
-        </div>
-      ),
-    },
+    ...pelajaranColumns,
     {
       key: "aksi",
       label: "Aksi",
