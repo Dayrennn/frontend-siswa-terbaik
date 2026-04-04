@@ -65,8 +65,20 @@ const menuItems = [
     ],
   },
   {
+    menu: "Data Kehadiran",
+    link: "/page/data-kehadiran",
+    icon: FaChalkboardTeacher,
+    roles: [
+      "Admin",
+      "Guru",
+      "WaliKelas",
+      "KepalaSekolah",
+      "WakilKepalaSekolah",
+    ],
+  },
+  {
     menu: "Data Kriteria",
-    link: "/dashboard/data-kriteria",
+    link: "/page/data-kriteria",
     icon: FaClipboardList,
     roles: [
       "Admin",

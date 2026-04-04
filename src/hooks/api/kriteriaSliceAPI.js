@@ -32,6 +32,13 @@ export const kriteriaAPI = createApi({
       query: (id) => `/kriteria/${id}`,
       providesTags: ["kriteriaAPI"],
     }),
+    removeKriteria: builder.mutation({
+      query: (id) => ({
+        url: `/kriteria/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["kriteriaAPI"],
+    }),
   }),
 });
 
@@ -39,5 +46,6 @@ export const {
   useCreateKriteriaMutation,
   useModifyKritereaMutation,
   useGetAllKriteriaQuery,
-  useGetKriteriaById,
+  useGetKriteriaByIdQuery,
+  useRemoveKriteriaMutation,
 } = kriteriaAPI;
