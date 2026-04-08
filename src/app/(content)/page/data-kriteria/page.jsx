@@ -96,29 +96,32 @@ export default function DataKriteria() {
 
   return (
     <>
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">Data Kriteria</h1>
+      <div className="min-h-screen bg-gray-100">
+        <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
+          <h1 className="text-2xl font-bold text-gray-800">Data Kriteria</h1>
 
-        <div className="flex justify-end mt-5 mb-3">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            + Tambah
-          </button>
+          <div className="flex justify-end mt-5 mb-3">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              + Tambah
+            </button>
+          </div>
+
+          {isLoading && (
+            <p className="text-center text-gray-400 py-8">Memuat Data...</p>
+          )}
+
+          {isError && (
+            <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
+          )}
+
+          {!isLoading && !isError && (
+            <Table columns={columns} data={tableData} />
+          )}
         </div>
-
-        {isLoading && (
-          <p className="text-center text-gray-400 py-8">Memuat Data...</p>
-        )}
-
-        {isError && (
-          <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
-        )}
-
-        {!isLoading && !isError && <Table columns={columns} data={tableData} />}
       </div>
-
       {showCreateModal && (
         <CreateModal
           onCancel={() => setShowCreateModal(false)}

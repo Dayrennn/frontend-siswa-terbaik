@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useCreateSiswaMutation } from "../../../../../hooks/api/siswaSliceAPI";
+import { useParams } from "next/navigation";
 
 export default function FormTambahSiswa({ onSuccess, onCancel }) {
   const [nis, setNis] = useState("");
   const [namaSiswa, setNamaSiswa] = useState("");
   const [tanggalLahir, setTanggalLahir] = useState("");
   const [kelas, setKelas] = useState("");
+  const { tahunAjaranId } = useParams();
 
   const [createSiswa, { isLoading, isError, error }] = useCreateSiswaMutation();
 
@@ -19,6 +21,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
         namaSiswa,
         tanggalLahir,
         kelas,
+        tahunAjaranId,
       }).unwrap();
 
       // reset form

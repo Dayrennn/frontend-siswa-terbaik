@@ -102,63 +102,67 @@ export default function DataUser() {
 
   return (
     <>
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">Data User</h1>
+      <div className="min-h-screen bg-gray-100">
+        <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
+          <h1 className="text-2xl font-bold text-gray-800">Data User</h1>
 
-        <div className="flex justify-end mt-5 mb-3">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            + Tambah
-          </button>
+          <div className="flex justify-end mt-5 mb-3">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              + Tambah
+            </button>
+          </div>
+
+          {isLoading && (
+            <p className="text-center text-gray-400 py-8">Memuat Data...</p>
+          )}
+
+          {isError && (
+            <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
+          )}
+
+          {!isLoading && !isError && (
+            <Table columns={columns} data={tableData} />
+          )}
         </div>
 
-        {isLoading && (
-          <p className="text-center text-gray-400 py-8">Memuat Data...</p>
+        {showCreateModal && (
+          <CreateModal
+            onCancel={() => setShowCreateModal(false)}
+            icon={<FaUserPlus />}
+            title="Tambah User"
+            formTambah={FormTambahUser}
+            otpComponent={FormOtp}
+            successTitle="User Berhasil Dibuat"
+            successMessage="Akun telah aktif dan siap digunakan"
+          />
         )}
-
-        {isError && (
-          <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
+        {showEditModal && (
+          <EditModal
+            onCancel={() => setShowEditModal(false)}
+            icon={<FaUserPlus />}
+            title="Edit User"
+            formEdit={FormEditUser}
+            initialData={selectedUser}
+            successTitle="User Berhasil di Update"
+            successMessage="User telah di update"
+          />
         )}
-
-        {!isLoading && !isError && <Table columns={columns} data={tableData} />}
+        {showRemoveModal && (
+          <RemoveModal
+            onCancel={() => setShowRemoveModal(false)}
+            icon={<FaUserPlus />}
+            title="Hapus User"
+            initialData={removeUser}
+            onConfirm={handleDelete}
+            displayName="username"
+            successTitle="User Berhasil di Update"
+            successMessage="User telah di update"
+          />
+        )}
       </div>
-
-      {showCreateModal && (
-        <CreateModal
-          onCancel={() => setShowCreateModal(false)}
-          icon={<FaUserPlus />}
-          title="Tambah User"
-          formTambah={FormTambahUser}
-          otpComponent={FormOtp}
-          successTitle="User Berhasil Dibuat"
-          successMessage="Akun telah aktif dan siap digunakan"
-        />
-      )}
-      {showEditModal && (
-        <EditModal
-          onCancel={() => setShowEditModal(false)}
-          icon={<FaUserPlus />}
-          title="Edit User"
-          formEdit={FormEditUser}
-          initialData={selectedUser}
-          successTitle="User Berhasil di Update"
-          successMessage="User telah di update"
-        />
-      )}
-      {showRemoveModal && (
-        <RemoveModal
-          onCancel={() => setShowRemoveModal(false)}
-          icon={<FaUserPlus />}
-          title="Hapus User"
-          initialData={removeUser}
-          onConfirm={handleDelete}
-          displayName="username"
-          successTitle="User Berhasil di Update"
-          successMessage="User telah di update"
-        />
-      )}
     </>
   );
 }

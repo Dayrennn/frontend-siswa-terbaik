@@ -6,6 +6,7 @@ import { siswaAPI } from "@/src/hooks/api/siswaSliceAPI";
 import { kriteriaAPI } from "@/src/hooks/api/kriteriaSliceAPI";
 import { pelajaranAPI } from "@/src/hooks/api/pelajaranSliceAPI";
 import { kehadiranAPI } from "@/src/hooks/api/kehadiranSliceAPI";
+import { tahunAjaranAPI } from "@/src/hooks/api/tahunAjaranSliceAPI";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [kriteriaAPI.reducerPath]: kriteriaAPI.reducer,
     [pelajaranAPI.reducerPath]: pelajaranAPI.reducer,
     [kehadiranAPI.reducerPath]: kehadiranAPI.reducer,
+    [tahunAjaranAPI.reducerPath]: tahunAjaranAPI.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,5 +26,6 @@ export const store = configureStore({
       .concat(siswaAPI.middleware)
       .concat(kriteriaAPI.middleware)
       .concat(pelajaranAPI.middleware)
-      .concat(kehadiranAPI.middleware),
+      .concat(kehadiranAPI.middleware)
+      .concat(tahunAjaranAPI.middleware),
 });

@@ -47,7 +47,6 @@ export default function FormEditDataPelajaran({
         />
       </div>
 
-      {/* Email */}
       <div>
         <label className="text-sm text-gray-600">Kode Pelajaran</label>
         <input

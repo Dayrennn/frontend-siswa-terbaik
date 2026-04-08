@@ -10,7 +10,7 @@ export const siswaAPI = createApi({
   endpoints: (builder) => ({
     createSiswa: builder.mutation({
       query: (data) => ({
-        url: "/siswa/create",
+        url: `/siswa/create/${data.tahunAjaranId}`,
         method: "POST",
         body: data,
       }),
@@ -39,6 +39,10 @@ export const siswaAPI = createApi({
       }),
       invalidatesTags: ["siswaAPI"],
     }),
+    seeAllSiswaByTahunAjaran: builder.query({
+      query: (tahunAjaranId) => `/siswa/tahun-ajaran/${tahunAjaranId}`,
+      providesTags: ["siswaAPI"],
+    }),
   }),
 });
 
@@ -48,4 +52,5 @@ export const {
   useSeeAllSiswaQuery,
   useGetSiswaByIdQuery,
   useRemoveSiswaMutation,
+  useSeeAllSiswaByTahunAjaranQuery,
 } = siswaAPI;
