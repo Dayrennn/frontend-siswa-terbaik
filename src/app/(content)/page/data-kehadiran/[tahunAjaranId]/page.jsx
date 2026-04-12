@@ -20,7 +20,7 @@ import {
   parseImportedExcel,
 } from "../../../../../hooks/utils/excelHelper";
 
-export default function DataSiswaPerTahun() {
+export default function DataKehadiranByTahunAjaran() {
   const { tahunAjaranId } = useParams();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -150,7 +150,7 @@ export default function DataSiswaPerTahun() {
           {data?.data?.map((siswa) => (
             <div key={siswa.id}>
               <h1 className="text-2xl font-bold text-gray-800">
-                Data Siswa {siswa.tahunAjaran?.namaTahunAjaran}
+                Data Kehadiran {siswa.tahunAjaran?.namaTahunAjaran}
               </h1>
             </div>
           ))}

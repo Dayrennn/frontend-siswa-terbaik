@@ -34,6 +34,7 @@ export default function TahunAjaran() {
     setShowRemoveModal(true);
   };
 
+  // ambil data
   const { data, isLoading, isError } = useSeeAllTahunAjaranQuery();
 
   const tahunAjaranData = data?.data ?? [];
@@ -64,7 +65,7 @@ export default function TahunAjaran() {
           ) : tahunAjaranData.length === 0 ? (
             <p className="text-center text-gray-500">Belum ada data</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="flex flex-col gap-3 w-full">
               {tahunAjaranData.map((item) => (
                 <TahunAjaranCard
                   key={item.id}

@@ -4,7 +4,7 @@ import {
   useSeeAllSiswaQuery,
   useRemoveSiswaMutation,
 } from "../../../../../hooks/api/siswaSliceAPI";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import CreateModal from "../../../../conponents/modal/crud/createModal";
 import EditModal from "../../../../conponents/modal/crud/editModal";
@@ -15,7 +15,6 @@ import FormTambahSiswa from "../../../../conponents/form/crud/tambah-data/siswa"
 import FormEditDataSiswa from "../../../../conponents/form/crud/edit-data/siswa";
 import {
   exportToExcel,
-  downloadTemplate,
   parseImportedExcel,
 } from "../../../../../hooks/utils/excelHelper";
 
@@ -24,7 +23,7 @@ export default function DataSemuaSiswa() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
-  const fileInputRef = useRef();
+  const [search, setSearch] = useState("");
 
   // hapus pelajaran
   const [deleteSiswa] = useRemoveSiswaMutation();
@@ -50,12 +49,20 @@ export default function DataSemuaSiswa() {
   // ambil data
   const { data, isLoading, isError } = useSeeAllSiswaQuery();
   const tableData =
-    data?.data?.map((siswa, index) => {
-      return {
+    data?.data
+      ?.map((siswa, index) => ({
         no: index + 1,
         ...siswa,
-      };
-    }) ?? [];
+      }))
+      .filter((item) => {
+        const keyword = search.toLowerCase();
+
+        return Object.values(item).some((value) =>
+          String(value ?? "")
+            .toLowerCase()
+            .includes(keyword),
+        );
+      }) ?? [];
 
   const columns = [
     { key: "no", label: "No" },
@@ -125,45 +132,29 @@ export default function DataSemuaSiswa() {
         <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
           <h1 className="text-2xl font-bold text-gray-800">Data Siswa</h1>
 
-          <div className="flex justify-end gap-2 mt-5 mb-3">
-            {/* Download Template */}
-            <button
-              onClick={downloadTemplate}
-              className="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              📄 Template
-            </button>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-5 mb-4">
+            {/* SEARCH */}
+            <div className="relative w-full md:w-80">
+              <input
+                type="text"
+                placeholder="Cari nama, kelas, atau data siswa..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              />
+            </div>
 
-            {/* Import */}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="text-sm bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
-            >
-              📥 Import
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".xlsx, .xls"
-              className="hidden"
-              onChange={handleImport}
-            />
-
-            {/* Export */}
-            <button
-              onClick={handleExport}
-              className="text-sm bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
-            >
-              📤 Export
-            </button>
-
-            {/* Tambah */}
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              + Tambah
-            </button>
+            {/* ACTION BUTTONS */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 text-sm bg-emerald-500 text-white px-4 py-2 rounded-xl
+                 shadow-sm hover:bg-emerald-600 active:scale-95 transition-all"
+              >
+                📤 Export
+              </button>
+            </div>
           </div>
 
           {isLoading && (

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useModifySiswaMutation } from "../../../../../hooks/api/siswaSliceAPI";
+import KelasSearchDropdown from "../../../ui/kelasSearchDropdown";
 
 export default function FormEditDataSiswa({
   initialData,
@@ -18,6 +19,8 @@ export default function FormEditDataSiswa({
     })) || [],
   );
 
+  const [kelasId, setKelasId] = useState(initialData?.kelasId || "");
+
   const [updateSiswa, { isLoading, isError, error }] = useModifySiswaMutation();
 
   const handleNilai = (pelajaranId, value) => {
@@ -32,18 +35,20 @@ export default function FormEditDataSiswa({
     e.preventDefault();
 
     try {
-      const result = await updateSiswa({
+      const payload = {
         id: initialData.id,
         namaSiswa,
-        tanggalLahir,
-        kelas,
+        tanggalLahir: tanggalLahir
+          ? new Date(tanggalLahir).toISOString()
+          : undefined,
+        kelasId,
         nilai,
-      }).unwrap();
+      };
 
       // trigger modal sukses
-      if (onSuccess) onSuccess(result);
-    } catch (error) {
-      console.error("ERROR", error);
+      if (onSuccess) onSuccess(payload);
+    } catch (err) {
+      console.error("Status:", err?.status);
     }
   };
   return (
@@ -74,12 +79,14 @@ export default function FormEditDataSiswa({
       {/* Kelas */}
       <div>
         <label className="text-sm text-gray-600">Kelas</label>
-        <input
-          type="text"
-          placeholder="Masukkan Kelas"
-          value={kelas}
-          onChange={(e) => setKelas(e.target.value)}
-          className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
+        <KelasSearchDropdown
+          value={kelasId}
+          initialLabel={
+            initialData?.kelas
+              ? `${initialData.kelas.kodeKelas} - ${initialData.kelas.namaKelas}`
+              : ""
+          }
+          onChange={(val) => setKelasId(val)}
         />
       </div>
 

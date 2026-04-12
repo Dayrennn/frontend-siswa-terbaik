@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCreateSiswaMutation } from "../../../../../hooks/api/siswaSliceAPI";
 import { useParams } from "next/navigation";
+import KelasSearchDropdown from "../../../ui/kelasSearchDropdown";
 
 export default function FormTambahSiswa({ onSuccess, onCancel }) {
   const [nis, setNis] = useState("");
@@ -10,6 +11,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
   const [tanggalLahir, setTanggalLahir] = useState("");
   const [kelas, setKelas] = useState("");
   const { tahunAjaranId } = useParams();
+  const [kelasId, setKelasId] = useState("");
 
   const [createSiswa, { isLoading, isError, error }] = useCreateSiswaMutation();
 
@@ -20,7 +22,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
         nis,
         namaSiswa,
         tanggalLahir,
-        kelas,
+        kelasId,
         tahunAjaranId,
       }).unwrap();
 
@@ -77,12 +79,9 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
       {/* kelas */}
       <div>
         <label className="text-sm text-gray-600">Kelas</label>
-        <input
-          type="text"
-          placeholder="Masukkan kelas"
-          value={kelas}
-          onChange={(e) => setKelas(e.target.value)}
-          className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
+        <KelasSearchDropdown
+          value={kelasId}
+          onChange={(val) => setKelasId(val)}
         />
       </div>
 

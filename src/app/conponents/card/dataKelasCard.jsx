@@ -1,4 +1,4 @@
-export default function TahunAjaranCard({
+export default function DataKelasCard({
   item,
   onEdit,
   onRemove,
@@ -9,25 +9,13 @@ export default function TahunAjaranCard({
       key={item.id}
       className="bg-white border rounded-xl px-5 py-4 shadow-sm hover:shadow-md transition-all duration-300 w-full flex items-center justify-between"
     >
-      {/* Kiri: Tahun + Status */}
       <div className="flex items-center gap-4">
         <h2 className="text-sm font-semibold text-gray-800">
-          {item.namaTahunAjaran}
+          {item.kodeKelas}
         </h2>
-
-        <span
-          className={`inline-block px-3 py-1 text-xs font-medium rounded-full
-            ${
-              item.status === "Aktif"
-                ? "bg-green-100 text-green-700"
-                : item.status === "Nonaktif"
-                  ? "bg-gray-200 text-gray-700"
-                  : "bg-yellow-100 text-yellow-700"
-            }
-          `}
-        >
-          {item.status}
-        </span>
+        <h2 className="text-sm font-semibold text-gray-800">
+          {item.namaKelas}
+        </h2>
       </div>
 
       {/* Kanan: Actions */}

@@ -58,6 +58,7 @@ const menuItems = [
       { menu: "Data Kehadiran", link: "/page/data-kehadiran" },
       { menu: "Data Kriteria", link: "/page/data-kriteria" },
       { menu: "Data Tahun Ajaran", link: "/page/tahun-ajaran" },
+      { menu: "Data Kelas", link: "/page/data-kelas" }
     ],
   },
 
