@@ -1,9 +1,10 @@
 "use client";
 
-import DataKelasCard from "../../../conponents/card/dataKelasCard";
 import CreateModal from "../../../conponents/modal/crud/createModal";
 import EditModal from "../../../conponents/modal/crud/editModal";
 import RemoveModal from "../../../conponents/modal/crud/deleteModal";
+import Table from "../../../conponents/table/page";
+import Link from "next/link";
 
 import {
   useGetAllKelasQuery,
@@ -33,9 +34,58 @@ export default function DataKelas() {
     setShowRemoveModal(true);
   };
 
+  const columns = [
+    { key: "no", label: "No" },
+    {
+      key: "kodeKelas",
+      label: "Kode Kelas",
+      render: (row) => (
+        <span className="text-gray-700">{row.kodeKelas || "-"}</span>
+      ),
+    },
+    {
+      key: "namaKelas",
+      label: "Nama Kelas",
+      render: (row) => (
+        <span className="text-gray-700">{row.namaKelas || "-"}</span>
+      ),
+    },
+    {
+      key: "aksi",
+      label: "Aksi",
+      render: (row) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleEdit(row)}
+            className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => handleRemove(row)}
+            className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
+          >
+            Hapus
+          </button>
+          <Link href={`page/data-siswa/${row.id}`}>
+            <button className="text-xs bg-blue-100 text-blue-500 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">
+              Lihat
+            </button>
+          </Link>
+        </div>
+      ),
+    },
+  ];
+
   // ambil data
   const { data, isLoading, isError } = useGetAllKelasQuery();
-  const kelasData = data?.data ?? [];
+  const kelasData =
+    data?.data?.map((item, index) => {
+      return {
+        no: index + 1,
+        ...item,
+      };
+    }) ?? [];
 
   return (
     <>
@@ -55,22 +105,17 @@ export default function DataKelas() {
             <p className="text-gray-600 text-sm">Pilih kelas</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-5 mb-3">
-            {isLoading ? (
-              <div className="animate-pulse">Loading data...</div>
-            ) : isError ? (
-              <p className="text-red-500">Gagal mengambil data</p>
-            ) : kelasData.length === 0 ? (
-              <p>Tidak ada data</p>
-            ) : (
-              kelasData.map((item) => (
-                <DataKelasCard
-                  key={item.id}
-                  item={item}
-                  onEdit={handleEdit}
-                  onRemove={handleRemove}
-                />
-              ))
+          <div className="mt-5 mb-3">
+            {isLoading && (
+              <p className="text-center text-gray-400 py-8">Memuat Data...</p>
+            )}
+
+            {isError && (
+              <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
+            )}
+
+            {!isLoading && !isError && (
+              <Table columns={columns} data={kelasData} />
             )}
           </div>
         </div>

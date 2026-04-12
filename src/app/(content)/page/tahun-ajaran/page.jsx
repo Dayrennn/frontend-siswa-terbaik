@@ -12,7 +12,9 @@ import { FaUserPlus } from "react-icons/fa";
 import EditModal from "../../../conponents/modal/crud/editModal";
 import RemoveModal from "../../../conponents/modal/crud/deleteModal";
 import FormEditDataTahunAjaran from "../../../conponents/form/crud/edit-data/tahunAjaran";
+import Table from "../../../conponents/table/page";
 import TahunAjaranCard from "../../../conponents/card/tahunAjaranCard";
+import Link from "next/link";
 
 export default function TahunAjaran() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -37,7 +39,59 @@ export default function TahunAjaran() {
   // ambil data
   const { data, isLoading, isError } = useSeeAllTahunAjaranQuery();
 
-  const tahunAjaranData = data?.data ?? [];
+  const tahunAjaranData =
+    data?.data?.map((item, index) => {
+      return {
+        no: index + 1,
+        ...item,
+      };
+    }) ?? [];
+
+  const columns = [
+    { key: "no", label: "No" },
+    {
+      key: "namaTahunAjaran",
+      label: "Tahun Ajaran",
+      render: (row) => (
+        <span className="text-gray-700">{row.namaTahunAjaran || "-"}</span>
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (row) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            row.status === "Aktif"
+              ? "bg-blue-100 text-blue-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {row.status || "-"}
+        </span>
+      ),
+    },
+    {
+      key: "aksi",
+      label: "Aksi",
+      render: (row) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleEdit(row)}
+            className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => handleRemove(row)}
+            className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
+          >
+            Hapus
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -58,23 +112,16 @@ export default function TahunAjaran() {
           </div>
 
           {/* Grid Card */}
-          {isLoading ? (
-            <p className="text-center text-gray-500">Loading...</p>
-          ) : isError ? (
-            <p className="text-center text-red-500">Gagal mengambil data</p>
-          ) : tahunAjaranData.length === 0 ? (
-            <p className="text-center text-gray-500">Belum ada data</p>
-          ) : (
-            <div className="flex flex-col gap-3 w-full">
-              {tahunAjaranData.map((item) => (
-                <TahunAjaranCard
-                  key={item.id}
-                  item={item}
-                  onEdit={handleEdit}
-                  onRemove={handleRemove}
-                />
-              ))}
-            </div>
+          {isLoading && (
+            <p className="text-center text-gray-400 py-8">Memuat Data...</p>
+          )}
+
+          {isError && (
+            <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
+          )}
+
+          {!isLoading && !isError && (
+            <Table columns={columns} data={tahunAjaranData} />
           )}
         </div>
       </div>

@@ -86,7 +86,9 @@ export default function DataSemuaSiswa() {
       key: "kelas",
       label: "Kelas",
       render: (row) => (
-        <span className="text-gray-700">{row.kelas || "-"}</span>
+        <span className="text-gray-700">
+          {row.kelas ? `${row.kelas.kodeKelas} - ${row.kelas.namaKelas}` : "-"}
+        </span>
       ),
     },
     {
