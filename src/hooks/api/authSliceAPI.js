@@ -1,19 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 // kenapa ada ini?untuk menyimpan data di Redux state setelah login berhasil.
 const authSlice = createSlice({
-  name: "auth",
-  initialState: {
-    user: null,
-  },
-  reducers: {
-    setCredentials: (state, action) => {
-      state.user = action.payload.user;
+    name: 'auth',
+    initialState: {
+        user: null,
     },
-    logout: (state) => {
-      state.user = null;
+    reducers: {
+        setCredentials: (state, action) => {
+            state.user = action.payload.user;
+        },
+        logout: (state) => {
+            state.user = null;
+        },
     },
-  },
 });
 
 export const { setCredentials, logout } = authSlice.actions;

@@ -1,56 +1,56 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { siswaBaseQuery } from "../lib/baseQuery";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { siswaBaseQuery } from '../lib/baseQuery';
 
 export const siswaAPI = createApi({
-  reducerPath: "siswaAPI",
-  refetchOnFocus: true,
-  refetchOnReconnect: true,
-  baseQuery: siswaBaseQuery,
-  tagTypes: ["siswaAPI"],
-  endpoints: (builder) => ({
-    createSiswa: builder.mutation({
-      query: (data) => ({
-        url: `/create/${data.tahunAjaranId}`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["siswaAPI"],
+    reducerPath: 'siswaAPI',
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+    baseQuery: siswaBaseQuery,
+    tagTypes: ['siswaAPI'],
+    endpoints: (builder) => ({
+        createSiswa: builder.mutation({
+            query: (data) => ({
+                url: `/create/${data.tahunAjaranId}`,
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['siswaAPI'],
+        }),
+        modifySiswa: builder.mutation({
+            query: ({ id, ...data }) => ({
+                url: `/update/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+            invalidatesTags: ['siswaAPI'],
+        }),
+        seeAllSiswa: builder.query({
+            query: () => '/',
+            providesTags: ['siswaAPI'],
+        }),
+        getSiswaById: builder.query({
+            query: (id) => `/${id}`,
+            providesTags: ['siswaAPI'],
+        }),
+        removeSiswa: builder.mutation({
+            query: (id) => ({
+                url: `/delete/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['siswaAPI'],
+        }),
+        seeAllSiswaByTahunAjaran: builder.query({
+            query: (tahunAjaranId) => `/tahun-ajaran/${tahunAjaranId}`,
+            providesTags: ['siswaAPI'],
+        }),
     }),
-    modifySiswa: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/update/${id}`,
-        method: "PUT",
-        body: data,
-      }),
-      invalidatesTags: ["siswaAPI"],
-    }),
-    seeAllSiswa: builder.query({
-      query: () => "/",
-      providesTags: ["siswaAPI"],
-    }),
-    getSiswaById: builder.query({
-      query: (id) => `/${id}`,
-      providesTags: ["siswaAPI"],
-    }),
-    removeSiswa: builder.mutation({
-      query: (id) => ({
-        url: `/delete/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["siswaAPI"],
-    }),
-    seeAllSiswaByTahunAjaran: builder.query({
-      query: (tahunAjaranId) => `/tahun-ajaran/${tahunAjaranId}`,
-      providesTags: ["siswaAPI"],
-    }),
-  }),
 });
 
 export const {
-  useCreateSiswaMutation,
-  useModifySiswaMutation,
-  useSeeAllSiswaQuery,
-  useGetSiswaByIdQuery,
-  useRemoveSiswaMutation,
-  useSeeAllSiswaByTahunAjaranQuery,
+    useCreateSiswaMutation,
+    useModifySiswaMutation,
+    useSeeAllSiswaQuery,
+    useGetSiswaByIdQuery,
+    useRemoveSiswaMutation,
+    useSeeAllSiswaByTahunAjaranQuery,
 } = siswaAPI;
