@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { kehadiranBaseQuery } from "../lib/baseQuery";
 
 export const kehadiranAPI = createApi({
   reducerPath: "kehadiranAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: kehadiranBaseQuery,
   tagTypes: ["kehadiranAPI"],
   endpoints: (builder) => ({
     createKehadiran: builder.mutation({
       query: (data) => ({
-        url: "/kehadiran/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -18,18 +18,18 @@ export const kehadiranAPI = createApi({
     }),
     modifyKehadiran: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/kehadiran/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         bodt: data,
       }),
       invalidatesTags: ["kehadiranAPi"],
     }),
     seeAllKehadiran: builder.query({
-      query: () => "/kehadiran",
+      query: () => "/",
       providesTags: ["kehadiranAPI"],
     }),
     getKehadiranById: builder.query({
-      query: (id) => `/kehadiran/${id}`,
+      query: (id) => `/${id}`,
       providesTags: ["kehadiranAPI"],
     }),
   }),
@@ -39,5 +39,5 @@ export const {
   useCreateKehadiranMutation,
   useModifyKehadiranMutation,
   useSeeAllKehadiranQuery,
-  useGetKehadiranById,
+  useGetKehadiranByIdQuery,
 } = kehadiranAPI;

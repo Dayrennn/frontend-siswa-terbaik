@@ -1,114 +1,43 @@
 "use client";
 
-import {
-  useSeeAllSiswaByTahunAjaranQuery,
-  useRemoveSiswaMutation,
-} from "../../../../../hooks/api/siswaSliceAPI";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 
-import CreateModal from "../../../../conponents/modal/crud/createModal";
-import EditModal from "../../../../conponents/modal/crud/editModal";
-import RemoveModal from "../../../../conponents/modal/crud/deleteModal";
-import { FaUserPlus } from "react-icons/fa";
 import Table from "../../../../conponents/table/page";
-import FormTambahSiswa from "../../../../conponents/form/crud/tambah-data/siswa";
-import FormEditDataSiswa from "../../../../conponents/form/crud/edit-data/siswa";
-import {
-  exportToExcel,
-  downloadTemplate,
-  parseImportedExcel,
-} from "../../../../../hooks/utils/excelHelper";
+import Link from "next/link";
+
+import { useGetAllKelasQuery } from "../../../../../hooks/api/kelasSliceAPI";
+import { useGetTahunAjaranByIdQuery } from "../../../../../hooks/api/tahunAjaranSliceAPI";
 
 export default function DataKehadiranByTahunAjaran() {
   const { tahunAjaranId } = useParams();
-
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [search, setSearch] = useState("");
-  const fileInputRef = useRef();
 
-  const [deleteSiswa] = useRemoveSiswaMutation();
-  const [removeSiswa, setRemoveSiswa] = useState(null);
+  const { data, isLoading, isError } = useGetAllKelasQuery();
+  const { data: tahunAjaranData } = useGetTahunAjaranByIdQuery(tahunAjaranId);
 
-  const handleRemove = (siswa) => {
-    setRemoveSiswa(siswa);
-    setShowRemoveModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    await deleteSiswa(id).unwrap();
-  };
-
-  const [selectedSiswa, setSelectedSiswa] = useState(null);
-  const handleEdit = (siswa) => {
-    setSelectedSiswa(siswa);
-    setShowEditModal(true);
-  };
-
-  // ← pakai query by tahun ajaran, bukan seeAll
-  const { data, isLoading, isError } =
-    useSeeAllSiswaByTahunAjaranQuery(tahunAjaranId);
-
-  const tableData =
-    data?.data
-      ?.map((siswa, index) => ({
+  const kelasData =
+    data?.data?.map((item, index) => {
+      return {
         no: index + 1,
-        ...siswa,
-      }))
-      .filter((item) =>
-        item.namaSiswa?.toLowerCase().includes(search.toLowerCase()),
-      ) ?? [];
-  const pelajaranMap = new Map();
-  data?.data?.forEach((siswa) => {
-    siswa.nilai?.forEach((n) => {
-      pelajaranMap.set(n.pelajaran.kodePelajaran, n.pelajaran.namaPelajaran);
-    });
-  });
-  const pelajaranList = Array.from(pelajaranMap.entries()).map(
-    ([key, label]) => ({ key, label }),
-  );
+        ...item,
+      };
+    }) ?? [];
 
   const columns = [
     { key: "no", label: "No" },
     {
-      key: "nis",
-      label: "NIS",
-      render: (row) => <span className="text-gray-700">{row.nis || "-"}</span>,
-    },
-    {
-      key: "namaSiswa",
-      label: "Nama Siswa",
+      key: "kodeKelas",
+      label: "Kode Kelas",
       render: (row) => (
-        <span className="text-gray-700">{row.namaSiswa || "-"}</span>
+        <span className="text-gray-700">{row.kodeKelas || "-"}</span>
       ),
     },
     {
-      key: "tanggalLahir",
-      label: "Tanggal Lahir",
+      key: "namaKelas",
+      label: "Nama Kelas",
       render: (row) => (
-        <span className="text-gray-700">
-          {row.tanggalLahir?.split("T")[0] || "-"}
-        </span>
-      ),
-    },
-    {
-      key: "tahunAjaran",
-      label: "Tahun Ajaran",
-      render: (row) => (
-        <span className="text-gray-700">
-          {row.tahunAjaran?.namaTahunAjaran || "-"}
-        </span>
-      ),
-    },
-    {
-      key: "kelas",
-      label: "Kelas",
-      render: (row) => (
-        <span className="text-gray-700">
-          {row.kelas ? `${row.kelas.kodeKelas} - ${row.kelas.namaKelas}` : "-"}
-        </span>
+        <span className="text-gray-700">{row.namaKelas || "-"}</span>
       ),
     },
     {
@@ -116,32 +45,15 @@ export default function DataKehadiranByTahunAjaran() {
       label: "Aksi",
       render: (row) => (
         <div className="flex gap-2">
-          <button
-            onClick={() => handleEdit(row)}
-            className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => handleRemove(row)}
-            className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
-          >
-            Hapus
-          </button>
+          <Link href={`/page/data-kehadiran/${tahunAjaranId}/${row.id}`}>
+            <button className="text-xs bg-blue-100 text-blue-500 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">
+              Lihat
+            </button>
+          </Link>
         </div>
       ),
     },
   ];
-
-  const handleExport = () => exportToExcel(tableData, pelajaranList);
-
-  const handleImport = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const rows = await parseImportedExcel(file);
-    console.log("Data dari Excel:", rows);
-    e.target.value = "";
-  };
 
   return (
     <>
@@ -150,7 +62,7 @@ export default function DataKehadiranByTahunAjaran() {
           {data?.data?.map((siswa) => (
             <div key={siswa.id}>
               <h1 className="text-2xl font-bold text-gray-800">
-                Data Kehadiran {siswa.tahunAjaran?.namaTahunAjaran}
+                {tahunAjaranData?.data?.namaTahunAjaran || "Loading..."}
               </h1>
             </div>
           ))}
@@ -167,45 +79,6 @@ export default function DataKehadiranByTahunAjaran() {
                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
-
-            {/* RIGHT: BUTTONS */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={downloadTemplate}
-                className="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                📄 Template
-              </button>
-
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="text-sm bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
-              >
-                📥 Import
-              </button>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xlsx, .xls"
-                className="hidden"
-                onChange={handleImport}
-              />
-
-              <button
-                onClick={handleExport}
-                className="text-sm bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
-              >
-                📤 Export
-              </button>
-
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                + Tambah
-              </button>
-            </div>
           </div>
 
           {isLoading && (
@@ -215,44 +88,10 @@ export default function DataKehadiranByTahunAjaran() {
             <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>
           )}
           {!isLoading && !isError && (
-            <Table columns={columns} data={tableData} />
+            <Table columns={columns} data={kelasData} />
           )}
         </div>
       </div>
-
-      {showCreateModal && (
-        <CreateModal
-          onCancel={() => setShowCreateModal(false)}
-          icon={<FaUserPlus />}
-          title="Tambah Siswa"
-          formTambah={FormTambahSiswa}
-          successTitle="Siswa Berhasil Dibuat"
-          successMessage="Berhasil"
-        />
-      )}
-      {showEditModal && (
-        <EditModal
-          onCancel={() => setShowEditModal(false)}
-          icon={<FaUserPlus />}
-          title="Edit Siswa"
-          formEdit={FormEditDataSiswa}
-          initialData={selectedSiswa}
-          successTitle="Siswa Berhasil di Update"
-          successMessage="Berhasil"
-        />
-      )}
-      {showRemoveModal && (
-        <RemoveModal
-          onCancel={() => setShowRemoveModal(false)}
-          icon={<FaUserPlus />}
-          title="Hapus Siswa"
-          initialData={removeSiswa}
-          displayName="namaSiswa"
-          onConfirm={handleDelete}
-          successTitle="Siswa Berhasil di Hapus"
-          successMessage="Berhasil"
-        />
-      )}
     </>
   );
 }

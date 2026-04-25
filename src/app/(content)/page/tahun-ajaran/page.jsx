@@ -13,8 +13,6 @@ import EditModal from "../../../conponents/modal/crud/editModal";
 import RemoveModal from "../../../conponents/modal/crud/deleteModal";
 import FormEditDataTahunAjaran from "../../../conponents/form/crud/edit-data/tahunAjaran";
 import Table from "../../../conponents/table/page";
-import TahunAjaranCard from "../../../conponents/card/tahunAjaranCard";
-import Link from "next/link";
 
 export default function TahunAjaran() {
   const [showCreateModal, setShowCreateModal] = useState(false);

@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { kriteriaBaseQuery } from "../lib/baseQuery";
 
 export const kriteriaAPI = createApi({
   reducerPath: "kriteriaAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: kriteriaBaseQuery,
   tagTypes: ["kriteriaAPI"],
   endpoints: (builder) => ({
     createKriteria: builder.mutation({
       query: (data) => ({
-        url: "/kriteria/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -18,23 +18,23 @@ export const kriteriaAPI = createApi({
     }),
     modifyKriterea: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/kriteria/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["kriteriaAPI"],
     }),
     getAllKriteria: builder.query({
-      query: () => `/kriteria`,
+      query: () => `/`,
       providesTags: ["kriteriaAPI"],
     }),
     getKriteriaById: builder.query({
-      query: (id) => `/kriteria/${id}`,
+      query: (id) => `/${id}`,
       providesTags: ["kriteriaAPI"],
     }),
     removeKriteria: builder.mutation({
       query: (id) => ({
-        url: `/kriteria/delete/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["kriteriaAPI"],

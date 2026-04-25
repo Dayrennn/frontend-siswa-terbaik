@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { userBaseQuery } from "../lib/baseQuery";
 
 export const userAPI = createApi({
   reducerPath: "userAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: userBaseQuery,
   tagTypes: ["userAPI"],
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => ({
-        url: "/auth/register",
+        url: "/register",
         method: "POST",
         body: data,
       }),
@@ -18,7 +18,7 @@ export const userAPI = createApi({
     }),
     verifyOtp: builder.mutation({
       query: (data) => ({
-        url: "/auth/verify-otp",
+        url: "/verify-otp",
         method: "POST",
         body: data,
       }),
@@ -26,44 +26,42 @@ export const userAPI = createApi({
     }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/auth/login",
+        url: "/login",
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["userAPI"],
     }),
     logout: builder.mutation({
       query: () => ({
-        url: "/auth/logout",
+        url: "/logout",
         method: "POST",
       }),
+      invalidatesTags: ["userAPI"],
     }),
     update: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/auth/users/${id}`,
+        url: `/users/${id}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["userAPI", "me"],
+      invalidatesTags: ["userAPI"],
     }),
     getUsers: builder.query({
-      query: () => "/auth/users",
+      query: () => "/users",
       providesTags: ["userAPI"],
     }),
     getUserById: builder.query({
-      query: (id) => ({
-        url: `/auth/users/${id}`,
-      }),
+      query: (id) => `/users/${id}`,
+      providesTags: ["userAPI"],
     }),
     getMe: builder.query({
-      query: () => ({
-        url: "/auth/me",
-        method: "GET",
-      }),
-      providesTags: ["me"],
+      query: () => "/me",
+      providesTags: ["userAPI"],
     }),
     removeUser: builder.mutation({
       query: (id) => ({
-        url: `/auth/users/${id}`,
+        url: `/users/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["userAPI"],

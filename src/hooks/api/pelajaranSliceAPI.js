@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { pelajaranBaseQuery } from "../lib/baseQuery";
 
 export const pelajaranAPI = createApi({
   reducerPath: "pelajaranAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: pelajaranBaseQuery,
   tagTypes: ["pelajaranAPI"],
   endpoints: (builder) => ({
     createPelajaran: builder.mutation({
       query: (data) => ({
-        url: "/pelajaran/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -18,23 +18,23 @@ export const pelajaranAPI = createApi({
     }),
     modifyPelajaran: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/pelajaran/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["pelajaranAPI"],
     }),
     seeAllPelajaran: builder.query({
-      query: () => "/pelajaran",
+      query: () => "/",
       providesTags: ["pelajaranAPI"],
     }),
     getPelajaranById: builder.query({
-      query: (id) => `/update/${id}`,
+      query: (id) => `/${id}`,
       providesTags: ["pelajaranAPI"],
     }),
     removePelajaran: builder.mutation({
       query: (id) => ({
-        url: `/pelajaran/delete/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["pelajaranAPI"],

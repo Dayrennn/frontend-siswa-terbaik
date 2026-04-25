@@ -1,15 +1,15 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { otpBaseQuery } from "../lib/baseQuery";
 
 export const otpAPI = createApi({
   reducerPath: "otpAPI",
   refetchOnFocus: true,
-  baseQuery,
+  baseQuery: otpBaseQuery,
   tagTypes: ["otpAPI"],
   endpoints: (builder) => ({
     sendRegisterOtp: builder.mutation({
       query: (data) => ({
-        url: "/otp/register",
+        url: "/register",
         method: "POST",
         body: data,
       }),

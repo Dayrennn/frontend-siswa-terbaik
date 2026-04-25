@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { siswaBaseQuery } from "../lib/baseQuery";
 
 export const siswaAPI = createApi({
   reducerPath: "siswaAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: siswaBaseQuery,
   tagTypes: ["siswaAPI"],
   endpoints: (builder) => ({
     createSiswa: builder.mutation({
       query: (data) => ({
-        url: `/siswa/create/${data.tahunAjaranId}`,
+        url: `/create/${data.tahunAjaranId}`,
         method: "POST",
         body: data,
       }),
@@ -18,29 +18,29 @@ export const siswaAPI = createApi({
     }),
     modifySiswa: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/siswa/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["siswaAPI"],
     }),
     seeAllSiswa: builder.query({
-      query: () => "/siswa",
+      query: () => "/",
       providesTags: ["siswaAPI"],
     }),
     getSiswaById: builder.query({
-      query: (id) => `/siswa/${id}`,
+      query: (id) => `/${id}`,
       providesTags: ["siswaAPI"],
     }),
     removeSiswa: builder.mutation({
       query: (id) => ({
-        url: `/siswa/delete/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["siswaAPI"],
     }),
     seeAllSiswaByTahunAjaran: builder.query({
-      query: (tahunAjaranId) => `/siswa/tahun-ajaran/${tahunAjaranId}`,
+      query: (tahunAjaranId) => `/tahun-ajaran/${tahunAjaranId}`,
       providesTags: ["siswaAPI"],
     }),
   }),

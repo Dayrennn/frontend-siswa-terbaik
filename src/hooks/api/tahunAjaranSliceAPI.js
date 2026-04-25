@@ -1,15 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { tahunAjaranBaseQuery } from "../lib/baseQuery";
 
 export const tahunAjaranAPI = createApi({
   reducerPath: "tahunAjaranAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: tahunAjaranBaseQuery,
+  tagTypes: ["tahunAjaranAPI"],
   endpoints: (builder) => ({
     createTahunAjaran: builder.mutation({
       query: (data) => ({
-        url: "/tahun-ajaran/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -17,23 +18,23 @@ export const tahunAjaranAPI = createApi({
     }),
     modifyTahunAjaran: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/tahun-ajaran/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["tahunAjaranAPI"],
     }),
     seeAllTahunAjaran: builder.query({
-      query: () => "/tahun-ajaran",
+      query: () => "/",
       providesTags: ["tahunAjaranAPI"],
     }),
-    getTahunAajaranById: builder.query({
-      query: (id) => `/tahun-ajaran/${id}`,
+    getTahunAjaranById: builder.query({
+      query: (id) => `/${id}`,
       providesTags: ["tahunAjaranAPI"],
     }),
     removeTahunAjaran: builder.mutation({
       query: (id) => ({
-        url: `/tahun-ajaran/delete/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["tahunAjaranAPI"],
@@ -45,6 +46,6 @@ export const {
   useCreateTahunAjaranMutation,
   useModifyTahunAjaranMutation,
   useSeeAllTahunAjaranQuery,
-  useGetTahunAajaranByIdQuery,
+  useGetTahunAjaranByIdQuery,
   useRemoveTahunAjaranMutation,
 } = tahunAjaranAPI;

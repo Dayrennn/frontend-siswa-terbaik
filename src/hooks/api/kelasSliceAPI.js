@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../lib/baseQuery";
+import { kelasBaseQuery } from "../lib/baseQuery";
 
 export const kelasAPI = createApi({
   reducerPath: "kelasAPI",
   refetchOnFocus: true,
   refetchOnReconnect: true,
-  baseQuery,
+  baseQuery: kelasBaseQuery,
   tagTypes: ["kelasAPI"],
   endpoints: (builder) => ({
     createKelas: builder.mutation({
       query: (data) => ({
-        url: "/kelas/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -18,25 +18,25 @@ export const kelasAPI = createApi({
     }),
     modifyKelas: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/kelas/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["kelasAPI"],
     }),
     getAllKelas: builder.query({
-      query: () => `/kelas`,
+      query: () => `/`,
       providesTags: ["kelasAPI"],
     }),
     getKelasById: builder.query({
       query: () => ({
-        url: `/kelas/${id}`,
+        url: `/${id}`,
         providesTags: ["kelasAPI"],
       }),
     }),
     removeKelas: builder.mutation({
       query: (id) => ({
-        url: `/kelas/delete/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["kelasAPI"],
