@@ -34,16 +34,16 @@ const menuItems = [
     },
 
     {
-        menu: 'Master Data',
+        menu: 'Menu Siswa',
         icon: FaUsers,
         roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
         children: [
             { menu: 'Data Pelajaran', link: '/page/data-pelajaran' },
             { menu: 'Data Siswa', link: '/page/data-siswa' },
             { menu: 'Data Kehadiran', link: '/page/data-kehadiran' },
-            { menu: 'Data Kriteria', link: '/page/data-kriteria' },
-            { menu: 'Data Tahun Ajaran', link: '/page/tahun-ajaran' },
             { menu: 'Data Kelas', link: '/page/data-kelas' },
+            { menu: 'Data Tahun Ajaran', link: '/page/tahun-ajaran' },
+            { menu: 'Data Pertemuan', link: '/page/data-pertemuan' },
         ],
     },
 
@@ -52,16 +52,17 @@ const menuItems = [
         icon: FaClipboardList,
         roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
         children: [
+            { menu: 'Data Kriteria', link: '/page/data-kriteria' },
             { menu: 'Hitung Nilai', link: '/page/hitung-nilai' },
             { menu: 'Data Ranking', link: '/page/data-ranking' },
             { menu: 'Data Nilai', link: '/page/data-nilai' },
         ],
     },
     {
-        menu: 'Data User',
+        menu: 'Master Data',
         icon: FaUsers,
         roles: ['Admin'],
-        link: '/page/data-user',
+        children: [{ menu: 'Data User', link: '/page/data-user' }],
     },
 ];
 

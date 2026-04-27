@@ -29,10 +29,8 @@ export const kelasAPI = createApi({
             providesTags: ['kelasAPI'],
         }),
         getKelasById: builder.query({
-            query: () => ({
-                url: `/${id}`,
-                providesTags: ['kelasAPI'],
-            }),
+            query: (id) => `/${id}`,
+            providesTags: ['kelasAPI'],
         }),
         removeKelas: builder.mutation({
             query: (id) => ({
