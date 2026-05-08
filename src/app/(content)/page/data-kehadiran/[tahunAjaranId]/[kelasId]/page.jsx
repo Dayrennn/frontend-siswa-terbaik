@@ -1,29 +1,33 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-
-import { useSeeAllPertemuanByTahunAndKelasQuery } from '../../../../../../hooks/api/pertemuanSliceAPI';
+import { useSeeAllPertemuanByTahunAndKelasQuery, useRemovePertemuanMutation } from '../../../../../../hooks/api/pertemuanSliceAPI';
 import { useGetKelasByIdQuery } from '../../../../../../hooks/api/kelasSliceAPI';
 import PertemuanCard from '../../../../../conponents/card/pertemuanCard';
 import { useState } from 'react';
 import CreateModal from '../../../../../conponents/modal/crud/createModal';
+import RemoveModal from '../../../../../conponents/modal/crud/deleteModal';
 import { FaUserPlus } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import FormTambahPertemuan from '../../../../../conponents/form/crud/tambah-data/pertemuan';
 
 export default function Pertemuan() {
     const { tahunAjaranId, kelasId } = useParams();
-    const { data } = useSeeAllPertemuanByTahunAndKelasQuery({
-        tahunAjaranId,
-        kelasId,
-    });
+    const { data } = useSeeAllPertemuanByTahunAndKelasQuery({ tahunAjaranId, kelasId });
     const { data: kodeKelas } = useGetKelasByIdQuery(kelasId);
+    const [removePertemuan] = useRemovePertemuanMutation();
 
-    // modal
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedPertemuan, setSelectedPertemuan] = useState(null);
+
+    const handleDelete = async (id) => {
+        await removePertemuan(id).unwrap();
+    };
 
     return (
         <>
-            <div className='min-h-screen bg-gray-100 '>
+            <div className='min-h-screen bg-gray-100'>
                 <div className='mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl'>
                     <h1 className='text-2xl font-bold text-gray-800'>
                         Kelas {kodeKelas?.data?.kodeKelas || 'Loading...'}
@@ -37,18 +41,45 @@ export default function Pertemuan() {
                         </button>
                     </div>
                     {data?.data?.map((pertemuan) => (
-                        <PertemuanCard key={pertemuan.id} namaPertemuan={pertemuan.namaPertemuan} />
+                        <PertemuanCard
+                            key={pertemuan.id}
+                            namaPertemuan={pertemuan.namaPertemuan}
+                            onDelete={() => {
+                                setSelectedPertemuan(pertemuan);
+                                setShowDeleteModal(true);
+                            }}
+                            nomorUrut={pertemuan.nomorUrut}
+                        />
                     ))}
                 </div>
             </div>
+
             {showCreateModal && (
                 <CreateModal
                     onCancel={() => setShowCreateModal(false)}
                     icon={<FaUserPlus />}
-                    title={'Tambah Pertemuan'}
+                    title='Tambah Pertemuan'
                     formTambah={FormTambahPertemuan}
                     successTitle='Pertemuan Berhasil Dibuat'
                     successMessage='Berhasil'
+                    tahunAjaranId={tahunAjaranId}
+                    kelasId={kelasId}
+                />
+            )}
+
+            {showDeleteModal && (
+                <RemoveModal
+                    onCancel={() => {
+                        setShowDeleteModal(false);
+                        setSelectedPertemuan(null);
+                    }}
+                    icon={<FaTrash />}
+                    title='Hapus Pertemuan'
+                    successTitle='Pertemuan Berhasil Dihapus'
+                    successMessage='Data pertemuan telah dihapus'
+                    initialData={selectedPertemuan}
+                    displayName='namaPertemuan'
+                    onConfirm={handleDelete}
                 />
             )}
         </>

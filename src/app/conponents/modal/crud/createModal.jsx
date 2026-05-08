@@ -11,6 +11,7 @@ export default function CreateModal({
     otpComponent: OtpComponent,
     successTitle = 'Berhasil',
     successMessage = 'Data berhasil disimpan',
+    ...formProps
 }) {
     const [step, setStep] = useState('form');
     const [email, setEmail] = useState('');
@@ -53,13 +54,14 @@ export default function CreateModal({
                 {/* Body Default */}
                 <div className='p-5'>
                     {step === 'form' && (
-                        <FormTambahUser onSuccess={handleFormSuccess} onCancel={onCancel} />
+                        <FormTambahUser onSuccess={handleFormSuccess} onCancel={onCancel} {...formProps} />
                     )}
                     {step === 'otp' && OtpComponent && (
                         <OtpComponent
                             email={email}
                             onCancel={onCancel}
                             onSuccess={handleOtpSuccess}
+                            {...formProps}
                         />
                     )}
                 </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useCreatePertemuanMutation } from '../../../../../hooks/api/pertemuanSliceAPI';
 
-export default function FormTambahPertemuan({ onSuccess, onCancel }) {
+export default function FormTambahPertemuan({ onSuccess, onCancel,tahunAjaranId, kelasId }) {
     const [namaPertemuan, setNamaPertemuan] = useState('');
     const [tanggal, setTanggal] = useState('');
 
@@ -16,6 +16,8 @@ export default function FormTambahPertemuan({ onSuccess, onCancel }) {
             const result = await createPertemuan({
                 namaPertemuan,
                 tanggal,
+                tahunAjaranId,
+                kelasId,
             }).unwrap();
 
             setNamaPertemuan('');

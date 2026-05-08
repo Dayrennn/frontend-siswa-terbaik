@@ -8,8 +8,8 @@ export const pertemuanAPI = createApi({
     baseQuery: pertemuanBaseQuery,
     endpoints: (builder) => ({
         createPertemuan: builder.mutation({
-            query: (data, kelasId) => ({
-                url: `/create/${kelasId}`,
+            query: ({tahunAjaranId, kelasId, ...data}) => ({
+                url: `/create/${tahunAjaranId}/${kelasId}`,
                 method: 'POST',
                 body: data,
             }),
@@ -37,7 +37,7 @@ export const pertemuanAPI = createApi({
         }),
         removePertemuan: builder.mutation({
             query: (id) => ({
-                url: `/delete/${id}`,
+                url: `/${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['pertemuanAPI'],
