@@ -9,10 +9,10 @@ export const kehadiranAPI = createApi({
     tagTypes: ['kehadiranAPI'],
     endpoints: (builder) => ({
         createKehadiran: builder.mutation({
-            query: (data) => ({
-                url: '/create',
+            query: ({ tahunAjaranId, pertemuanId, ...data }) => ({
+                url: `/create/${tahunAjaranId}/${pertemuanId}`,
                 method: 'POST',
-                body: data,
+                body: data, 
             }),
             invalidatesTags: ['kehadiranAPI'],
         }),

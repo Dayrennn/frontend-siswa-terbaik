@@ -49,6 +49,7 @@ export default function Pertemuan() {
                                 setShowDeleteModal(true);
                             }}
                             nomorUrut={pertemuan.nomorUrut}
+                            customHref={`/page/data-kehadiran/${tahunAjaranId}/${kelasId}/absen/${pertemuan.id}`}
                         />
                     ))}
                 </div>
