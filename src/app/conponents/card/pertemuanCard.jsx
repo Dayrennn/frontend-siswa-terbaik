@@ -1,4 +1,5 @@
 import { LayoutList, Trash2, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PertemuanCard({ namaPertemuan, onDelete, customHref }) {
     return (
@@ -9,18 +10,18 @@ export default function PertemuanCard({ namaPertemuan, onDelete, customHref }) {
                 <span className='text-neutral-800 text-sm font-normal'>{namaPertemuan}</span>
             </div>
             <div className='flex justify-end gap-2'>
+                <Link
+                    href={customHref}
+                    className='text-blue-400 hover:text-blue-600 transition-colors'
+                >
+                    <Eye className='w-4 h-4' />
+                </Link>
                 <button
-                onClick={customHref}
-                className='text-blue-400 hover:text-blue-600 transition-colors'
-            >
-                <Eye className='w-4 h-4' />
-            </button>
-            <button
-                onClick={onDelete}
-                className='text-red-400 hover:text-red-600 transition-colors'
-            >
-                <Trash2 className='w-4 h-4' />
-            </button>
+                    onClick={onDelete}
+                    className='text-red-400 hover:text-red-600 transition-colors'
+                >
+                    <Trash2 className='w-4 h-4' />
+                </button>
             </div>
         </div>
     );
