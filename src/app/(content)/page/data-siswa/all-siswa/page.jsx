@@ -109,18 +109,7 @@ export default function DataSemuaSiswa() {
     const handleExport = () => {
         exportToExcel(tableData, pelajaranList);
     };
-
-    const handleImport = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const rows = await parseImportedExcel(file);
-        console.log('Data dari Excel:', rows);
-        // 👉 Kirim `rows` ke API kamu di sini
-        // Contoh: rows.forEach(row => createSiswa(row))
-
-        e.target.value = ''; // reset input
-    };
+    
     return (
         <>
             <div className='min-h-screen bg-gray-100'>
