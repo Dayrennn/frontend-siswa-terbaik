@@ -40,18 +40,25 @@ export default function Pertemuan() {
                             + Tambah
                         </button>
                     </div>
-                    {data?.data?.map((pertemuan) => (
-                        <PertemuanCard
-                            key={pertemuan.id}
-                            namaPertemuan={pertemuan.namaPertemuan}
-                            onDelete={() => {
-                                setSelectedPertemuan(pertemuan);
-                                setShowDeleteModal(true);
-                            }}
-                            nomorUrut={pertemuan.nomorUrut}
-                            customHref={`/page/data-kehadiran/${tahunAjaranId}/${kelasId}/absen/${pertemuan.id}`}
-                        />
-                    ))}
+                    {data?.data?.length === 0 ? (
+                        <div className='flex flex-col items-center justify-center py-16 text-gray-400'>
+                            <p className='text-lg font-medium'>Belum ada pertemuan</p>
+                            <p className='text-sm mt-1'>Klik tombol <span className='font-semibold'>+ Tambah</span> untuk membuat pertemuan baru</p>
+                        </div>
+                    ) : (
+                        data?.data?.map((pertemuan) => (
+                            <PertemuanCard
+                                key={pertemuan.id}
+                                namaPertemuan={pertemuan.namaPertemuan}
+                                onDelete={() => {
+                                    setSelectedPertemuan(pertemuan);
+                                    setShowDeleteModal(true);
+                                }}
+                                nomorUrut={pertemuan.nomorUrut}
+                                customHref={`/page/data-kehadiran/${tahunAjaranId}/${kelasId}/absen/${pertemuan.id}`}
+                            />
+                        ))
+                    )}
                 </div>
             </div>
 

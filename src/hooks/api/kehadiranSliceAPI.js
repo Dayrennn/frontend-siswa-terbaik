@@ -17,12 +17,12 @@ export const kehadiranAPI = createApi({
             invalidatesTags: ['kehadiranAPI'],
         }),
         modifyKehadiran: builder.mutation({
-            query: ({ tahunAjaranid, pertemuanId, kelasId }) => ({
-                url: `/update/${tahunAjaranid}/${pertemuanId}/absen/${kelasId}`,
+            query: ({ tahunAjaranId, pertemuanId, kelasId, siswaId, statusKehadiran }) => ({
+                url: `/update/${tahunAjaranId}/${kelasId}/absen/${pertemuanId}`,
                 method: 'PUT',
-                body: data,
+                body: { siswaId, statusKehadiran },
             }),
-            invalidatesTags: ['kehadiranAPi'],
+            invalidatesTags: ['kehadiranAPI'],
         }),
         seeAllKehadiran: builder.query({
             query: () => '/',
