@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useGetAllKelasQuery } from '../../../hooks/api/kelasSliceAPI';
 
-export default function KelasSearchDropdown({ value, onChange }) {
-    const [search, setSearch] = useState(value || '');
+export default function KelasSearchDropdown({ value, onChange, initialLabel }) {
+     const [search, setSearch] = useState(initialLabel || value || ''); 
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef();
 

@@ -37,7 +37,7 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
                 nilai,
             };
 
-            // trigger modal sukses
+            await updateSiswa(payload).unwrap();
             if (onSuccess) onSuccess(payload);
         } catch (err) {
             console.error('Status:', err?.status);
