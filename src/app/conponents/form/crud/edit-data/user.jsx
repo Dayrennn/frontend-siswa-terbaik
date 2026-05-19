@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useUpdateMutation } from '../../../../../hooks/api/userSliceAPI';
 import { useSeeAllPelajaranQuery } from '../../../../../hooks/api/pelajaranSliceAPI';
+import { useGetAllKelasQuery } from '../../../../../hooks/api/kelasSliceAPI';
 
 const ROLE_OPTIONS = [
     { value: 'Admin', label: 'Admin' },
@@ -18,21 +19,20 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
     const [password, setPassword] = useState('');
     const [telephone, setTelephone] = useState(initialData?.telephone || '');
     const [role, setRole] = useState(initialData?.role || 'Role tidak ada');
+    const [kelasId, setKelasId] = useState(initialData?.kelas?.id || '');
 
     const [updateUser, { isLoading, isError, error }] = useUpdateMutation();
 
-    // BAGIAN EDIT PELAJARAN
-    // ambil pelajaran sebagai initialData
     const [selectedPelajaran, setSelectedPelajaran] = useState(
         initialData?.pelajaran?.map((p) => p.id) ?? [],
     );
 
-    // fetch data
     const { data: pelajaranData, isLoading: loadingPelajaran } = useSeeAllPelajaranQuery();
+    const { data: kelasData } = useGetAllKelasQuery();
 
     const allPelajaran = pelajaranData?.data ?? [];
+    const allKelas = kelasData?.data ?? [];
 
-    // toggle pilih atau hapus pelajaran
     const togglePelajaran = (id) => {
         setSelectedPelajaran((prev) =>
             prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
@@ -49,6 +49,7 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
                 telephone,
                 role,
                 pelajaranId: selectedPelajaran,
+                ...(role === 'WaliKelas' && { kelasId }),
             };
 
             if (password) payload.password = password;
@@ -122,7 +123,10 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
                 <label className='text-sm text-gray-600'>Role</label>
                 <select
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => {
+                        setRole(e.target.value);
+                        setKelasId(''); 
+                    }}
                     className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white'
                 >
                     {ROLE_OPTIONS.map((opt) => (
@@ -132,6 +136,27 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
                     ))}
                 </select>
             </div>
+
+            {/* Kelas — hanya muncul jika role WaliKelas */}
+            {role === 'WaliKelas' && (
+                <div>
+                    <label className='text-sm text-gray-600'>Kelas</label>
+                    <select
+                        value={kelasId}
+                        onChange={(e) => setKelasId(e.target.value)}
+                        className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white'
+                    >
+                        <option value=''>-- Pilih Kelas --</option>
+                        {allKelas.map((k) => (
+                            <option key={k.id} value={k.id}>
+                                {k.kodeKelas} - {k.namaKelas}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {/* Pelajaran */}
             <div>
                 <label className='text-sm text-gray-600'>
                     Pelajaran <span className='text-gray-400 text-xs'>(opsional)</span>

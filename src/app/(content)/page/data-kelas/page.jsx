@@ -60,7 +60,7 @@ export default function DataKelas() {
                     >
                         Hapus
                     </button>
-                    <Link href={`page/data-siswa/${row.id}`}>
+                    <Link href={`/page/data-kelas/${row.id}`}>
                         <button className='text-xs bg-blue-100 text-blue-500 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors'>
                             Lihat
                         </button>
