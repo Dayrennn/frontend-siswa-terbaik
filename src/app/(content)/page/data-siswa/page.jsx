@@ -40,7 +40,7 @@ export default function DataSiswa() {
             key: 'lihat',
             label: 'Lihat',
             render: (row) => (
-                <Link href={`data-siswa/${row.id}`}>
+                <Link href={`/page/data-siswa/${row.id}`}>
                     <button className='text-xs bg-blue-100 text-blue-500 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors'>
                         Lihat
                     </button>
