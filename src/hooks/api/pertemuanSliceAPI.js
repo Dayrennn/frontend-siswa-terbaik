@@ -6,6 +6,7 @@ export const pertemuanAPI = createApi({
     refetchOnFocus: true,
     refetchOnReconnect: true,
     baseQuery: pertemuanBaseQuery,
+    tagTypes: ['pertemuanAPI'],
     endpoints: (builder) => ({
         createPertemuan: builder.mutation({
             query: ({tahunAjaranId, kelasId, ...data}) => ({

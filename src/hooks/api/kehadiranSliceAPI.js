@@ -12,7 +12,7 @@ export const kehadiranAPI = createApi({
             query: ({ tahunAjaranId, pertemuanId, ...data }) => ({
                 url: `/create/${tahunAjaranId}/${pertemuanId}`,
                 method: 'POST',
-                body: data, 
+                body: data,
             }),
             invalidatesTags: ['kehadiranAPI'],
         }),
@@ -33,9 +33,22 @@ export const kehadiranAPI = createApi({
             providesTags: ['kehadiranAPI'],
         }),
         getAbsenByPertemuan: builder.query({
-            query: ({tahunAjaranId, pertemuanId, kelasId}) => `/${tahunAjaranId}/${kelasId}/absen/${pertemuanId}`,
-            providesTags: ["kehadiranAPI"]
-        })
+            query: ({ tahunAjaranId, pertemuanId, kelasId }) => `/${tahunAjaranId}/${kelasId}/absen/${pertemuanId}`,
+            providesTags: ['kehadiranAPI'],
+        }),
+        getKehadiranByKelas: builder.query({
+            query: ({ kelasId, tahunAjaranId, tanggal }) =>
+                `/kelas?kelasId=${kelasId}&tahunAjaranId=${tahunAjaranId}&tanggal=${tanggal}`,
+            providesTags: ['kehadiranAPI'],
+        }),
+        simpanKehadiran: builder.mutation({
+            query: (data) => ({
+                url: '/simpan',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['kehadiranAPI'],
+        }),
     }),
 });
 
@@ -44,5 +57,7 @@ export const {
     useModifyKehadiranMutation,
     useSeeAllKehadiranQuery,
     useGetKehadiranByIdQuery,
-    useGetAbsenByPertemuanQuery
+    useGetAbsenByPertemuanQuery,
+    useGetKehadiranByKelasQuery,
+    useSimpanKehadiranMutation,
 } = kehadiranAPI;

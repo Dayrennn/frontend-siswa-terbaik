@@ -7,7 +7,7 @@ import { kriteriaAPI } from '@/src/hooks/api/kriteriaSliceAPI';
 import { pelajaranAPI } from '@/src/hooks/api/pelajaranSliceAPI';
 import { kehadiranAPI } from '@/src/hooks/api/kehadiranSliceAPI';
 import { tahunAjaranAPI } from '@/src/hooks/api/tahunAjaranSliceAPI';
-import { kelasAPI } from '@/src/hooks/api/kelasSliceAPI';
+import { kelasAPI } from '@/src/hooks/api/kelasSliceAPI'; 
 import { pertemuanAPI } from "@/src/hooks/api/pertemuanSliceAPI";
 
 export const store = configureStore({
