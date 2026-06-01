@@ -9,10 +9,21 @@ export default function FormEditNilaiSiswa({ initialData, onSuccess, onCancel })
         })) || [],
     );
 
+    const [nilaiKriteria, setNilaiKriteria] = useState(
+        initialData?.nilaiKriteria?.map((n) => ({
+            kriteriaId: n.kriteriaId,
+            nilai: n.nilai,
+        })),
+    );
+
     const [updateNilai, { isLoading, isError, error }] = useModifySiswaMutation();
 
     const handleNilai = (pelajaranId, value) => {
         setNilai((prev) => prev.map((n) => (n.pelajaranId === pelajaranId ? { ...n, nilai: Number(value) } : n)));
+    };
+
+    const handleNilaiKriteria = (kriteriaId, value) => {
+        setNilaiKriteria((prev) => prev.map((n) => (n.kriteriaId === kriteriaId ? { ...n, nilai: Number(value) } : n)));
     };
 
     const handleEdit = async (e) => {
@@ -22,6 +33,7 @@ export default function FormEditNilaiSiswa({ initialData, onSuccess, onCancel })
             const payload = {
                 id: initialData.id,
                 nilai,
+                nilaiKriteria,
             };
 
             await updateNilai(payload).unwrap();
@@ -52,6 +64,34 @@ export default function FormEditNilaiSiswa({ initialData, onSuccess, onCancel })
                     ))}
                 </div>
             </div>
+
+            {initialData?.nilaiKriteria?.length > 0 && (
+                <div>
+                    <label className="text-sm text-gray-600">Nilai Kriteria</label>
+                    <div className="mt-1 space-y-2 max-h-48 overflow-y-auto pr-1">
+                        {initialData?.nilaiKriteria?.map((n) => (
+                            <div key={n.kriteriaId} className="flex items-center gap-3">
+                                <span className="text-sm text-gray-600 flex-1">
+                                    {n.kriteria.namaKriteria}
+                                    <span
+                                        className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${n.kriteria.jenis === 'Benefit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}
+                                    >
+                                        {n.kriteria.jenis}
+                                    </span>
+                                </span>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    value={nilaiKriteria.find((v) => v.kriteriaId === n.kriteriaId)?.nilai ?? 0}
+                                    onChange={(e) => handleNilaiKriteria(n.kriteriaId, e.target.value)}
+                                    className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 text-sm"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Buttons */}
             <div className="flex gap-3">
