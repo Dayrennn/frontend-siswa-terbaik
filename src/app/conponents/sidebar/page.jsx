@@ -52,9 +52,9 @@ const menuItems = [
         roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
         children: [
             { menu: 'Data Kriteria', link: '/page/data-kriteria' },
-            { menu: 'Hitung Nilai', link: '/page/hitung-nilai' },
+            { menu: 'Data-Nilai', link: '/page/hitung-nilai' },
             { menu: 'Data Ranking', link: '/page/data-ranking' },
-            { menu: 'Data Nilai', link: '/page/data-nilai' },
+            { menu: 'Hitung Nilai', link: '/page/data-nilai' },
         ],
     },
     {
