@@ -6,7 +6,7 @@ export const siswaAPI = createApi({
     refetchOnFocus: true,
     refetchOnReconnect: true,
     baseQuery: siswaBaseQuery,
-    tagTypes: ['siswaAPI'],
+    tagTypes: ['siswaAPI', 'kehadiranAPI'],
     endpoints: (builder) => ({
         createSiswa: builder.mutation({
             query: (data) => ({
@@ -14,7 +14,7 @@ export const siswaAPI = createApi({
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['siswaAPI'],
+            invalidatesTags: ['siswaAPI', 'kehadiranAPI'],
         }),
         modifySiswa: builder.mutation({
             query: ({ id, ...data }) => ({
@@ -37,7 +37,7 @@ export const siswaAPI = createApi({
                 url: `/delete/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['siswaAPI'],
+            invalidatesTags: ['siswaAPI', 'kehadiranAPI'],
         }),
         seeAllSiswaByTahunAjaran: builder.query({
             query: (tahunAjaranId) => `/tahun-ajaran/${tahunAjaranId}`,

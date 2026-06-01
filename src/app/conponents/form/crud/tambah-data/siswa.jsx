@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { useCreateSiswaMutation } from '../../../../../hooks/api/siswaSliceAPI';
 import { useParams } from 'next/navigation';
 import KelasSearchDropdown from '../../../ui/kelasSearchDropdown';
+import { useDispatch } from 'react-redux';
+import { kehadiranAPI } from '../../../../../hooks/api/kehadiranSliceAPI';
 
 export default function FormTambahSiswa({ onSuccess, onCancel }) {
+    const dispatch = useDispatch();
     const [nis, setNis] = useState('');
     const [namaSiswa, setNamaSiswa] = useState('');
     const [tanggalLahir, setTanggalLahir] = useState('');
@@ -25,6 +28,8 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
                 kelasId,
                 tahunAjaranId,
             }).unwrap();
+
+            dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
 
             // reset form
             setNis('');

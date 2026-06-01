@@ -1,10 +1,8 @@
 'use client';
 
 import { useSeeAllSiswaByTahunAjaranQuery, useRemoveSiswaMutation } from '../../../../../../hooks/api/siswaSliceAPI';
-// import {
-//     useSeeAllSiswaByTahunAjaranQuery,
-//     useRemoveSiswaMutation,
-// } from '../../../../../hooks/api/siswaSliceAPI';
+import { useDispatch } from 'react-redux';
+import { kehadiranAPI } from '../../../../../../hooks/api/kehadiranSliceAPI';
 import { useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import CreateModal from '../../../../../conponents/modal/crud/createModal';
@@ -15,12 +13,12 @@ import Table from '../../../../../conponents/table/page';
 import FormTambahSiswa from '../../../../../conponents/form/crud/tambah-data/siswa';
 import FormEditDataSiswa from '../../../../../conponents/form/crud/edit-data/siswa';
 import { exportToExcel, downloadTemplate, parseImportedExcel } from '../../../../../../hooks/utils/excelHelper';
-// import { exportToExcel, downloadTemplate, parseImportedExcel } from '../../../../../../hooks/utils/';
 import TabKehadiran from '../../../../../conponents/ui/tabKehadiran';
 
 const TABS = ['Data Siswa', 'Kehadiran'];
 
 export default function DataSiswaPerTahun() {
+    const dispatch = useDispatch();
     const { tahunAjaranId } = useParams();
     const [activeTab, setActiveTab] = useState('Data Siswa');
 
@@ -37,8 +35,12 @@ export default function DataSiswaPerTahun() {
         setRemoveSiswa(siswa);
         setShowRemoveModal(true);
     };
+    const handleAfterSuccess = () => {
+        dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+    };
     const handleDelete = async (id) => {
         await deleteSiswa(id).unwrap();
+        dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
     };
 
     const [selectedSiswa, setSelectedSiswa] = useState(null);
@@ -225,6 +227,7 @@ export default function DataSiswaPerTahun() {
                     formTambah={FormTambahSiswa}
                     successTitle="Siswa Berhasil Dibuat"
                     successMessage="Berhasil"
+                    onAfterSuccess={handleAfterSuccess}
                 />
             )}
             {showEditModal && (

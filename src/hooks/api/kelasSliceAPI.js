@@ -39,6 +39,13 @@ export const kelasAPI = createApi({
             }),
             invalidatesTags: ['kelasAPI'],
         }),
+        getKelasByTahunAjaran: builder.query({
+            query: (tahunAjaranId) => ({
+                url: '/tahun-ajaran',
+                params: { tahunAjaranId },
+            }),
+            providesTags: ['kelasAPI'],
+        }),
     }),
 });
 
@@ -48,4 +55,5 @@ export const {
     useGetAllKelasQuery,
     useGetKelasByIdQuery,
     useRemoveKelasMutation,
+    useGetKelasByTahunAjaranQuery,
 } = kelasAPI;

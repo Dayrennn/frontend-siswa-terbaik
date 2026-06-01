@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 
-// ─── Ganti import ini sesuai path project kamu ───────────────────────────────
 import { useGetKehadiranByKelasQuery, useSimpanKehadiranMutation } from '../../../hooks/api/kehadiranSliceAPI';
 
 const STATUS_OPTIONS = ['Hadir', 'Izin', 'Sakit', 'Alpha'];
@@ -16,34 +16,27 @@ const STATUS_STYLE = {
 };
 
 function getTodayString() {
-    return new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 export default function TabKehadiran() {
     const { tahunAjaranId, kelasId } = useParams();
-    const [tanggal, setTanggal] = useState(getTodayString());
+    const tanggal = getTodayString(); // ← tidak pakai state, selalu hari ini
 
-    // Local state: { [siswaId]: statusKehadiran }
     const [statusMap, setStatusMap] = useState({});
     const [saved, setSaved] = useState(false);
 
-    const { data, isLoading, isError } = useGetKehadiranByKelasQuery(
-        { kelasId, tahunAjaranId, tanggal },
-        {
-            // Setiap ganti tanggal, fetch ulang dan reset local state
-            selectFromResult: ({ data, ...rest }) => {
-                return { data, ...rest };
-            },
-        },
-    );
+    const { data, isLoading, isError } = useGetKehadiranByKelasQuery({ kelasId, tahunAjaranId, tanggal });
 
     const [simpanKehadiran, { isLoading: isSaving }] = useSimpanKehadiranMutation();
 
-    // Saat data datang dari server, sync ke local state
     const siswaList = data?.data ?? [];
 
     const getStatus = (siswaId) => {
-        // Prioritaskan perubahan lokal, fallback ke data server, fallback Alpha
         if (statusMap[siswaId] !== undefined) return statusMap[siswaId];
         const fromServer = siswaList.find((s) => s.id === siswaId)?.statusKehadiran;
         return fromServer ?? 'Alpha';
@@ -54,16 +47,8 @@ export default function TabKehadiran() {
         setStatusMap((prev) => ({ ...prev, [siswaId]: status }));
     };
 
-    const handleTanggalChange = (val) => {
-        setTanggal(val);
-        setStatusMap({}); // reset perubahan lokal saat ganti tanggal
-        setSaved(false);
-    };
-
-    // Set semua siswa ke satu status (shortcut)
     const handleSetAll = (status) => {
-        const allIds = siswaList.map((s) => s.id);
-        const newMap = Object.fromEntries(allIds.map((id) => [id, status]));
+        const newMap = Object.fromEntries(siswaList.map((s) => [s.id, status]));
         setStatusMap(newMap);
         setSaved(false);
     };
@@ -82,7 +67,6 @@ export default function TabKehadiran() {
         }
     };
 
-    // Rekap hitungan
     const rekap = STATUS_OPTIONS.reduce((acc, s) => ({ ...acc, [s]: 0 }), {});
     siswaList.forEach((siswa) => {
         const s = getStatus(siswa.id);
@@ -91,31 +75,18 @@ export default function TabKehadiran() {
 
     return (
         <div className="space-y-5">
-            {/* ── Header: tanggal + shortcut set all ── */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                    <label className="text-sm font-medium text-gray-600">Tanggal</label>
-                    <input
-                        type="date"
-                        value={tanggal}
-                        onChange={(e) => handleTanggalChange(e.target.value)}
-                        className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
-                </div>
-
-                {/* Shortcut set all */}
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400">Set semua:</span>
-                    {STATUS_OPTIONS.map((s) => (
-                        <button
-                            key={s}
-                            onClick={() => handleSetAll(s)}
-                            className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all ${STATUS_STYLE[s]}`}
-                        >
-                            {s}
-                        </button>
-                    ))}
-                </div>
+            {/* ── Header: shortcut set all saja ── */}
+            <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400">Set semua:</span>
+                {STATUS_OPTIONS.map((s) => (
+                    <button
+                        key={s}
+                        onClick={() => handleSetAll(s)}
+                        className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all ${STATUS_STYLE[s]}`}
+                    >
+                        {s}
+                    </button>
+                ))}
             </div>
 
             {/* ── Rekap bar ── */}

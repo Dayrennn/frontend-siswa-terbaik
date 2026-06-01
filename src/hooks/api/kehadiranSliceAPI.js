@@ -25,7 +25,10 @@ export const kehadiranAPI = createApi({
             invalidatesTags: ['kehadiranAPI'],
         }),
         seeAllKehadiran: builder.query({
-            query: () => '/',
+            query: (params = {}) => ({
+                url: '/',
+                params,
+            }),
             providesTags: ['kehadiranAPI'],
         }),
         getKehadiranById: builder.query({
