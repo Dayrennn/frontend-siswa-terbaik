@@ -50,3 +50,8 @@ export const userBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/auth`,
     credentials: 'include',
 });
+
+export const jadwalBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/jadwal`,
+    credentials: 'include',
+});

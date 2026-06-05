@@ -1,35 +1,58 @@
+'use client';
+
 import { useState } from 'react';
-import { useModifyJadwalMutation } from '../../../../../hooks/api/jadwalSliceAPI'
+import { useCreateJadwalMutation } from '../../../../../hooks/api/jadwalSliceAPI';
+import KelasSearchDropdown from '../../../ui/kelasSearchDropdown';
 import PelajaranSearchDropdown from '../../../ui/pelajaranSearchDropdown';
 
-export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel }) {
-    const [hari, setHari] = useState(initialData?.hari || '');
-    const [jamMulai, setJamMulai] = useState(initialData?.jamMulai || '');
-    const [jamSelesai, setJamSelesai] = useState(initialData?.jamSelesai || '');
-    const [pelajaranId, setPelajaranId] = useState(initialData?.pelajaranId || '');
-    const [updateJadwal, { isLoading, isError, error }] = useModifyJadwalMutation();
+export default function FormTambahJadwal({ onSuccess, onCancel }) {
+    const [hari, setHari] = useState('');
+    const [jamMulai, setJamMulai] = useState('');
+    const [jamSelesai, setJamSelesai] = useState('');
+    const [kelasId, setKelasId] = useState('');
+    const [pelajaranId, setPelajaranId] = useState('');
 
-    const handleEdit = async (e) => {
+    const [createJadwal, { isLoading, isError, error }] = useCreateJadwalMutation();
+
+    const handleCreate = async (e) => {
         e.preventDefault();
 
         try {
-            const result = await updateJadwal({
-                id: initialData.id,
+            const result = await createJadwal({
                 hari,
                 jamMulai,
                 jamSelesai,
                 pelajaranId,
+                kelasId,
             }).unwrap();
 
-            // trigger modal sukses
-            if (onSuccess) onSuccess(result);
+            const hariSuccess = hari;
+            const jamMulaiSuccess = jamMulai;
+            const jamSelesaiSuccess = jamSelesai;
+            const pelajaranIdSuccess = pelajaranId;
+            const kelasIdSuccess = kelasId;
+
+            setHari('');
+            setJamMulai('');
+            setJamSelesai('');
+            setPelajaranId('');
+            setKelasId('');
+
+            if (onSuccess) {
+                onSuccess(result, {
+                    hari: hariSuccess,
+                    jamMulai: jamMulaiSuccess,
+                    jamSelesai: jamSelesaiSuccess,
+                    pelajaranId: pelajaranIdSuccess,
+                    kelasId: kelasIdSuccess,
+                });
+            }
         } catch (err) {
             console.error('ERROR', err);
         }
     };
-
     return (
-        <form onSubmit={handleEdit} className="space-y-4">
+        <form onSubmit={handleCreate} className="space-y-4">
             <div>
                 <label className="text-sm text-gray-600">Hari</label>
                 <select
@@ -57,6 +80,7 @@ export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel
                     className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
+
             <div>
                 <label className="text-sm text-gray-600">Jam Selesai</label>
                 <input
@@ -66,12 +90,17 @@ export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel
                     className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
+
+            <div>
+                <label className="text-sm text-gray-600">Kelas</label>
+                <KelasSearchDropdown value={kelasId} onChange={(val) => setKelasId(val)} />
+            </div>
+
             <div>
                 <label className="text-sm text-gray-600">Pelajaran</label>
                 <PelajaranSearchDropdown value={pelajaranId} onChange={(val) => setPelajaranId(val)} />
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-3">
                 <button
                     onClick={onCancel}
@@ -81,16 +110,16 @@ export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel
                 >
                     Batal
                 </button>
+
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
                 >
-                    {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
+                    {isLoading ? 'Menyimpan...' : 'Simpan Data'}
                 </button>
             </div>
 
-            {/* Error */}
             {isError && (
                 <p className="text-red-500 text-sm text-center">{error?.data?.message || 'Terjadi kesalahan'}</p>
             )}

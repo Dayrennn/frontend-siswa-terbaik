@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    useRemovePelajaranMutation,
-    useSeeAllPelajaranQuery,
-} from '../../../../hooks/api/pelajaranSliceAPI';
+import { useRemovePelajaranMutation, useSeeAllPelajaranQuery } from '../../../../hooks/api/pelajaranSliceAPI';
 import Table from '../../../conponents/table/page';
 import CreateModal from '../../../conponents/modal/crud/createModal';
 import EditModal from '../../../conponents/modal/crud/editModal';
@@ -54,27 +51,36 @@ export default function DataPelajaran() {
         {
             key: 'namaPelajaran',
             label: 'Pelajaran',
-            render: (row) => <span className='text-gray-700'>{row.namaPelajaran || '-'}</span>,
+            render: (row) => <span className="text-gray-700">{row.namaPelajaran || '-'}</span>,
         },
         {
             key: 'kodePelajaran',
             label: 'Kode Pelajaran',
-            render: (row) => <span className='text-gray-700'>{row.kodePelajaran || '-'}</span>,
+            render: (row) => <span className="text-gray-700">{row.kodePelajaran || '-'}</span>,
+        },
+        {
+            key: 'user',
+            label: 'Guru',
+            render: (row) => (
+                <span className="text-gray-700">
+                    {row.user?.length > 0 ? row.user.map((u) => u.username).join(', ') : '-'}
+                </span>
+            ),
         },
         {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
-                <div className='flex gap-2'>
+                <div className="flex gap-2">
                     <button
                         onClick={() => handleEdit(row)}
-                        className='text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors'
+                        className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
                     >
                         Edit
                     </button>
                     <button
                         onClick={() => handleRemove(row)}
-                        className='text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors'
+                        className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
                     >
                         Hapus
                     </button>
@@ -85,22 +91,22 @@ export default function DataPelajaran() {
 
     return (
         <>
-            <div className='min-h-screen bg-gray-100'>
-                <div className='mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl'>
-                    <h1 className='text-2xl font-bold text-gray-800'>Data Pelajaran</h1>
+            <div className="min-h-screen bg-gray-100">
+                <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
+                    <h1 className="text-2xl font-bold text-gray-800">Data Pelajaran</h1>
 
-                    <div className='flex justify-end mt-5 mb-3'>
+                    <div className="flex justify-end mt-5 mb-3">
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className='text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors'
+                            className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
                         >
                             + Tambah
                         </button>
                     </div>
 
-                    {isLoading && <p className='text-center text-gray-400 py-8'>Memuat Data...</p>}
+                    {isLoading && <p className="text-center text-gray-400 py-8">Memuat Data...</p>}
 
-                    {isError && <p className='text-center text-red-400 py-8'>Gagal Memuat Data</p>}
+                    {isError && <p className="text-center text-red-400 py-8">Gagal Memuat Data</p>}
 
                     {!isLoading && !isError && <Table columns={columns} data={tableData} />}
                 </div>
@@ -109,33 +115,33 @@ export default function DataPelajaran() {
                 <CreateModal
                     onCancel={() => setShowCreateModal(false)}
                     icon={<FaUserPlus />}
-                    title='Tambah Pelajaran'
+                    title="Tambah Pelajaran"
                     formTambah={FormTambahPelajaran}
-                    successTitle='Pelajaran Berhasil Dibuat'
-                    successMessage='Berhasil'
+                    successTitle="Pelajaran Berhasil Dibuat"
+                    successMessage="Berhasil"
                 />
             )}
             {showEditModal && (
                 <EditModal
                     onCancel={() => setShowEditModal(false)}
                     icon={<FaUserPlus />}
-                    title='Edit Pelajaran'
+                    title="Edit Pelajaran"
                     formEdit={FormEditDataPelajaran}
                     initialData={selectedPelajaran}
-                    successTitle='Pelajaran Berhasil di Update'
-                    successMessage='Berhasil'
+                    successTitle="Pelajaran Berhasil di Update"
+                    successMessage="Berhasil"
                 />
             )}
             {showRemoveModal && (
                 <RemoveModal
                     onCancel={() => setShowRemoveModal(false)}
                     icon={<FaUserPlus />}
-                    title='Hapus Pelajaran'
+                    title="Hapus Pelajaran"
                     initialData={removeItem}
-                    displayName='namaPelajaran'
+                    displayName="namaPelajaran"
                     onConfirm={handleDelete}
-                    successTitle='Pelajaran Berhasil di Hapus'
-                    successMessage='Berhasil'
+                    successTitle="Pelajaran Berhasil di Hapus"
+                    successMessage="Berhasil"
                 />
             )}
         </>
