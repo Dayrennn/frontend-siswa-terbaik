@@ -82,7 +82,7 @@ export default function Sidebar() {
         .filter((item) => item.roles.includes(user?.role))
         .map((item) => ({
             ...item,
-            link: item.links ? item.links[user?.role] : item.link,
+            link: item.links ? item.links[user?.role] : item.links,
         }));
 
     /* TOGGLE MENU (MULTI) */
