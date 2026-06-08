@@ -35,7 +35,6 @@ export default function PertemuanPage() {
     const handleLihat = (item) => console.log('Lihat kehadiran:', item.id);
     const handleEdit = (item) => console.log('Edit pertemuan:', item.id);
     const handleHapus = (item) => console.log('Hapus pertemuan:', item.id);
-    const handleTambah = () => console.log('Tambah pertemuan baru');
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
