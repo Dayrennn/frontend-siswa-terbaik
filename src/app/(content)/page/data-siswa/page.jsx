@@ -7,81 +7,105 @@ export default function DataSiswa() {
     const { data, isLoading, isError } = useSeeAllTahunAjaranQuery();
 
     const tahunAjaranData =
-        data?.data?.map((item, index) => {
-            return {
-                no: index + 1,
-                ...item,
-            };
-        }) ?? [];
+        data?.data?.map((item, index) => ({ no: index + 1, ...item })) ?? [];
+
+    const totalAktif = data?.data?.filter((item) => item.status === 'Aktif').length ?? 0;
+    const totalTahun = data?.data?.length ?? 0;
 
     const columns = [
         { key: 'no', label: 'No' },
         {
             key: 'namaTahunAjaran',
             label: 'Tahun Ajaran',
-            render: (row) => <span className='text-gray-700'>{row.namaTahunAjaran || '-'}</span>,
+            render: (row) => (
+                <span className='font-medium text-gray-800'>{row.namaTahunAjaran || '-'}</span>
+            ),
         },
         {
             key: 'status',
             label: 'Status',
             render: (row) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         row.status === 'Aktif'
-                            ? 'bg-blue-100 text-blue-600'
-                            : 'bg-red-100 text-red-600'
+                            ? 'bg-green-50 text-green-700'
+                            : 'bg-gray-100 text-gray-500'
                     }`}
                 >
-                    {row.status || '-'}
+                    {row.status === 'Aktif' ? '● Aktif' : '○ Tidak Aktif'}
                 </span>
             ),
         },
         {
             key: 'lihat',
-            label: 'Lihat',
+            label: 'Aksi',
             render: (row) => (
                 <Link href={`/page/data-siswa/${row.id}`}>
-                    <button className='text-xs bg-blue-100 text-blue-500 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors'>
-                        Lihat
-                    </button>
+                    <span className='inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer'>
+                        Lihat Data →
+                    </span>
                 </Link>
             ),
         },
     ];
 
     return (
-        <>
-            <div className='min-h-screen bg-gray-100'>
-                <div className='mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl'>
-                    <h1 className='text-2xl font-bold text-gray-800'>Data Siswa</h1>
-                    <div className='flex justify-between items-center mt-4 mb-4'>
-                        <p className='text-gray-600 text-sm'>
-                            Pilih Tahun Ajaran atau lihat semua data siswa
-                        </p>
+        <div className='min-h-screen bg-gray-50 p-6'>
+            <div className='mx-auto max-w-7xl'>
 
+                {/* Header */}
+                <div className='mb-5'>
+                    <h1 className='text-xl font-medium text-gray-900'>Data Siswa</h1>
+                    <p className='text-sm text-gray-400 mt-0.5'>Pilih tahun ajaran untuk melihat data siswa</p>
+                </div>
+
+                {/* Stat Cards */}
+                <div className='grid grid-cols-2 gap-3 mb-5'>
+                    <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
+                        <p className='text-xs text-gray-400 mb-1'>Total Tahun Ajaran</p>
+                        <p className='text-2xl font-medium text-gray-800'>{totalTahun}</p>
+                    </div>
+                    <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
+                        <p className='text-xs text-gray-400 mb-1'>Tahun Ajaran Aktif</p>
+                        <p className='text-2xl font-medium text-green-600'>{totalAktif}</p>
+                    </div>
+                </div>
+
+                {/* Main Card */}
+                <div className='bg-white rounded-xl border border-gray-100 shadow-sm p-5'>
+
+                    {/* Toolbar */}
+                    <div className='flex items-center justify-between mb-4'>
+                        <p className='text-sm text-gray-500'>Pilih tahun ajaran di bawah</p>
                         <Link
                             href='/page/data-siswa/all-siswa'
-                            className='text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors'
+                            className='inline-flex items-center gap-1.5 text-sm text-white bg-blue-500 px-3.5 py-2 rounded-lg hover:bg-blue-600 transition-colors'
                         >
-                            Tampilkan Semua
+                            Tampilkan Semua →
                         </Link>
                     </div>
 
-                    <div className='mt-5 mb-3'>
-                        {isLoading && (
-                            <p className='text-center text-gray-400 py-8'>Memuat Data...</p>
-                        )}
+                    {/* Table */}
+                    {isLoading && (
+                        <p className='text-center text-gray-400 py-12 text-sm'>Memuat data...</p>
+                    )}
+                    {isError && (
+                        <p className='text-center text-red-400 py-12 text-sm'>Gagal memuat data</p>
+                    )}
+                    {!isLoading && !isError && (
+                        <Table columns={columns} data={tahunAjaranData} />
+                    )}
 
-                        {isError && (
-                            <p className='text-center text-red-400 py-8'>Gagal Memuat Data</p>
-                        )}
-
-                        {!isLoading && !isError && (
-                            <Table columns={columns} data={tahunAjaranData} />
-                        )}
-                    </div>
+                    {/* Footer */}
+                    {!isLoading && !isError && (
+                        <div className='mt-4 pt-4 border-t border-gray-100'>
+                            <p className='text-xs text-gray-400'>
+                                {totalTahun} tahun ajaran terdaftar · {totalAktif} aktif
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

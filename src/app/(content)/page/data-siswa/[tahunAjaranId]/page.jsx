@@ -47,7 +47,6 @@ export default function DataSiswaPerTahun() {
         setShowEditModal(true);
     };
 
-    // ← pakai query by tahun ajaran, bukan seeAll
     const { data, isLoading, isError } = useSeeAllSiswaByTahunAjaranQuery(tahunAjaranId);
 
     const tableData =
@@ -57,6 +56,7 @@ export default function DataSiswaPerTahun() {
                 ...siswa,
             }))
             .filter((item) => item.namaSiswa?.toLowerCase().includes(search.toLowerCase())) ?? [];
+
     const pelajaranMap = new Map();
     data?.data?.forEach((siswa) => {
         siswa.nilai?.forEach((n) => {
@@ -68,38 +68,48 @@ export default function DataSiswaPerTahun() {
         label,
     }));
 
+    const tahunAjaranLabel = data?.data?.[0]?.tahunAjaran?.namaTahunAjaran ?? '';
+
     const columns = [
         { key: 'no', label: 'No' },
         {
             key: 'nis',
             label: 'NIS',
-            render: (row) => <span className='text-gray-700'>{row.nis || '-'}</span>,
+            render: (row) => (
+                <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600'>
+                    {row.nis || '-'}
+                </span>
+            ),
         },
         {
             key: 'namaSiswa',
             label: 'Nama Siswa',
-            render: (row) => <span className='text-gray-700'>{row.namaSiswa || '-'}</span>,
+            render: (row) => (
+                <span className='font-medium text-gray-800'>{row.namaSiswa || '-'}</span>
+            ),
         },
         {
             key: 'tanggalLahir',
             label: 'Tanggal Lahir',
             render: (row) => (
-                <span className='text-gray-700'>{row.tanggalLahir?.split('T')[0] || '-'}</span>
-            ),
-        },
-        {
-            key: 'tahunAjaran',
-            label: 'Tahun Ajaran',
-            render: (row) => (
-                <span className='text-gray-700'>{row.tahunAjaran?.namaTahunAjaran || '-'}</span>
+                <span className='text-gray-500 text-sm'>{row.tanggalLahir?.split('T')[0] || '-'}</span>
             ),
         },
         {
             key: 'kelas',
             label: 'Kelas',
             render: (row) => (
-                <span className='text-gray-700'>
-                    {row.kelas ? `${row.kelas.kodeKelas} - ${row.kelas.namaKelas}` : '-'}
+                <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700'>
+                    {row.kelas ? `${row.kelas.kodeKelas} · ${row.kelas.namaKelas}` : '-'}
+                </span>
+            ),
+        },
+        {
+            key: 'tahunAjaran',
+            label: 'Tahun Ajaran',
+            render: (row) => (
+                <span className='text-gray-500 text-sm'>
+                    {row.tahunAjaran?.namaTahunAjaran || '-'}
                 </span>
             ),
         },
@@ -110,15 +120,15 @@ export default function DataSiswaPerTahun() {
                 <div className='flex gap-2'>
                     <button
                         onClick={() => handleEdit(row)}
-                        className='text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors'
+                        className='inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium'
                     >
-                        Edit
+                        ✏️ Edit
                     </button>
                     <button
                         onClick={() => handleRemove(row)}
-                        className='text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors'
+                        className='inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium'
                     >
-                        Hapus
+                        🗑️ Hapus
                     </button>
                 </div>
             ),
@@ -135,74 +145,114 @@ export default function DataSiswaPerTahun() {
         e.target.value = '';
     };
 
+    const totalSiswa = data?.data?.length ?? 0;
+    const totalKelas = new Set(data?.data?.map((s) => s.kelas?.kodeKelas).filter(Boolean)).size;
+
     return (
         <>
-            <div className='min-h-screen bg-gray-100'>
-                <div className='mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl'>
-                    {data?.data?.map((siswa) => (
-                        <div key={siswa.id}>
-                            <h1 className='text-2xl font-bold text-gray-800'>
-                                Data Siswa {siswa.tahunAjaran?.namaTahunAjaran}
-                            </h1>
+            <div className='min-h-screen bg-gray-50 p-6'>
+                <div className='mx-auto max-w-7xl'>
+
+                    {/* Header */}
+                    <div className='mb-5'>
+                        <h1 className='text-xl font-medium text-gray-900'>
+                            Data Siswa{' '}
+                            <span className='text-gray-400 font-normal'>{tahunAjaranLabel}</span>
+                        </h1>
+                        <p className='text-sm text-gray-400 mt-0.5'>Manajemen data siswa per tahun ajaran</p>
+                    </div>
+
+                    {/* Stat Cards */}
+                    <div className='grid grid-cols-3 gap-3 mb-5'>
+                        <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
+                            <p className='text-xs text-gray-400 mb-1'>Total Siswa</p>
+                            <p className='text-2xl font-medium text-gray-800'>{totalSiswa}</p>
                         </div>
-                    ))}
-
-                    <div className='flex items-center justify-between mt-5 mb-3'>
-                        {/* LEFT: SEARCH */}
-                        <div className='relative w-full md:w-80'>
-                            <input
-                                type='text'
-                                placeholder='Cari nama, kelas, atau data siswa...'
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className='w-full pl-10 pr-4 py-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl shadow-sm
-                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all'
-                            />
+                        <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
+                            <p className='text-xs text-gray-400 mb-1'>Total Kelas</p>
+                            <p className='text-2xl font-medium text-gray-800'>{totalKelas}</p>
                         </div>
-
-                        {/* RIGHT: BUTTONS */}
-                        <div className='flex items-center gap-2'>
-                            <button
-                                onClick={downloadTemplate}
-                                className='text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors'
-                            >
-                                📄 Template
-                            </button>
-
-                            <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className='text-sm bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors'
-                            >
-                                📥 Import
-                            </button>
-
-                            <input
-                                ref={fileInputRef}
-                                type='file'
-                                accept='.xlsx, .xls'
-                                className='hidden'
-                                onChange={handleImport}
-                            />
-
-                            <button
-                                onClick={handleExport}
-                                className='text-sm bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors'
-                            >
-                                📤 Export
-                            </button>
-
-                            <button
-                                onClick={() => setShowCreateModal(true)}
-                                className='text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors'
-                            >
-                                + Tambah
-                            </button>
+                        <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
+                            <p className='text-xs text-gray-400 mb-1'>Tahun Ajaran</p>
+                            <p className='text-base font-medium text-gray-800 mt-1'>{tahunAjaranLabel || '-'}</p>
                         </div>
                     </div>
 
-                    {isLoading && <p className='text-center text-gray-400 py-8'>Memuat Data...</p>}
-                    {isError && <p className='text-center text-red-400 py-8'>Gagal Memuat Data</p>}
-                    {!isLoading && !isError && <Table columns={columns} data={tableData} />}
+                    {/* Main Card */}
+                    <div className='bg-white rounded-xl border border-gray-100 shadow-sm p-5'>
+
+                        {/* Toolbar */}
+                        <div className='flex items-center justify-between gap-3 mb-4 flex-wrap'>
+                            {/* Search */}
+                            <div className='relative w-full md:w-72'>
+                                <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm'>🔍</span>
+                                <input
+                                    type='text'
+                                    placeholder='Cari nama siswa...'
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className='w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all'
+                                />
+                            </div>
+
+                            {/* Buttons */}
+                            <div className='flex items-center gap-2 flex-wrap'>
+                                <button
+                                    onClick={downloadTemplate}
+                                    className='inline-flex items-center gap-1.5 text-sm text-gray-600 bg-white border border-gray-200 px-3.5 py-2 rounded-lg hover:bg-gray-50 transition-colors'
+                                >
+                                    📄 Template
+                                </button>
+
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className='inline-flex items-center gap-1.5 text-sm text-white bg-teal-500 px-3.5 py-2 rounded-lg hover:bg-teal-600 transition-colors'
+                                >
+                                    📥 Import
+                                </button>
+
+                                <input
+                                    ref={fileInputRef}
+                                    type='file'
+                                    accept='.xlsx, .xls'
+                                    className='hidden'
+                                    onChange={handleImport}
+                                />
+
+                                <button
+                                    onClick={handleExport}
+                                    className='inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors'
+                                >
+                                    📤 Export
+                                </button>
+
+                                <button
+                                    onClick={() => setShowCreateModal(true)}
+                                    className='inline-flex items-center gap-1.5 text-sm text-white bg-blue-500 px-3.5 py-2 rounded-lg hover:bg-blue-600 transition-colors'
+                                >
+                                    + Tambah Siswa
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Table */}
+                        {isLoading && (
+                            <p className='text-center text-gray-400 py-12 text-sm'>Memuat data...</p>
+                        )}
+                        {isError && (
+                            <p className='text-center text-red-400 py-12 text-sm'>Gagal memuat data</p>
+                        )}
+                        {!isLoading && !isError && <Table columns={columns} data={tableData} />}
+
+                        {/* Footer */}
+                        {!isLoading && !isError && (
+                            <div className='mt-4 pt-4 border-t border-gray-100 flex items-center justify-between'>
+                                <p className='text-xs text-gray-400'>
+                                    Menampilkan {tableData.length} dari {data?.data?.length ?? 0} siswa
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
