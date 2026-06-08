@@ -77,12 +77,14 @@ export default function DataJadwal() {
                                 <p className="text-gray-400 text-sm col-span-full text-center py-8">Belum ada jadwal</p>
                             ) : (
                                 jadwalList.map((jadwal) => (
-                                    <JadwalCard
-                                        key={jadwal.id}
-                                        jadwal={jadwal}
-                                        onEdit={handleEdit}
-                                        onRemove={handleRemove}
-                                    />
+                                    <a key={jadwal.id} href={`/page/jadwal/${jadwal.id}`}>
+                                        <JadwalCard
+                                            key={jadwal.id}
+                                            jadwal={jadwal}
+                                            onEdit={handleEdit}
+                                            onRemove={handleRemove}
+                                        />
+                                    </a>
                                 ))
                             )}
                         </div>

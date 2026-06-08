@@ -52,6 +52,12 @@ export const kehadiranAPI = createApi({
             }),
             invalidatesTags: ['kehadiranAPI'],
         }),
+        seeKehadiranByJadwal: builder.query({
+            query: ({ jadwalId, kelasId }) => ({
+                url: `/${jadwalId}?kelasId=${kelasId}`,
+            }),
+            invalidatesTags: ['jadwalAPI'],
+        }),
     }),
 });
 
@@ -63,4 +69,5 @@ export const {
     useGetAbsenByPertemuanQuery,
     useGetKehadiranByKelasQuery,
     useSimpanKehadiranMutation,
+    useSeeKehadiranByJadwalQuery
 } = kehadiranAPI;
