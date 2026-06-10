@@ -43,6 +43,10 @@ export const siswaAPI = createApi({
             query: (tahunAjaranId) => `/tahun-ajaran/${tahunAjaranId}`,
             providesTags: ['siswaAPI'],
         }),
+        seeAllSiswaByTahunAjaranAndKelas: builder.query({
+            query: ({ tahunAjaranId, kelasId }) => `/tahun-ajaran/${tahunAjaranId}/${kelasId}`,
+            providesTags: ['siswaAPI']
+        })
     }),
 });
 
@@ -53,4 +57,5 @@ export const {
     useGetSiswaByIdQuery,
     useRemoveSiswaMutation,
     useSeeAllSiswaByTahunAjaranQuery,
+    useSeeAllSiswaByTahunAjaranAndKelasQuery
 } = siswaAPI;

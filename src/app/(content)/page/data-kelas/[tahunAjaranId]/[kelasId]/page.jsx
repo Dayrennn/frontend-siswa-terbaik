@@ -1,6 +1,10 @@
 'use client';
 
-import { useSeeAllSiswaByTahunAjaranQuery, useRemoveSiswaMutation } from '../../../../../../hooks/api/siswaSliceAPI';
+import {
+    useSeeAllSiswaByTahunAjaranAndKelasQuery,
+    useRemoveSiswaMutation,
+    siswaAPI,
+} from '../../../../../../hooks/api/siswaSliceAPI';
 import { useDispatch } from 'react-redux';
 import { kehadiranAPI } from '../../../../../../hooks/api/kehadiranSliceAPI';
 import { useState, useRef } from 'react';
@@ -19,7 +23,7 @@ const TABS = ['Data Siswa', 'Kehadiran'];
 
 export default function DataSiswaPerTahun() {
     const dispatch = useDispatch();
-    const { tahunAjaranId } = useParams();
+    const { tahunAjaranId, kelasId } = useParams();
     const [activeTab, setActiveTab] = useState('Data Siswa');
 
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -37,10 +41,12 @@ export default function DataSiswaPerTahun() {
     };
     const handleAfterSuccess = () => {
         dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+        dispatch(siswaAPI.util.invalidateTags(['siswaAPI']));
     };
     const handleDelete = async (id) => {
         await deleteSiswa(id).unwrap();
         dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+        dispatch(siswaAPI.util.invalidateTags(['siswaAPI']));
     };
 
     const [selectedSiswa, setSelectedSiswa] = useState(null);
@@ -49,7 +55,7 @@ export default function DataSiswaPerTahun() {
         setShowEditModal(true);
     };
 
-    const { data, isLoading, isError } = useSeeAllSiswaByTahunAjaranQuery(tahunAjaranId);
+    const { data, isLoading, isError } = useSeeAllSiswaByTahunAjaranAndKelasQuery({ tahunAjaranId, kelasId });
 
     const tableData =
         data?.data
