@@ -55,3 +55,13 @@ export const jadwalBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/jadwal`,
     credentials: 'include',
 });
+
+export const poinPlusBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/poin-plus`,
+    credentials: 'include',
+});
+
+export const poinMinusBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/poin-minus`,
+    credentials: 'include',
+});
