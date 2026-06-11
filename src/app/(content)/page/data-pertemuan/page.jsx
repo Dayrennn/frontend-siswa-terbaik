@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import PertemuanCard from '@/src/app/conponents/card/pertemuanCard';
 import { useSeeAllPertemuanQuery } from '@/src/hooks/api/pertemuanSliceAPI';
+import { useRouter } from 'next/navigation';
 
 const IconEmpty = ({ className }) => (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.4}>
@@ -14,6 +15,7 @@ const IconEmpty = ({ className }) => (
 export default function PertemuanPage() {
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('newest');
+    const router = useRouter();
 
     const {
         data: responseData,
@@ -32,7 +34,9 @@ export default function PertemuanPage() {
         return hasil;
     }, [pertemuan, search, sort]);
 
-    const handleLihat = (item) => console.log('Lihat kehadiran:', item.id);
+    const handleLihat = (item) => {
+        router.push(`/page/data-pertemuan/${item.id}`);
+    };
     const handleEdit = (item) => console.log('Edit pertemuan:', item.id);
     const handleHapus = (item) => console.log('Hapus pertemuan:', item.id);
 
