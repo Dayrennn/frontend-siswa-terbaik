@@ -10,12 +10,15 @@ function formatCreatedAt(iso) {
 }
 
 function formatTanggal(iso) {
+    if (!iso) return '-';
     const d = new Date(iso);
-    return d.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    });
+    if (Number.isNaN(d.getTime())) return iso;
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
 }
 
 export default function PertemuanCard({ item, onLihat, onEdit, onHapus }) {
@@ -41,9 +44,7 @@ export default function PertemuanCard({ item, onLihat, onEdit, onHapus }) {
                         <p className="font-semibold text-gray-800 text-sm leading-tight truncate">
                             {item.namaPertemuan}
                         </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                            Dibuat {formatCreatedAt(item.createdAt)}
-                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">Dibuat {formatCreatedAt(item.createdAt)}</p>
                     </div>
                 </div>
 
