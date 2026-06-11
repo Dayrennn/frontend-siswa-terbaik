@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";  
 
 const STATUS_STYLE = {
     Baik: 'bg-green-50 text-green-700',
@@ -13,19 +14,28 @@ function getStatus(poin) {
 }
 
 function getInitials(nama) {
-    return nama?.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase() ?? '?';
+    return (
+        nama
+            ?.split(' ')
+            .slice(0, 2)
+            .map((w) => w[0])
+            .join('')
+            .toUpperCase() ?? '?'
+    );
 }
 
 function formatTanggal(iso) {
     return iso?.split('T')[0] ?? '-';
 }
 
-export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onClose }) {
+export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onClose, linkSiswa }) {
     if (!selectedSiswa) return null;
 
-    const totalPoinPlus = selectedSiswa.poinPlus.reduce((acc, p) => acc + p.poin, 0);
-    const totalPoinMinus = selectedSiswa.poinMinus.reduce((acc, p) => acc + p.poin, 0);
+    const totalPoinPlus = selectedSiswa.totalPoinPlus ?? 0;
+    const totalPoinMinus = selectedSiswa.totalPoinMinus ?? 0;
     const status = getStatus(totalPoinMinus);
+    const countPlus = selectedSiswa._count?.poinPlus ?? 0;
+    const countMinus = selectedSiswa._count?.poinMinus ?? 0;
 
     return (
         <div
@@ -39,7 +49,9 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                 {/* Modal Header */}
                 <div className="bg-gradient-to-r from-indigo-600 to-blue-500 p-5 text-white flex items-center justify-between rounded-t-2xl flex-shrink-0">
                     <h2 className="font-semibold text-sm">Detail Poin Siswa</h2>
-                    <button onClick={onClose} className="text-white/80 hover:text-white text-lg">✕</button>
+                    <button onClick={onClose} className="text-white/80 hover:text-white text-lg">
+                        ✕
+                    </button>
                 </div>
 
                 <div className="p-5 overflow-y-auto space-y-4">
@@ -55,7 +67,9 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                                 {selectedSiswa.kelas?.namaKelas}
                             </p>
                         </div>
-                        <span className={`ml-auto inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLE[status]}`}>
+                        <span
+                            className={`ml-auto inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLE[status]}`}
+                        >
                             ● {status}
                         </span>
                     </div>
@@ -82,7 +96,7 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                                     : 'border-transparent text-gray-400 hover:text-gray-600'
                             }`}
                         >
-                            Poin Plus ({selectedSiswa.poinPlus.length})
+                            Poin Plus ({selectedSiswa.poinPlus.length} dari {countPlus})
                         </button>
                         <button
                             onClick={() => setActiveTab('minus')}
@@ -92,47 +106,65 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                                     : 'border-transparent text-gray-400 hover:text-gray-600'
                             }`}
                         >
-                            Poin Minus ({selectedSiswa.poinMinus.length})
+                            Poin Minus ({selectedSiswa.poinMinus.length} dari {countMinus})
                         </button>
                     </div>
 
-                    {/* Tab Content */}
                     {activeTab === 'plus' && (
                         <div className="space-y-2">
-                            {selectedSiswa.poinPlus.length === 0 ? (
+                            {countPlus === 0 ? (
                                 <p className="text-xs text-gray-400 text-center py-6">Belum ada poin plus</p>
                             ) : (
-                                selectedSiswa.poinPlus.map((p) => (
-                                    <div key={p.id} className="flex items-center justify-between py-2.5 border-b border-gray-50">
-                                        <div>
-                                            <p className="text-sm text-gray-800">{p.deskripsi}</p>
-                                            <p className="text-xs text-gray-400">{formatTanggal(p.tanggal)}</p>
+                                <>
+                                    {selectedSiswa.poinPlus.map((p) => (
+                                        <div
+                                            key={p.id}
+                                            className="flex items-center justify-between py-2.5 border-b border-gray-50"
+                                        >
+                                            <div>
+                                                <p className="text-sm text-gray-800">{p.deskripsi}</p>
+                                                <p className="text-xs text-gray-400">{formatTanggal(p.tanggal)}</p>
+                                            </div>
+                                            <span className="text-xs font-medium bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full flex-shrink-0 ml-3">
+                                                +{p.poin} poin
+                                            </span>
                                         </div>
-                                        <span className="text-xs font-medium bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full flex-shrink-0 ml-3">
-                                            +{p.poin} poin
-                                        </span>
-                                    </div>
-                                ))
+                                    ))}
+                                    {countPlus > selectedSiswa.poinPlus.length && (
+                                        <Link href={linkSiswa} className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2">
+                                            Lihat semua {countPlus} poin plus
+                                        </Link>
+                                    )}
+                                </>
                             )}
                         </div>
                     )}
-
                     {activeTab === 'minus' && (
                         <div className="space-y-2">
-                            {selectedSiswa.poinMinus.length === 0 ? (
-                                <p className="text-xs text-gray-400 text-center py-6">Belum ada poin minus</p>
+                            {countMinus === 0 ? (
+                                <p className="text-xs text-gray-400 text-center py-6">Belum ada poin plus</p>
                             ) : (
-                                selectedSiswa.poinMinus.map((p) => (
-                                    <div key={p.id} className="flex items-center justify-between py-2.5 border-b border-gray-50">
-                                        <div>
-                                            <p className="text-sm text-gray-800">{p.deskripsi}</p>
-                                            <p className="text-xs text-gray-400">{formatTanggal(p.tanggal)}</p>
+                                <>
+                                    {selectedSiswa.poinMinus.map((p) => (
+                                        <div
+                                            key={p.id}
+                                            className="flex items-center justify-between py-2.5 border-b border-gray-50"
+                                        >
+                                            <div>
+                                                <p className="text-sm text-gray-800">{p.deskripsi}</p>
+                                                <p className="text-xs text-gray-400">{formatTanggal(p.tanggal)}</p>
+                                            </div>
+                                            <span className="text-xs font-medium bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full flex-shrink-0 ml-3">
+                                                +{p.poin} poin
+                                            </span>
                                         </div>
-                                        <span className="text-xs font-medium bg-red-50 text-red-700 px-2.5 py-0.5 rounded-full flex-shrink-0 ml-3">
-                                            -{p.poin} poin
-                                        </span>
-                                    </div>
-                                ))
+                                    ))}
+                                    {countMinus > selectedSiswa.poinMinus.length && (
+                                        <Link href={linkSiswa} className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2">
+                                            Lihat semua {countMinus} poin minus
+                                        </Link>
+                                    )}
+                                </>
                             )}
                         </div>
                     )}

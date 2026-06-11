@@ -41,8 +41,8 @@ export default function DataPoinSiswa() {
     const { data, isLoading, isError } = useSeeAllSiswaQuery();
     const siswaData = data?.data ?? [];
 
-    const totalPoinPlus = (s) => s.poinPlus.reduce((acc, p) => acc + p.poin, 0);
-    const totalPoinMinus = (s) => s.poinMinus.reduce((acc, p) => acc + p.poin, 0);
+    const totalPoinPlus = (s) => s.totalPoinPlus ?? 0;
+    const totalPoinMinus = (s) => s.totalPoinMinus ?? 0;
 
     const filtered = siswaData.filter((s) => s.namaSiswa.toLowerCase().includes(search.toLowerCase()));
 
@@ -202,6 +202,7 @@ export default function DataPoinSiswa() {
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     onClose={() => setSelectedSiswa(null)}
+                    linkSiswa={`/page/data-pelanggaran/${selectedSiswa.id}`}
                 />
             )}
             {showTambahModal && (
