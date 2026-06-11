@@ -1,16 +1,58 @@
 'use client';
 
-import { useSeeKehadiranByJadwalQuery } from '@/src/hooks/api/kehadiranSliceAPI';
+import { useSeeKehadiranByJadwalQuery, useSimpanKehadiranByJadwalMutation } from '@/src/hooks/api/kehadiranSliceAPI';
+import SuccessModal from '@/src/app/conponents/modal/successModal';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DetailJadwal() {
     const { jadwalId } = useParams();
     const { data: siswaKehadiran, isLoading } = useSeeKehadiranByJadwalQuery({ jadwalId });
-    
+
     const siswaList = siswaKehadiran?.data?.siswa ?? [];
-    
+
+    const [inputKehadiran, { isLoading: isSaving }] = useSimpanKehadiranByJadwalMutation();
+
     const [statusMap, setStatusMap] = useState({});
+
+    useEffect(() => {
+        if (siswaList.length > 0) {
+            const initialStatus = {};
+            siswaList.forEach((siswa) => {
+                initialStatus[siswa.id] = siswa.kehadiran[0]?.statusKehadiran ?? 'Alpha';
+            });
+            setStatusMap(initialStatus);
+        }
+    }, [siswaKehadiran]);
+    
+    const handleSimpan = async () => {
+        const kehadiran = siswaList.map((siswa) => ({
+            siswaId: siswa.id,
+            statusKehadiran: statusMap[siswa.id] ?? 'Hadir',
+        }));
+
+        try {
+            await inputKehadiran({
+                jadwalId,
+                body: {
+                    tanggal: new Date().toISOString().split('T')[0],
+                    kehadiran,
+                },
+            }).unwrap();
+            setShowSuccess(true);
+        } catch (err) {
+            alert('Gagal menyimpan: ' + err.message);
+        }
+    };
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const handleCloseModal = () => {
+        setShowSuccess(false);
+    };
+
+    if (showSuccess) {
+        return <SuccessModal onClose={handleCloseModal} />;
+    }
 
     const handleStatus = (siswaId, status) => {
         setStatusMap((prev) => ({ ...prev, [siswaId]: status }));
@@ -70,10 +112,11 @@ export default function DetailJadwal() {
                 {/* Tombol Simpan */}
                 <div className="mt-4 flex justify-end">
                     <button
-                        onClick={() => console.log(statusMap)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors"
+                        onClick={handleSimpan}
+                        disabled={isSaving || siswaList.length === 0}
+                        className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors"
                     >
-                        Simpan Kehadiran
+                        {isSaving ? 'Menyimpan...' : 'Simpan Kehadiran'}
                     </button>
                 </div>
             </div>

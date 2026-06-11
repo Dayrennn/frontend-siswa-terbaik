@@ -9,8 +9,8 @@ export const kelasAPI = createApi({
     tagTypes: ['kelasAPI'],
     endpoints: (builder) => ({
         createKelas: builder.mutation({
-            query: (data) => ({
-                url: '/create',
+            query: ({tahunAjaranId, data}) => ({
+                url: `/create/${tahunAjaranId}`,
                 method: 'POST',
                 body: data,
             }),

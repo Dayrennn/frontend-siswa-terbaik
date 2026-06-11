@@ -6,19 +6,25 @@ import { useParams } from 'next/navigation';
 import Table from '../../../../conponents/table/page';
 import Link from 'next/link';
 
-import { useGetAllKelasQuery } from '../../../../../hooks/api/kelasSliceAPI';
+import { useGetKelasByTahunAjaranQuery, useRemoveKelasMutation } from '../../../../../hooks/api/kelasSliceAPI';
 import { useGetTahunAjaranByIdQuery } from '../../../../../hooks/api/tahunAjaranSliceAPI';
 
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
+import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahDataKelas from '@/src/app/conponents/form/crud/tambah-data/kelas';
 
 export default function DataKehadiranByTahunAjaran() {
     const { tahunAjaranId } = useParams();
+
+    const [selectedId, setSelectedId] = useState(null)
+
     const [search, setSearch] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    const { data, isLoading, isError } = useGetAllKelasQuery();
+    const { data, isLoading, isError } = useGetKelasByTahunAjaranQuery(tahunAjaranId);
+    const [removeKelas] = useRemoveKelasMutation();
     const { data: tahunAjaranData } = useGetTahunAjaranByIdQuery(tahunAjaranId);
 
     const namaTahunAjaran = tahunAjaranData?.data?.namaTahunAjaran ?? '';
@@ -31,6 +37,10 @@ export default function DataKehadiranByTahunAjaran() {
             ) ?? [];
 
     const totalKelas = data?.data?.length ?? 0;
+
+    const handleDelete = async () => {
+        await removeKelas(selectedId).unwrap();
+    };
 
     const columns = [
         { key: 'no', label: 'No' },
@@ -52,11 +62,22 @@ export default function DataKehadiranByTahunAjaran() {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
-                <Link href={`/page/data-kelas/${tahunAjaranId}/${row.id}`}>
-                    <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
-                        Lihat Data →
-                    </span>
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Link href={`/page/data-kelas/${tahunAjaranId}/${row.id}`}>
+                        <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
+                            Lihat Data →
+                        </span>
+                    </Link>
+                    <button
+                        onClick={() => {
+                            setSelectedId(row.id);
+                            setShowDeleteModal(true);
+                        }}
+                        className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                    >
+                        Hapus
+                    </button>
+                </div>
             ),
         },
     ];
@@ -129,6 +150,18 @@ export default function DataKehadiranByTahunAjaran() {
                     formTambah={FormTambahDataKelas}
                     successTitle="Kelas Berhasil Di Tambah"
                     successMessage="Berhasil"
+                    tahunAjaranId={tahunAjaranId}
+                />
+            )}
+            {showDeleteModal && (
+                <RemoveModal
+                    onCancel={() => setShowDeleteModal(false)}
+                    icon={<FaUserPlus />}
+                    title="Hapus Kelas"
+                    successTitle="Kelas Berhasil Di Hapus"
+                    successMessage="Berhasil"
+                    initialData={removeKelas}
+                    onConfirm={handleDelete}
                 />
             )}
         </>

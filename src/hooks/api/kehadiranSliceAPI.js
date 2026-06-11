@@ -56,7 +56,15 @@ export const kehadiranAPI = createApi({
             query: ({ jadwalId, kelasId }) => ({
                 url: `/${jadwalId}?kelasId=${kelasId}`,
             }),
-            invalidatesTags: ['jadwalAPI'],
+            invalidatesTags: ['kehadiranAPI'],
+        }),
+        simpanKehadiranByJadwal: builder.mutation({
+            query: ({ jadwalId, body }) => ({
+                url: `/simpan/${jadwalId}`,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['kehadiranAPI'],
         }),
     }),
 });
@@ -69,5 +77,6 @@ export const {
     useGetAbsenByPertemuanQuery,
     useGetKehadiranByKelasQuery,
     useSimpanKehadiranMutation,
-    useSeeKehadiranByJadwalQuery
+    useSeeKehadiranByJadwalQuery,
+    useSimpanKehadiranByJadwalMutation
 } = kehadiranAPI;
