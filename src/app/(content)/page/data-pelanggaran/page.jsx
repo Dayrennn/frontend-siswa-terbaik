@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useSeeAllSiswaQuery } from '@/src/hooks/api/siswaSliceAPI';
 import DetailPoin from '@/src/app/conponents/modal/poinModal';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
-import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { getInitials } from '@/src/hooks/utils/initialHelper';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahPoinSiswa from '@/src/app/conponents/form/crud/tambah-data/poinPlus';
@@ -26,7 +25,6 @@ export default function DataPoinSiswa() {
     const [selectedSiswa, setSelectedSiswa] = useState(null);
     const [activeTab, setActiveTab] = useState('plus');
     const [showTambahModal, setShowTambahModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
 
     const { data, isLoading, isError } = useSeeAllSiswaQuery();
     const siswaData = data?.data ?? [];
@@ -44,11 +42,6 @@ export default function DataPoinSiswa() {
     const handleTambah = (siswa) => {
         setSelectedSiswa(siswa);
         setShowTambahModal(true);
-    };
-
-    const handleEdit = (siswa) => {
-        setSelectedSiswa(siswa);
-        setShowEditModal(true);
     };
 
     return (
@@ -162,12 +155,6 @@ export default function DataPoinSiswa() {
                                                     >
                                                         + Tambah
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleEdit(siswa)}
-                                                        className="text-xs bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium"
-                                                    >
-                                                        Edit
-                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -209,17 +196,6 @@ export default function DataPoinSiswa() {
                     siswaId={selectedSiswa?.id}
                 />
             )}
-            {/* {showEditModal && (
-                <EditModal
-                    onCancel={() => setShowTambahModal(false)}
-                    icon={<FaUserPlus/>}
-                    title="Edit Poin"
-                    successTitle='Berhasil Edit Poin'
-                    successMessage='Berhasil'
-                    formEdit={}
-                    initialData={selectedSiswa}
-                />
-            )} */}
         </>
     );
 }
