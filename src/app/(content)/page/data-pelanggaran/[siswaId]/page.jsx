@@ -12,6 +12,7 @@ import { FaUserPlus } from 'react-icons/fa';
 import FormEditPoinPlus from '@/src/app/conponents/form/crud/edit-data/poinPlus';
 import FormEditPoinMinus from '@/src/app/conponents/form/crud/edit-data/poinMinus';
 import { useDispatch } from 'react-redux';
+import { getInitials } from '@/src/hooks/utils/initialHelper';
 
 function formatTanggal(iso) {
     if (!iso) return '-';
@@ -20,17 +21,6 @@ function formatTanggal(iso) {
         month: 'short',
         year: 'numeric',
     });
-}
-
-function getInitials(nama) {
-    return (
-        nama
-            ?.split(' ')
-            .slice(0, 2)
-            .map((w) => w[0])
-            .join('')
-            .toUpperCase() ?? '?'
-    );
 }
 
 export default function SemuaPoin() {

@@ -1,5 +1,6 @@
 'use client';
-import Link from "next/link";  
+import Link from "next/link"; 
+import { getInitials } from "@/src/hooks/utils/initialHelper";
 
 const STATUS_STYLE = {
     Baik: 'bg-green-50 text-green-700',
@@ -11,17 +12,6 @@ function getStatus(poin) {
     if (poin === 0) return 'Baik';
     if (poin < 20) return 'Perhatian';
     return 'Peringatan';
-}
-
-function getInitials(nama) {
-    return (
-        nama
-            ?.split(' ')
-            .slice(0, 2)
-            .map((w) => w[0])
-            .join('')
-            .toUpperCase() ?? '?'
-    );
 }
 
 function formatTanggal(iso) {

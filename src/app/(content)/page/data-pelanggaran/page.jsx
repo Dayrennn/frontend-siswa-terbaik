@@ -5,6 +5,7 @@ import { useSeeAllSiswaQuery } from '@/src/hooks/api/siswaSliceAPI';
 import DetailPoin from '@/src/app/conponents/modal/poinModal';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
+import { getInitials } from '@/src/hooks/utils/initialHelper';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahPoinSiswa from '@/src/app/conponents/form/crud/tambah-data/poinPlus';
 
@@ -18,17 +19,6 @@ function getStatus(poin) {
     if (poin === 0) return 'Baik';
     if (poin < 20) return 'Perhatian';
     return 'Peringatan';
-}
-
-function getInitials(nama) {
-    return (
-        nama
-            ?.split(' ')
-            .slice(0, 2)
-            .map((w) => w[0])
-            .join('')
-            .toUpperCase() ?? '?'
-    );
 }
 
 export default function DataPoinSiswa() {
