@@ -45,7 +45,8 @@ const menuItems = [
             { menu: 'Data Tahun Ajaran', link: '/page/tahun-ajaran' },
             { menu: 'Data Jadwal', link: '/page/jadwal' },
             { menu: 'Data Pertemuan', link: '/page/data-pertemuan' },
-            { menu: 'Data Pelanggaran', link: '/page/data-pelanggaran' }
+            { menu: 'Data Pelanggaran', link: '/page/data-pelanggaran' },
+            { menu: 'Data Eskul', link: '/page/data-eskul' }
         ],
     },
 

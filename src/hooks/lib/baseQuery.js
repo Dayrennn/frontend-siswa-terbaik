@@ -65,3 +65,8 @@ export const poinMinusBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/poin-minus`,
     credentials: 'include',
 });
+
+export const eskulBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/eskul`,
+    credentials: 'include',
+});
