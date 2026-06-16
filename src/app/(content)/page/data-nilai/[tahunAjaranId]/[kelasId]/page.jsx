@@ -1,6 +1,6 @@
 'use client';
 
-import { useSeeAllSiswaByTahunAjaranQuery } from '../../../../../../hooks/api/siswaSliceAPI';
+import { useSeeAllSiswaByTahunAjaranAndKelasQuery } from '../../../../../../hooks/api/siswaSliceAPI';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import EditModal from '../../../../../conponents/modal/crud/editModal';
@@ -9,9 +9,8 @@ import Table from '../../../../../conponents/table/page';
 import NilaiModal from '@/src/app/conponents/modal/nilaiModal';
 import FormEditNilaiSiswa from '@/src/app/conponents/form/crud/edit-data/nilai';
 
-
 export default function DataSiswaPerTahun() {
-    const { tahunAjaranId } = useParams();
+    const { tahunAjaranId, kelasId } = useParams();
     const [showEditModal, setShowEditModal] = useState(false);
     const [showNilaiSiswaModal, setShowNilaiSiswaModal] = useState(false);
     const [search, setSearch] = useState('');
@@ -27,12 +26,14 @@ export default function DataSiswaPerTahun() {
         setShowEditModal(true);
     };
 
-    const { data, isLoading, isError } = useSeeAllSiswaByTahunAjaranQuery(tahunAjaranId);
+    const { data, isLoading, isError } = useSeeAllSiswaByTahunAjaranAndKelasQuery({ tahunAjaranId, kelasId });
 
     const tableData =
         data?.data
             ?.map((siswa, index) => ({ no: index + 1, ...siswa }))
             .filter((item) => item.namaSiswa?.toLowerCase().includes(search.toLowerCase())) ?? [];
+
+    const freshSiswa = data?.data?.find((s) => s.id === selectedSiswa?.id);
 
     const pelajaranMap = new Map();
     data?.data?.forEach((siswa) => {
@@ -139,7 +140,7 @@ export default function DataSiswaPerTahun() {
                     icon={<FaUserPlus />}
                     title="Edit Siswa"
                     formEdit={FormEditNilaiSiswa}
-                    initialData={selectedSiswa}
+                    initialData={freshSiswa ?? selectedSiswa}
                     successTitle="Siswa Berhasil di Update"
                     successMessage="Berhasil"
                 />

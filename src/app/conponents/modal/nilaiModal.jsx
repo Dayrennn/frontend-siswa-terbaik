@@ -112,6 +112,38 @@ export default function NilaiModal({ siswaId, onCancel, icon, title }) {
                                 </div>
                             </div>
 
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                                    Eskul
+                                </h3>
+                                <div className="rounded-xl border border-gray-200 overflow-hidden">
+                                    <table className="w-full text-sm">
+                                        <thead className="bg-gray-50 text-gray-500">
+                                            <tr>
+                                                <th className="text-left px-4 py-2 font-medium">Kriteria</th>
+                                                <th className="text-right px-4 py-2 font-medium">Nilai</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {siswa.eskul?.length > 0 ? siswa.eskul.map((item) => (
+                                                <tr key={item.id} className="bg-white hover:bg-gray-50 transition-colors">
+                                                    <td className="px-4 py-2 text-gray-800">{item.eskul.namaEskul}</td>
+                                                    <td className="px-4 py-2 text-right">
+                                                        <span className={`font-semibold ${item.nilai >= 75 ? 'text-green-600' : item.nilai > 0 ? 'text-amber-500' : 'text-gray-400'}`}>
+                                                            {item.nilai}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )) : (
+                                                <tr>
+                                                    <td colSpan={4} className="text-center text-gray-400 py-4">Belum ada nilai eskul</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             {/* Tabel Nilai Kriteria */}
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
