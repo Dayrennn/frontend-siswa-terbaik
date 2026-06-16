@@ -45,8 +45,15 @@ export const siswaAPI = createApi({
         }),
         seeAllSiswaByTahunAjaranAndKelas: builder.query({
             query: ({ tahunAjaranId, kelasId }) => `/tahun-ajaran/${tahunAjaranId}/${kelasId}`,
-            providesTags: ['siswaAPI']
-        })
+            providesTags: ['siswaAPI'],
+        }),
+        seeAllSiswaByEskul: builder.query({
+            query: ({ tahunAjaranId, eskulId }) => ({
+                url: `/siswa-eskul/${eskulId}`,
+                params: { tahunAjaranId },
+            }),
+            providesTags: ['siswaAPI'],
+        }),
     }),
 });
 
@@ -57,5 +64,6 @@ export const {
     useGetSiswaByIdQuery,
     useRemoveSiswaMutation,
     useSeeAllSiswaByTahunAjaranQuery,
-    useSeeAllSiswaByTahunAjaranAndKelasQuery
+    useSeeAllSiswaByTahunAjaranAndKelasQuery,
+    useSeeAllSiswaByEskulQuery,
 } = siswaAPI;

@@ -70,3 +70,8 @@ export const eskulBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/eskul`,
     credentials: 'include',
 });
+
+export const nilaiEskulBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/nilai-eskul`,
+    credentials: 'include',
+});

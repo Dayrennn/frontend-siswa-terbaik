@@ -13,6 +13,7 @@ import { jadwalAPI } from '@/src/hooks/api/jadwalSliceAPI';
 import { poinPlusAPI } from '../hooks/api/poinPlusSliceAPI';
 import { poinMinusAPI } from '../hooks/api/poinMinusSliceAPI';
 import { eskulAPI } from '../hooks/api/eskulSliceAPI';
+import { nilaiEskulAPI } from '../hooks/api/nilaiEskulSliceAPI';
 
 export const store = configureStore({
     reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
         [poinPlusAPI.reducerPath]: poinPlusAPI.reducer,
         [poinMinusAPI.reducerPath]: poinMinusAPI.reducer,
         [eskulAPI.reducerPath]: eskulAPI.reducer,
+        [nilaiEskulAPI.reducerPath]: nilaiEskulAPI.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
@@ -45,5 +47,6 @@ export const store = configureStore({
             .concat(jadwalAPI.middleware)
             .concat(poinPlusAPI.middleware)
             .concat(poinMinusAPI.middleware)
-            .concat(eskulAPI.middleware),
+            .concat(eskulAPI.middleware)
+            .concat(nilaiEskulAPI.middleware),
 });

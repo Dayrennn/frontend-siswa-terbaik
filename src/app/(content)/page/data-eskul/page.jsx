@@ -4,6 +4,7 @@ import { useState } from 'react';
 import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
+import { useRouter } from 'next/navigation';
 
 import {
     useSeeAllEskulQuery,
@@ -33,6 +34,8 @@ export default function DataEskul() {
     const filtered = eskulList.filter((e) => e.namaEskul.toLowerCase().includes(search.toLowerCase()));
     const formLoading = addLoading || updateLoading;
 
+    const router = useRouter();
+
     const handleAdd = () => {
         setShowModalTambah(true);
         setFormNama('');
@@ -52,6 +55,10 @@ export default function DataEskul() {
     const handleDelete = async (id) => {
         await deleteEskul(id).unwrap();
         setShowModalDelete(false);
+    };
+
+    const handleLihat = async (item) => {
+        router.push(`/page/data-eskul/${item.id}`);
     };
 
     return (
@@ -141,6 +148,12 @@ export default function DataEskul() {
                                     </td>
                                     <td className="px-5 py-3.5">
                                         <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleLihat(item)}
+                                                className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                            >
+                                                Lihat
+                                            </button>
                                             <button
                                                 onClick={() => handleEdit(item)}
                                                 className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
