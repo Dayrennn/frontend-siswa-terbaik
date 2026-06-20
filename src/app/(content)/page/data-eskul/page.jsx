@@ -101,7 +101,7 @@ export default function DataEskul() {
                     <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 </div>
             ) : isError ? (
-                <div className="text-center py-20 text-red-500 text-sm">{error}</div>
+                <div className="text-center py-20 text-red-500 text-sm">Gagal memuat data...</div>
             ) : filtered.length === 0 ? (
                 <div className="text-center py-20">
                     <div className="text-gray-300 mb-3">
