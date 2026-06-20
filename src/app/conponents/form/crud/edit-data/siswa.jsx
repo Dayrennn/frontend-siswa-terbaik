@@ -2,27 +2,17 @@ import { useState } from 'react';
 import { useModifySiswaMutation } from '../../../../../hooks/api/siswaSliceAPI';
 import KelasSearchDropdown from '../../../ui/kelasSearchDropdown';
 import EskulSearchDropdown from '../../../ui/eskulSearchDropdown';
+import TahunAjaranSearchDropdown from '../../../ui/tahunAjaranSearchDropdown';
 
 export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) {
     const [namaSiswa, setNamaSiswa] = useState(initialData?.namaSiswa || '');
     const [tanggalLahir, setTanggalLahir] = useState(initialData?.tanggalLahir?.split('T')[0] || '');
-    // const [kelas, setKelas] = useState(initialData?.kelas || '');
-    const [nilai, setNilai] = useState(
-        initialData?.nilai?.map((n) => ({
-            pelajaranId: n.pelajaranId,
-            nilai: n.nilai,
-        })) || [],
-    );
+    const [tahunAjaranId, setTahunAjaranId] = useState(initialData?.tahunAjaranId || '');
 
     const [kelasId, setKelasId] = useState(initialData?.kelasId || '');
     const [eskulId, setEskulId] = useState(initialData?.eskulId || '');
 
     const [updateSiswa, { isLoading, isError, error }] = useModifySiswaMutation();
-
-    const handleNilai = (pelajaranId, value) => {
-        setNilai((prev) => prev.map((n) => (n.pelajaranId === pelajaranId ? { ...n, nilai: Number(value) } : n)));
-    };
-
     const handleEdit = async (e) => {
         e.preventDefault();
 
@@ -31,9 +21,8 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
                 id: initialData.id,
                 namaSiswa,
                 tanggalLahir: tanggalLahir ? new Date(tanggalLahir).toISOString() : undefined,
-                kelasId,
-                nilai,
                 eskulId,
+                tahunAjaranId
             };
 
             await updateSiswa(payload).unwrap();
@@ -78,34 +67,25 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
                     onChange={(val) => setKelasId(val)}
                 />
             </div>
+
+            <div>
+                <label className="text-sm text-gray-600">TahunAjaran</label>
+                <TahunAjaranSearchDropdown  
+                    value={tahunAjaranId}
+                    initialLabel={
+                        initialData?.tahunAjaran ? `${initialData.tahunAjaran.namaTahunAjaran} - ${initialData.tahunAjaran.status}` : ''
+                    }
+                    onChange={(val) => setTahunAjaranId(val)}
+                />
+            </div>
             <div>
                 <label className="text-sm text-gray-600">Eskul</label>
                 <EskulSearchDropdown
                     key={initialData?.eskulId}
                     value={eskulId}
-                    initialLabel={initialData?.eskul?.[0]?.eskul?.namaEskul || ''}
+                    initialLabel={initialData?.nilaiEskulRekap?.[0]?.eskul?.namaEskul || ''}
                     onChange={(val) => setEskulId(val)}
                 />
-            </div>
-
-            {/* Nilai per Pelajaran */}
-            <div>
-                <label className="text-sm text-gray-600">Nilai</label>
-                <div className="mt-1 space-y-2 max-h-48 overflow-y-auto pr-1">
-                    {initialData?.nilai?.map((n) => (
-                        <div key={n.pelajaranId} className="flex items-center gap-3">
-                            <span className="text-sm text-gray-600 flex-1">{n.pelajaran.namaPelajaran}</span>
-                            <input
-                                type="number"
-                                min={0}
-                                max={100}
-                                value={nilai.find((v) => v.pelajaranId === n.pelajaranId)?.nilai ?? 0}
-                                onChange={(e) => handleNilai(n.pelajaranId, e.target.value)}
-                                className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 text-sm"
-                            />
-                        </div>
-                    ))}
-                </div>
             </div>
 
             {/* Buttons */}

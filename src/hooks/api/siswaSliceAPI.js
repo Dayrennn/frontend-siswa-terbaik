@@ -10,7 +10,7 @@ export const siswaAPI = createApi({
     endpoints: (builder) => ({
         createSiswa: builder.mutation({
             query: (data) => ({
-                url: `/create/${data.tahunAjaranId}`,
+                url: '/create',
                 method: 'POST',
                 body: data,
             }),

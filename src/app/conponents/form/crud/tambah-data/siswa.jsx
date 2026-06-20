@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useCreateSiswaMutation } from '../../../../../hooks/api/siswaSliceAPI';
-import { useParams } from 'next/navigation';
 import KelasSearchDropdown from '../../../ui/kelasSearchDropdown';
 import { useDispatch } from 'react-redux';
 import { kehadiranAPI } from '../../../../../hooks/api/kehadiranSliceAPI';
+import TahunAjaranSearchDropdown from '../../../ui/tahunAjaranSearchDropdown';
 
 export default function FormTambahSiswa({ onSuccess, onCancel }) {
     const dispatch = useDispatch();
@@ -13,7 +13,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
     const [namaSiswa, setNamaSiswa] = useState('');
     const [tanggalLahir, setTanggalLahir] = useState('');
     const [kelas, setKelas] = useState('');
-    const { tahunAjaranId } = useParams();
+    const [tahunAjaranId, setTahunAjaranId] = useState(null)
     const [kelasId, setKelasId] = useState('');
 
     const [createSiswa, { isLoading, isError, error }] = useCreateSiswaMutation();
@@ -36,6 +36,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
             setNamaSiswa('');
             setTanggalLahir('');
             setKelas('');
+            setTahunAjaranId(null)
 
             if (onSuccess) onSuccess();
         } catch (err) {
@@ -85,6 +86,12 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
             <div>
                 <label className='text-sm text-gray-600'>Kelas</label>
                 <KelasSearchDropdown value={kelasId} onChange={(val) => setKelasId(val)} />
+            </div>
+
+            {/* tahun ajaran */}
+            <div>
+                <label className='text-sm text-gray-600'>tahunAjaran</label>
+                <TahunAjaranSearchDropdown value={tahunAjaranId} onChange={(val) => setTahunAjaranId(val)} />
             </div>
 
             {/* Button */}
