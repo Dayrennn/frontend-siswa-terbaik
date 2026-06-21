@@ -40,13 +40,11 @@ const menuItems = [
         children: [
             { menu: 'Data Pelajaran', link: '/page/data-pelajaran' },
             { menu: 'Data Siswa', link: '/page/data-siswa' },
-            { menu: 'Data Kehadiran', link: '/page/data-kehadiran' },
             { menu: 'Data Kelas', link: '/page/data-kelas' },
             { menu: 'Data Tahun Ajaran', link: '/page/tahun-ajaran' },
-            { menu: 'Data Jadwal', link: '/page/jadwal' },
-            { menu: 'Data Pertemuan', link: '/page/data-pertemuan' },
             { menu: 'Data Pelanggaran', link: '/page/data-pelanggaran' },
-            { menu: 'Data Eskul', link: '/page/data-eskul' }
+            { menu: 'Data Eskul', link: '/page/data-eskul' },
+            { menu: 'Data Absen', link: '/page/data-absen' },
         ],
     },
 
@@ -90,9 +88,7 @@ export default function Sidebar() {
 
     /* TOGGLE MENU (MULTI) */
     const toggleMenu = (menu) => {
-        setOpenMenus((prev) =>
-            prev.includes(menu) ? prev.filter((m) => m !== menu) : [...prev, menu],
-        );
+        setOpenMenus((prev) => (prev.includes(menu) ? prev.filter((m) => m !== menu) : [...prev, menu]));
     };
 
     useEffect(() => {
@@ -100,10 +96,7 @@ export default function Sidebar() {
             const activeMenus = [...prev];
 
             filteredMenu.forEach((item) => {
-                if (
-                    item.children?.some((c) => c.link === pathname) &&
-                    !activeMenus.includes(item.menu)
-                ) {
+                if (item.children?.some((c) => c.link === pathname) && !activeMenus.includes(item.menu)) {
                     activeMenus.push(item.menu);
                 }
             });
@@ -145,7 +138,7 @@ export default function Sidebar() {
 
             {/* MOBILE BUTTON */}
             <button
-                className='fixed top-4 left-4 z-50 bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg md:hidden'
+                className="fixed top-4 left-4 z-50 bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg md:hidden"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
@@ -161,28 +154,26 @@ export default function Sidebar() {
                 }}
             >
                 {/* LOGO */}
-                <div className='h-16 flex items-center gap-3 px-5 border-b border-white/10 shrink-0'>
-                    <div className='w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center'>
-                        <FaGraduationCap className='text-white text-sm' />
+                <div className="h-16 flex items-center gap-3 px-5 border-b border-white/10 shrink-0">
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                        <FaGraduationCap className="text-white text-sm" />
                     </div>
                     <div>
-                        <p className='text-white font-bold text-sm'>Sistem Siswa</p>
-                        <p className='text-indigo-300 text-xs'>Admin Panel</p>
+                        <p className="text-white font-bold text-sm">Sistem Siswa</p>
+                        <p className="text-indigo-300 text-xs">Admin Panel</p>
                     </div>
                 </div>
 
                 {/* MENU */}
                 <nav
-                    className='
+                    className="
           flex-1 overflow-y-auto p-3 mt-2 space-y-1
           [&::-webkit-scrollbar]:w-1.5
           [&::-webkit-scrollbar-thumb]:bg-indigo-500
           [&::-webkit-scrollbar-thumb]:rounded-full
-        '
+        "
                 >
-                    <p className='text-indigo-400 text-xs font-semibold px-3 mb-2 uppercase tracking-widest'>
-                        Menu
-                    </p>
+                    <p className="text-indigo-400 text-xs font-semibold px-3 mb-2 uppercase tracking-widest">Menu</p>
 
                     {filteredMenu.map((item) => {
                         const Icon = item.icon;
@@ -197,11 +188,7 @@ export default function Sidebar() {
                                     href={item.link}
                                     onClick={() => setIsOpen(false)}
                                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                    ${
-                        isActive
-                            ? 'bg-white/20 text-white'
-                            : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                    }`}
+                    ${isActive ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
                                 >
                                     <Icon />
                                     {item.menu}
@@ -210,8 +197,7 @@ export default function Sidebar() {
                         }
 
                         const isParentActive = item.children.some(
-                            (child) =>
-                                pathname === child.link || pathname.startsWith(child.link + '/'),
+                            (child) => pathname === child.link || pathname.startsWith(child.link + '/'),
                         );
 
                         return (
@@ -221,12 +207,10 @@ export default function Sidebar() {
                                     onClick={() => toggleMenu(item.menu)}
                                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
                     ${
-                        isParentActive
-                            ? 'bg-white/20 text-white'
-                            : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                        isParentActive ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
                     }`}
                                 >
-                                    <div className='flex items-center gap-3'>
+                                    <div className="flex items-center gap-3">
                                         <Icon />
                                         {item.menu}
                                     </div>
@@ -242,17 +226,12 @@ export default function Sidebar() {
                                 {/* CHILD WITH ANIMATION */}
                                 <div
                                     className={`ml-6 overflow-hidden transition-all duration-300
-                    ${
-                        openMenus.includes(item.menu)
-                            ? 'max-h-96 opacity-100 mt-1'
-                            : 'max-h-0 opacity-0'
-                    }`}
+                    ${openMenus.includes(item.menu) ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
                                 >
-                                    <div className='space-y-1'>
+                                    <div className="space-y-1">
                                         {item.children.map((child) => {
                                             const isActive =
-                                                pathname === child.link ||
-                                                pathname.startsWith(child.link + '/');
+                                                pathname === child.link || pathname.startsWith(child.link + '/');
 
                                             return (
                                                 <Link
@@ -278,23 +257,21 @@ export default function Sidebar() {
                 </nav>
 
                 {/* FOOTER */}
-                <div className='p-3 border-t border-white/10 shrink-0'>
-                    <div className='bg-white/10 rounded-xl px-3 py-2.5 mb-2 flex items-center gap-3'>
-                        <div className='w-8 h-8 rounded-full bg-indigo-400/40 flex items-center justify-center'>
-                            <FaUsers className='text-white text-xs' />
+                <div className="p-3 border-t border-white/10 shrink-0">
+                    <div className="bg-white/10 rounded-xl px-3 py-2.5 mb-2 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-indigo-400/40 flex items-center justify-center">
+                            <FaUsers className="text-white text-xs" />
                         </div>
-                        <div className='min-w-0'>
-                            <p className='text-white text-sm truncate'>
-                                {user?.username ?? 'Loading...'}
-                            </p>
-                            <p className='text-indigo-300 text-xs truncate'>{user?.email ?? ''}</p>
+                        <div className="min-w-0">
+                            <p className="text-white text-sm truncate">{user?.username ?? 'Loading...'}</p>
+                            <p className="text-indigo-300 text-xs truncate">{user?.email ?? ''}</p>
                         </div>
                     </div>
 
                     <button
                         onClick={() => setShowLogoutModal(true)}
-                        className='flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full
-              text-red-300 hover:bg-red-500/20 hover:text-red-200 transition'
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full
+              text-red-300 hover:bg-red-500/20 hover:text-red-200 transition"
                     >
                         <FaSignOutAlt />
                         Logout
@@ -305,7 +282,7 @@ export default function Sidebar() {
             {/* OVERLAY */}
             {isOpen && (
                 <div
-                    className='fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden'
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}

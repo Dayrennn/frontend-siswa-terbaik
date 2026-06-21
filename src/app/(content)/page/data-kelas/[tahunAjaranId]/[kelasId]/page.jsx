@@ -6,7 +6,7 @@ import {
     siswaAPI,
 } from '../../../../../../hooks/api/siswaSliceAPI';
 import { useDispatch } from 'react-redux';
-import { kehadiranAPI } from '../../../../../../hooks/api/kehadiranSliceAPI';
+// import { kehadiranAPI } from '../../../../../../hooks/api/kehadiranSliceAPI';
 import { useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import CreateModal from '../../../../../conponents/modal/crud/createModal';
@@ -17,7 +17,7 @@ import Table from '../../../../../conponents/table/page';
 import FormTambahSiswa from '../../../../../conponents/form/crud/tambah-data/siswa';
 import FormEditDataSiswa from '../../../../../conponents/form/crud/edit-data/siswa';
 import { exportToExcel, downloadTemplate, parseImportedExcel } from '../../../../../../hooks/utils/excelHelper';
-import TabKehadiran from '../../../../../conponents/ui/tabKehadiran';
+// import TabKehadiran from '../../../../../conponents/ui/tabKehadiran';
 
 const TABS = ['Data Siswa', 'Kehadiran'];
 
@@ -40,12 +40,12 @@ export default function DataSiswaPerTahun() {
         setShowRemoveModal(true);
     };
     const handleAfterSuccess = () => {
-        dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+        // dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
         dispatch(siswaAPI.util.invalidateTags(['siswaAPI']));
     };
     const handleDelete = async (id) => {
         await deleteSiswa(id).unwrap();
-        dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+        // dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
         dispatch(siswaAPI.util.invalidateTags(['siswaAPI']));
     };
 
@@ -219,7 +219,7 @@ export default function DataSiswaPerTahun() {
                         )}
 
                         {/* Tab: Kehadiran */}
-                        {activeTab === 'Kehadiran' && <TabKehadiran />}
+                        {/* {activeTab === 'Kehadiran' && <TabKehadiran />} */}
                     </div>
                 </div>
             </div>

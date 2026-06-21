@@ -5,15 +5,13 @@ import { otpAPI } from '@/src/hooks/api/otpSliceAPI';
 import { siswaAPI } from '@/src/hooks/api/siswaSliceAPI';
 import { kriteriaAPI } from '@/src/hooks/api/kriteriaSliceAPI';
 import { pelajaranAPI } from '@/src/hooks/api/pelajaranSliceAPI';
-import { kehadiranAPI } from '@/src/hooks/api/kehadiranSliceAPI';
 import { tahunAjaranAPI } from '@/src/hooks/api/tahunAjaranSliceAPI';
 import { kelasAPI } from '@/src/hooks/api/kelasSliceAPI';
-import { pertemuanAPI } from '@/src/hooks/api/pertemuanSliceAPI';
-import { jadwalAPI } from '@/src/hooks/api/jadwalSliceAPI';
 import { poinPlusAPI } from '../hooks/api/poinPlusSliceAPI';
 import { poinMinusAPI } from '../hooks/api/poinMinusSliceAPI';
 import { eskulAPI } from '../hooks/api/eskulSliceAPI';
 import { nilaiEskulAPI } from '../hooks/api/nilaiEskulSliceAPI';
+import { absenRekapAPI } from '../hooks/api/absenRekapSliceAPI';
 
 export const store = configureStore({
     reducer: {
@@ -23,15 +21,13 @@ export const store = configureStore({
         [siswaAPI.reducerPath]: siswaAPI.reducer,
         [kriteriaAPI.reducerPath]: kriteriaAPI.reducer,
         [pelajaranAPI.reducerPath]: pelajaranAPI.reducer,
-        [kehadiranAPI.reducerPath]: kehadiranAPI.reducer,
         [tahunAjaranAPI.reducerPath]: tahunAjaranAPI.reducer,
         [kelasAPI.reducerPath]: kelasAPI.reducer,
-        [pertemuanAPI.reducerPath]: pertemuanAPI.reducer,
-        [jadwalAPI.reducerPath]: jadwalAPI.reducer,
         [poinPlusAPI.reducerPath]: poinPlusAPI.reducer,
         [poinMinusAPI.reducerPath]: poinMinusAPI.reducer,
         [eskulAPI.reducerPath]: eskulAPI.reducer,
         [nilaiEskulAPI.reducerPath]: nilaiEskulAPI.reducer,
+        [absenRekapAPI.reducerPath]: absenRekapAPI.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
@@ -40,13 +36,11 @@ export const store = configureStore({
             .concat(siswaAPI.middleware)
             .concat(kriteriaAPI.middleware)
             .concat(pelajaranAPI.middleware)
-            .concat(kehadiranAPI.middleware)
             .concat(tahunAjaranAPI.middleware)
             .concat(kelasAPI.middleware)
-            .concat(pertemuanAPI.middleware)
-            .concat(jadwalAPI.middleware)
             .concat(poinPlusAPI.middleware)
             .concat(poinMinusAPI.middleware)
             .concat(eskulAPI.middleware)
-            .concat(nilaiEskulAPI.middleware),
+            .concat(nilaiEskulAPI.middleware)
+            .concat(absenRekapAPI.middleware),
 });

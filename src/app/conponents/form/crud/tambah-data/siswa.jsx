@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useCreateSiswaMutation } from '../../../../../hooks/api/siswaSliceAPI';
 import KelasSearchDropdown from '../../../ui/kelasSearchDropdown';
 import { useDispatch } from 'react-redux';
-import { kehadiranAPI } from '../../../../../hooks/api/kehadiranSliceAPI';
+// import { kehadiranAPI } from '../../../../../hooks/api/kehadiranSliceAPI';
 import TahunAjaranSearchDropdown from '../../../ui/tahunAjaranSearchDropdown';
 
 export default function FormTambahSiswa({ onSuccess, onCancel }) {
@@ -13,7 +13,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
     const [namaSiswa, setNamaSiswa] = useState('');
     const [tanggalLahir, setTanggalLahir] = useState('');
     const [kelas, setKelas] = useState('');
-    const [tahunAjaranId, setTahunAjaranId] = useState(null)
+    const [tahunAjaranId, setTahunAjaranId] = useState(null);
     const [kelasId, setKelasId] = useState('');
 
     const [createSiswa, { isLoading, isError, error }] = useCreateSiswaMutation();
@@ -29,14 +29,14 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
                 tahunAjaranId,
             }).unwrap();
 
-            dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
+            // dispatch(kehadiranAPI.util.invalidateTags(['kehadiranAPI']));
 
             // reset form
             setNis('');
             setNamaSiswa('');
             setTanggalLahir('');
             setKelas('');
-            setTahunAjaranId(null)
+            setTahunAjaranId(null);
 
             if (onSuccess) onSuccess();
         } catch (err) {
@@ -45,70 +45,80 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
     };
 
     return (
-        <form onSubmit={handleCreate} className='space-y-4'>
+        <form onSubmit={handleCreate} className="space-y-4">
             {/* Nis */}
             <div>
-                <label className='text-sm text-gray-600'>Nis</label>
+                <label className="text-sm text-gray-600">Nis</label>
                 <input
-                    type='text'
-                    placeholder='Masukkan nis'
+                    type="text"
+                    placeholder="Masukkan nis"
                     value={nis}
                     onChange={(e) => setNis(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
                 />
             </div>
 
             {/* nama siswa */}
             <div>
-                <label className='text-sm text-gray-600'>Nama Siswa</label>
+                <label className="text-sm text-gray-600">Nama Siswa</label>
                 <input
-                    type='text'
-                    placeholder='Masukkan nama siswa'
+                    type="text"
+                    placeholder="Masukkan nama siswa"
                     value={namaSiswa}
                     onChange={(e) => setNamaSiswa(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
                 />
             </div>
 
             {/* tanggal lahir */}
             <div>
-                <label className='text-sm text-gray-600'>Tanggal Lahir</label>
+                <label className="text-sm text-gray-600">Tanggal Lahir</label>
                 <input
-                    type='date'
-                    placeholder='Masukkan tanggal lahir'
+                    type="date"
+                    placeholder="Masukkan tanggal lahir"
                     value={tanggalLahir}
                     onChange={(e) => setTanggalLahir(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
                 />
-            </div>
-
-            {/* kelas */}
-            <div>
-                <label className='text-sm text-gray-600'>Kelas</label>
-                <KelasSearchDropdown value={kelasId} tahunAjaranId={tahunAjaranId} onChange={(val) => setKelasId(val)} />
             </div>
 
             {/* tahun ajaran */}
             <div>
-                <label className='text-sm text-gray-600'>tahunAjaran</label>
+                <label className="text-sm text-gray-600">tahunAjaran</label>
                 <TahunAjaranSearchDropdown value={tahunAjaranId} onChange={(val) => setTahunAjaranId(val)} />
             </div>
 
+            {/* kelas */}
+            <div>
+                <label className="text-sm text-gray-600">Kelas</label>
+                {tahunAjaranId ? (
+                    <KelasSearchDropdown
+                        value={kelasId}
+                        tahunAjaranId={tahunAjaranId}
+                        onChange={(val) => setKelasId(val)}
+                    />
+                ) : (
+                    <div className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-400 text-sm cursor-not-allowed">
+                        Pilih tahun ajaran terlebih dahulu
+                    </div>
+                )}
+            </div>
+
             {/* Button */}
-            <div className='flex gap-3'>
+            <div className="flex gap-3">
                 <button
                     onClick={onCancel}
-                    type='button'
+                    type="button"
                     disabled={isLoading}
-                    className='flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60'
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60"
                 >
                     Batal
                 </button>
 
                 <button
-                    type='submit'
+                    type="submit"
                     disabled={isLoading}
-                    className='flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors'
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
                 >
                     {isLoading ? 'Menyimpan...' : 'Simpan Data'}
                 </button>
@@ -116,9 +126,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
 
             {/* Error */}
             {isError && (
-                <p className='text-red-500 text-sm text-center'>
-                    {error?.data?.message || 'Terjadi kesalahan'}
-                </p>
+                <p className="text-red-500 text-sm text-center">{error?.data?.message || 'Terjadi kesalahan'}</p>
             )}
         </form>
     );
