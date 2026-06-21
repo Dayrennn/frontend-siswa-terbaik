@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSeeAllEskulQuery } from '@/src/hooks/api/eskulSliceAPI';
 
 export default function EskulSearchDropdown({ value, onChange, initialLabel }) {
-    const [search, setSearch] = useState(initialLabel || value || '');
+    const [search, setSearch] = useState(initialLabel || '');
 
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef();
@@ -12,7 +12,10 @@ export default function EskulSearchDropdown({ value, onChange, initialLabel }) {
     const { data, isLoading } = useSeeAllEskulQuery();
     const eskulList = data?.data ?? [];
 
-    const filtered = eskulList.filter((k) => k.namaEskul.toLowerCase().includes(search.toLowerCase()));
+    const selectedEskul = eskulList.find((item) => item.id === value);
+    const displayValue = search || initialLabel || selectedEskul?.namaEskul || '';
+
+    const filtered = eskulList.filter((k) => k.namaEskul.toLowerCase().includes(displayValue.toLowerCase()));
 
     useEffect(() => {
         const handler = (e) => {
@@ -35,7 +38,7 @@ export default function EskulSearchDropdown({ value, onChange, initialLabel }) {
             <input
                 type="text"
                 placeholder="Cari eskul..."
-                value={search}
+                value={displayValue}
                 onChange={(e) => {
                     setSearch(e.target.value);
                     setOpen(true);
