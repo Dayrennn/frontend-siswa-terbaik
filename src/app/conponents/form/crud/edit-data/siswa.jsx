@@ -22,7 +22,7 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
                 namaSiswa,
                 tanggalLahir: tanggalLahir ? new Date(tanggalLahir).toISOString() : undefined,
                 eskulId,
-                tahunAjaranId
+                tahunAjaranId,
             };
 
             await updateSiswa(payload).unwrap();
@@ -61,6 +61,7 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
                 <label className="text-sm text-gray-600">Kelas</label>
                 <KelasSearchDropdown
                     value={kelasId}
+                    tahunAjaranId={tahunAjaranId}
                     initialLabel={
                         initialData?.kelas ? `${initialData.kelas.kodeKelas} - ${initialData.kelas.namaKelas}` : ''
                     }
@@ -70,10 +71,12 @@ export default function FormEditDataSiswa({ initialData, onSuccess, onCancel }) 
 
             <div>
                 <label className="text-sm text-gray-600">TahunAjaran</label>
-                <TahunAjaranSearchDropdown  
+                <TahunAjaranSearchDropdown
                     value={tahunAjaranId}
                     initialLabel={
-                        initialData?.tahunAjaran ? `${initialData.tahunAjaran.namaTahunAjaran} - ${initialData.tahunAjaran.status}` : ''
+                        initialData?.tahunAjaran
+                            ? `${initialData.tahunAjaran.namaTahunAjaran} - ${initialData.tahunAjaran.status}`
+                            : ''
                     }
                     onChange={(val) => setTahunAjaranId(val)}
                 />

@@ -1,24 +1,23 @@
 import { useState } from 'react';
-import { useModifyJadwalMutation } from '../../../../../hooks/api/jadwalSliceAPI'
+import { useModifyPelajaranMutation } from '@/src/hooks/api/pelajaranSliceAPI';
 import PelajaranSearchDropdown from '../../../ui/pelajaranSearchDropdown';
+import GuruSearchDropdown from '../../../ui/guruSearchDropdown';
 
 export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel }) {
-    const [hari, setHari] = useState(initialData?.hari || '');
-    const [jamMulai, setJamMulai] = useState(initialData?.jamMulai || '');
-    const [jamSelesai, setJamSelesai] = useState(initialData?.jamSelesai || '');
-    const [pelajaranId, setPelajaranId] = useState(initialData?.pelajaranId || '');
-    const [updateJadwal, { isLoading, isError, error }] = useModifyJadwalMutation();
+    const [namaPelajaran, setNamaPelajaran] = useState(initialData?.namaPelajaran || '');
+    const [kodePelajaran, setKodePelajaran] = useState(initialData?.kodePelajaran || '');
+    const [guruId, setGuruId] = useState(initialData?.pelajaranId || '');
+    const [updatePelajaran, { isLoading, isError, error }] = useModifyPelajaranMutation();
 
     const handleEdit = async (e) => {
         e.preventDefault();
 
         try {
-            const result = await updateJadwal({
+            const result = await updatePelajaran({
                 id: initialData.id,
-                hari,
-                jamMulai,
-                jamSelesai,
-                pelajaranId,
+                namaPelajaran,
+                kodePelajaran,
+                guruId,
             }).unwrap();
 
             // trigger modal sukses
@@ -31,44 +30,27 @@ export default function FormEditDataPelajaran({ initialData, onSuccess, onCancel
     return (
         <form onSubmit={handleEdit} className="space-y-4">
             <div>
-                <label className="text-sm text-gray-600">Hari</label>
-                <select
-                    value={hari}
-                    onChange={(e) => setHari(e.target.value)}
-                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
-                >
-                    <option value="">Pilih Hari</option>
-                    <option value="Senin">Senin</option>
-                    <option value="Selasa">Selasa</option>
-                    <option value="Rabu">Rabu</option>
-                    <option value="Kamis">Kamis</option>
-                    <option value="Jumat">Jumat</option>
-                    <option value="Sabtu">Sabtu</option>
-                    <option value="Minggu">Minggu</option>
-                </select>
-            </div>
-
-            <div>
-                <label className="text-sm text-gray-600">Jam Mulai</label>
+                <label className="text-sm text-gray-600">Nama Pelajaran</label>
                 <input
-                    type="time"
-                    value={jamMulai}
-                    onChange={(e) => setJamMulai(e.target.value)}
+                    type="text"
+                    placeholder="Masukkan Nama Tahun Ajaran"
+                    value={namaPelajaran}
+                    onChange={(e) => setNamaPelajaran(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
+                />
+            </div>
+            <div>
+                <label className="text-sm text-gray-600">Kode Pelajaran</label>
+                <input
+                    type="text"
+                    value={kodePelajaran}
+                    onChange={(e) => setKodePelajaran(e.target.value)}
                     className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
             <div>
-                <label className="text-sm text-gray-600">Jam Selesai</label>
-                <input
-                    type="time"
-                    value={jamSelesai}
-                    onChange={(e) => setJamSelesai(e.target.value)}
-                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
-                />
-            </div>
-            <div>
-                <label className="text-sm text-gray-600">Pelajaran</label>
-                <PelajaranSearchDropdown value={pelajaranId} onChange={(val) => setPelajaranId(val)} />
+                <label className="text-sm text-gray-600">Guru</label>
+                <GuruSearchDropdown value={guruId} onChange={(val) => setGuruId(val)} />
             </div>
 
             {/* Buttons */}

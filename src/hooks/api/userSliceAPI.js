@@ -67,12 +67,16 @@ export const userAPI = createApi({
             invalidatesTags: ['userAPI'],
         }),
         getAllWaliKelas: builder.mutation({
-            query:() => "/waliKelas",
-            providesTags: ["userAPI"]
+            query: () => '/waliKelas',
+            providesTags: ['userAPI'],
         }),
         getWaliKelasByKelas: builder.mutation({
             query: (kelasId) => `/waliKelas/${kelasId}`,
-            providesTags: ['userAPI']
+            providesTags: ['userAPI'],
+        }),
+        seeAllGuru: builder.query({
+            query: () => '/guru',
+            providesTags: ['userAPI'],
         }),
     }),
 });
@@ -88,5 +92,6 @@ export const {
     useLogoutMutation,
     useRemoveUserMutation,
     useGetAllWaliKelasMutation,
-    useGetWaliKelasByKelasMutation
+    useGetWaliKelasByKelasMutation,
+    useSeeAllGuruQuery,
 } = userAPI;

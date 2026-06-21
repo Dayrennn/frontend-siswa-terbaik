@@ -85,7 +85,7 @@ export default function FormTambahSiswa({ onSuccess, onCancel }) {
             {/* kelas */}
             <div>
                 <label className='text-sm text-gray-600'>Kelas</label>
-                <KelasSearchDropdown value={kelasId} onChange={(val) => setKelasId(val)} />
+                <KelasSearchDropdown value={kelasId} tahunAjaranId={tahunAjaranId} onChange={(val) => setKelasId(val)} />
             </div>
 
             {/* tahun ajaran */}

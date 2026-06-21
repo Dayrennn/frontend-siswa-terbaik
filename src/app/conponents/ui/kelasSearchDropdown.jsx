@@ -1,14 +1,22 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useGetAllKelasQuery } from '../../../hooks/api/kelasSliceAPI';
+import { useGetKelasByTahunAjaranQuery, useGetAllKelasQuery } from '../../../hooks/api/kelasSliceAPI';
 
-export default function KelasSearchDropdown({ value, onChange, initialLabel }) {
-     const [search, setSearch] = useState(initialLabel || value || ''); 
+export default function KelasSearchDropdown({ value, onChange, initialLabel, tahunAjaranId }) {
+    const [search, setSearch] = useState(initialLabel || value || '');
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef();
 
-    const { data, isLoading } = useGetAllKelasQuery();
+    const { data: dataByTahun, isLoading: loadingByTahun } =
+        useGetKelasByTahunAjaranQuery(tahunAjaranId, { skip: !tahunAjaranId });
+
+    const { data: dataAll, isLoading: loadingAll } = useGetAllKelasQuery(undefined, {
+        skip: Boolean(tahunAjaranId),
+    });
+
+    const data = dataByTahun ?? dataAll;
+    const isLoading = loadingByTahun || loadingAll;
     const kelasList = data?.data ?? [];
 
     const filtered = kelasList.filter(

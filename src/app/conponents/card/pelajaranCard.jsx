@@ -1,5 +1,5 @@
 export default function PelajaranCard({ item, onEdit, onRemove }) {
-    const guruList = item.user?.length > 0 ? item.user.map((u) => u.username).join(', ') : null;
+    const guruName = item.guru?.username ?? null;
 
     return (
         <div className="group relative bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-4 hover:shadow-lg hover:border-gray-200 transition-all duration-200">
@@ -46,8 +46,8 @@ export default function PelajaranCard({ item, onEdit, onRemove }) {
                         <circle cx="12" cy="7" r="4" />
                     </svg>
                 </span>
-                <span className={`truncate ${guruList ? 'text-gray-700 font-medium' : 'text-gray-400 italic'}`}>
-                    {guruList ?? 'Belum ada guru'}
+                <span className={`truncate ${guruName ? 'text-gray-700 font-medium' : 'text-gray-400 italic'}`}>
+                    {guruName ?? 'Belum ada guru'}
                 </span>
             </div>
 
