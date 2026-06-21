@@ -80,3 +80,8 @@ export const absenRekapBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/absen`,
     credentials: 'include',
 });
+
+export const nilaiBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/nilai`,
+    credentials: 'include',
+});

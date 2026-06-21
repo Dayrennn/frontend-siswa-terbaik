@@ -1,99 +1,75 @@
-import { useModifySiswaMutation } from '@/src/hooks/api/siswaSliceAPI';
 import { useState } from 'react';
+import { useSimpanNilaiRekapMutation } from '@/src/hooks/api/nilaiRekapSliceAPI';
 
-export default function FormEditNilaiSiswa({ initialData, onSuccess, onCancel }) {
-    const [nilai, setNilai] = useState(
-        initialData?.nilai?.map((n) => ({
-            pelajaranId: n.pelajaranId,
-            nilai: n.nilai,
-        })) || [],
-    );
+export default function FormEditNilai({ initialData, onSuccess, onCancel }) {
+    const [nilaiTugas, setNilaiTugas] = useState(initialData?.nilaiTugas || '');
+    const [nilaiUH, setNilaiUH] = useState(initialData?.nilaiUH || '');
+    const [nilaiUTS, setNilaiUTS] = useState(initialData?.nilaiUTS || '');
+    const [nilaiUAS, setNilaiUAS] = useState(initialData?.nilaiUAS || '');
 
-    const [nilaiKriteria, setNilaiKriteria] = useState(
-        initialData?.nilaiKriteria?.map((n) => ({
-            kriteriaId: n.kriteriaId,
-            nilai: n.nilai,
-        })),
-    );
-
-    const [updateNilai, { isLoading, isError, error }] = useModifySiswaMutation();
-
-    const handleNilai = (pelajaranId, value) => {
-        setNilai((prev) => prev.map((n) => (n.pelajaranId === pelajaranId ? { ...n, nilai: Number(value) } : n)));
-    };
-
-    const handleNilaiKriteria = (kriteriaId, value) => {
-        setNilaiKriteria((prev) => prev.map((n) => (n.kriteriaId === kriteriaId ? { ...n, nilai: Number(value) } : n)));
-    };
+    const [updateNilai, { isLoading, isError, error }] = useSimpanNilaiRekapMutation();
 
     const handleEdit = async (e) => {
         e.preventDefault();
-
         try {
-            const payload = {
-                id: initialData.id,
-                nilai,
-                nilaiKriteria,
-            };
-
-            await updateNilai(payload).unwrap();
-            if (onSuccess) onSuccess(payload);
+            const result = await updateNilai({
+                siswaId: initialData.siswaId,
+                pelajaranId: initialData.pelajaranId,
+                data: {
+                    nilaiTugas: Number(nilaiTugas),
+                    nilaiUH: Number(nilaiUH),
+                    nilaiUTS: Number(nilaiUTS),
+                    nilaiUAS: Number(nilaiUAS),
+                },
+            }).unwrap();
+            if (onSuccess) onSuccess(result);
         } catch (err) {
-            console.error('Status:', err?.status);
+            console.error('ERROR', err);
         }
     };
-
     return (
         <form onSubmit={handleEdit} className="space-y-4">
-            {/* Nilai per Pelajaran */}
             <div>
-                <label className="text-sm text-gray-600">Nilai</label>
-                <div className="mt-1 space-y-2 max-h-48 overflow-y-auto pr-1">
-                    {initialData?.nilai?.map((n) => (
-                        <div key={n.pelajaranId} className="flex items-center gap-3">
-                            <span className="text-sm text-gray-600 flex-1">{n.pelajaran.namaPelajaran}</span>
-                            <input
-                                type="number"
-                                min={0}
-                                max={100}
-                                value={nilai.find((v) => v.pelajaranId === n.pelajaranId)?.nilai ?? 0}
-                                onChange={(e) => handleNilai(n.pelajaranId, e.target.value)}
-                                className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 text-sm"
-                            />
-                        </div>
-                    ))}
-                </div>
+                <label className="text-sm text-gray-600">Nilai Tugas</label>
+                <input
+                    type="number"
+                    placeholder="Masukkan Nilai Tugas"
+                    value={nilaiTugas}
+                    onChange={(e) => setNilaiTugas(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
+                />
+            </div>
+            <div>
+                <label className="text-sm text-gray-600">Nilai UH</label>
+                <input
+                    type="number"
+                    placeholder="Masukkan Nilai UH"
+                    value={nilaiUH}
+                    onChange={(e) => setNilaiUH(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
+                />
+            </div>
+            <div>
+                <label className="text-sm text-gray-600">Nilai UTS</label>
+                <input
+                    type="number"
+                    placeholder="Masukkan nilai UTS"
+                    value={nilaiUTS}
+                    onChange={(e) => setNilaiUTS(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
+                />
+            </div>
+            <div>
+                <label className="text-sm text-gray-600">Nilai UAS</label>
+                <input
+                    type="number"
+                    placeholder="Masukkan nilai UAS"
+                    value={nilaiUAS}
+                    onChange={(e) => setNilaiUAS(e.target.value)}
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
+                />
             </div>
 
-            {initialData?.nilaiKriteria?.length > 0 && (
-                <div>
-                    <label className="text-sm text-gray-600">Nilai Kriteria</label>
-                    <div className="mt-1 space-y-2 max-h-48 overflow-y-auto pr-1">
-                        {initialData?.nilaiKriteria?.map((n) => (
-                            <div key={n.kriteriaId} className="flex items-center gap-3">
-                                <span className="text-sm text-gray-600 flex-1">
-                                    {n.kriteria.namaKriteria}
-                                    <span
-                                        className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${n.kriteria.jenis === 'Benefit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}
-                                    >
-                                        {n.kriteria.jenis}
-                                    </span>
-                                </span>
-                                <input
-                                    type="number"
-                                    min={0}
-                                    max={100}
-                                    value={nilaiKriteria.find((v) => v.kriteriaId === n.kriteriaId)?.nilai ?? 0}
-                                    onChange={(e) => handleNilaiKriteria(n.kriteriaId, e.target.value)}
-                                    className="w-20 px-3 py-1.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 text-sm"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Buttons */}
             <div className="flex gap-3">
                 <button
                     onClick={onCancel}
@@ -103,16 +79,15 @@ export default function FormEditNilaiSiswa({ initialData, onSuccess, onCancel })
                 >
                     Batal
                 </button>
+
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
                 >
-                    {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
+                    {isLoading ? 'Menyimpan...' : 'Simpan Data'}
                 </button>
             </div>
-
-            {/* Error */}
             {isError && (
                 <p className="text-red-500 text-sm text-center">{error?.data?.message || 'Terjadi kesalahan'}</p>
             )}
