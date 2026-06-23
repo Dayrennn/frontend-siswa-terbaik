@@ -1,9 +1,9 @@
 export default function EskulCard({ rekap, onEdit }) {
     const keteranganColor = {
         'Sangat Baik': 'bg-green-50 text-green-700',
-        Baik: 'bg-blue-50 text-blue-700',
-        Cukup: 'bg-amber-50 text-amber-700',
-        Buruk: 'bg-red-50 text-red-600',
+        "Baik": 'bg-blue-50 text-blue-700',
+        "Cukup": 'bg-amber-50 text-amber-700',
+        "Buruk": 'bg-red-50 text-red-600',
         'Sangat Buruk': 'bg-red-100 text-red-700',
     };
 
