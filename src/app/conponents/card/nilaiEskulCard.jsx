@@ -1,9 +1,9 @@
 export default function EskulCard({ rekap, onEdit }) {
     const keteranganColor = {
         'Sangat Baik': 'bg-green-50 text-green-700',
-        "Baik": 'bg-blue-50 text-blue-700',
-        "Cukup": 'bg-amber-50 text-amber-700',
-        "Buruk": 'bg-red-50 text-red-600',
+        Baik: 'bg-blue-50 text-blue-700',
+        Cukup: 'bg-amber-50 text-amber-700',
+        Buruk: 'bg-red-50 text-red-600',
         'Sangat Buruk': 'bg-red-100 text-red-700',
     };
 
@@ -44,9 +44,10 @@ export default function EskulCard({ rekap, onEdit }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-6 gap-2">
                 {[
                     { label: 'Nilai Akhir', value: rekap.nilaiAkhir ?? '-', color: 'bg-gray-50 text-gray-700' },
+                    { label: 'Performa', value: rekap.nilaiPerforma ?? '-', color: 'bg-purple-50 text-purple-700' },
                     { label: 'Hadir', value: rekap.totalHadir, color: 'bg-green-50 text-green-700' },
                     { label: 'Sakit', value: rekap.totalSakit, color: 'bg-blue-50 text-blue-700' },
                     { label: 'Izin', value: rekap.totalIzin, color: 'bg-amber-50 text-amber-700' },

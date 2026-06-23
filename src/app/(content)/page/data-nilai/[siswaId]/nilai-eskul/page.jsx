@@ -7,9 +7,8 @@ import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { FaUserPlus } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
-import NilaiCard from '@/src/app/conponents/card/nilaiCard';
-import FormEditNilai from '@/src/app/conponents/form/crud/edit-data/nilai';
 import EskulCard from '@/src/app/conponents/card/nilaiEskulCard';
+import FormEditNilaiEskul from '@/src/app/conponents/form/crud/edit-data/nilaiEskul';
 
 export default function DetailNilaiSiswa() {
     const dispatch = useDispatch();
@@ -22,7 +21,6 @@ export default function DetailNilaiSiswa() {
     if (isLoading) return <p className="text-center text-gray-400 py-12 text-sm">Memuat data...</p>;
     if (isError || !siswa) return <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>;
 
-    const { ringkasan } = siswa;
     const inisial = siswa.namaSiswa
         .split(' ')
         .slice(0, 2)
@@ -42,7 +40,7 @@ export default function DetailNilaiSiswa() {
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="mx-auto max-w-4xl">
                 <Link
-                    href="/page/data-absen"
+                    href="/page/data-nilai"
                     className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors"
                 >
                     ← Kembali
@@ -80,7 +78,7 @@ export default function DetailNilaiSiswa() {
                     onCancel={() => setShowEditModal(false)}
                     icon={<FaUserPlus />}
                     title="Edit Absen"
-                    formEdit={FormEditNilai}
+                    formEdit={FormEditNilaiEskul}
                     initialData={selectedSiswa}
                     successTitle="Absen Berhasil di Update"
                     successMessage="Berhasil"

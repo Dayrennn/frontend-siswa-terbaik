@@ -41,7 +41,7 @@ export default function DetailNilaiSiswa() {
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="mx-auto max-w-4xl">
                 <Link
-                    href="/page/data-absen"
+                    href="/page/data-nilai"
                     className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors"
                 >
                     ← Kembali
