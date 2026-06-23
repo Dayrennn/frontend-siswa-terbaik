@@ -9,8 +9,8 @@ export const nilaiEskulAPI = createApi({
     tagTypes: ['nilaiEskulAPI'],
     endpoints: (builder) => ({
         inputNilaiEskul: builder.mutation({
-            query: (data) => ({
-                url: '/simpan',
+            query: ({ siswaId, eskulId, data }) => ({
+                url: `/simpan/${siswaId}/nilai-eskul/${eskulId}`,
                 method: 'POST',
                 body: data,
             }),
