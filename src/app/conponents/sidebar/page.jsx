@@ -45,6 +45,7 @@ const menuItems = [
             { menu: 'Data Pelanggaran', link: '/page/data-pelanggaran' },
             { menu: 'Data Eskul', link: '/page/data-eskul' },
             { menu: 'Data Absen', link: '/page/data-absen' },
+            { menu: 'Data Hafalan', link: '/page/data-hafalan' },
         ],
     },
 

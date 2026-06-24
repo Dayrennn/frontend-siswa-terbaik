@@ -10,7 +10,8 @@ export const hafalanAPI = createApi({
     endpoints: (builder) => ({
         simpanHafalan: builder.mutation({
             query: ({ siswaId, data }) => ({
-                url: `/simpan/${siswaId}`,
+                url: "/simpan",
+                params: { siswaId },
                 method: 'POST',
                 body: data,
             }),

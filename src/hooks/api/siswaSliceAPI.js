@@ -54,6 +54,10 @@ export const siswaAPI = createApi({
             }),
             providesTags: ['siswaAPI'],
         }),
+        seeAllSiswaByHafalan: builder.query({
+            query: () => '/hafalan',
+            providesTags: ['siswaAPI'],
+        }),
     }),
 });
 
@@ -66,4 +70,5 @@ export const {
     useSeeAllSiswaByTahunAjaranQuery,
     useSeeAllSiswaByTahunAjaranAndKelasQuery,
     useSeeAllSiswaByEskulQuery,
+    useSeeAllSiswaByHafalanQuery
 } = siswaAPI;
