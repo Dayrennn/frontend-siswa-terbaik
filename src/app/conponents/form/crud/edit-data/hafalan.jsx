@@ -23,7 +23,7 @@ export default function FormEditHafalan({ initialData, onSuccess, onCancel }) {
                 <label className="text-sm text-gray-600">Jumlah Juz</label>
                 <input
                     type="Number"
-                    placeholder="Masukkan Nama Tahun Ajaran"
+                    placeholder="Masukkan Jumlah Hafalan"
                     value={jumlahJuz}
                     onChange={(e) => setJumlahJuz(e.target.value)}
                     className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
