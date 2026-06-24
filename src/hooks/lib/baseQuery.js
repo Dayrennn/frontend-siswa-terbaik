@@ -85,3 +85,8 @@ export const nilaiBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/nilai`,
     credentials: 'include',
 });
+
+export const hafalanBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/hafalan`,
+    credentials: 'include',
+});
