@@ -58,6 +58,14 @@ export const siswaAPI = createApi({
             query: () => '/hafalan',
             providesTags: ['siswaAPI'],
         }),
+        seeRankingKelas: builder.query({
+            query: ({ tahunAjaranId, kelasId }) => `/ranking/kelas/${tahunAjaranId}/${kelasId}`,
+            providesTags: ['siswaAPI'],
+        }),
+        seeRankingAngkatan: builder.query({
+            query: (tahunAjaranId) => `/ranking/angkatan/${tahunAjaranId}`,
+            providesTags: ['siswaAPI'],
+        }),
     }),
 });
 
@@ -70,5 +78,7 @@ export const {
     useSeeAllSiswaByTahunAjaranQuery,
     useSeeAllSiswaByTahunAjaranAndKelasQuery,
     useSeeAllSiswaByEskulQuery,
-    useSeeAllSiswaByHafalanQuery
+    useSeeAllSiswaByHafalanQuery,
+    useSeeRankingKelasQuery,
+    useSeeRankingAngkatanQuery,
 } = siswaAPI;

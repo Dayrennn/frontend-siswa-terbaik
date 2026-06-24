@@ -56,7 +56,7 @@ const menuItems = [
         children: [
             { menu: 'Data Kriteria', link: '/page/data-kriteria' },
             { menu: 'Data Nilai', link: '/page/data-nilai' },
-            { menu: 'Data Ranking', link: '/page/data-ranking' },
+            { menu: 'Ranking & SMART', link: '/page/data-ranking' },
             { menu: 'Hitung Nilai', link: '/page/hitung-nilai' },
         ],
     },
@@ -91,20 +91,6 @@ export default function Sidebar() {
     const toggleMenu = (menu) => {
         setOpenMenus((prev) => (prev.includes(menu) ? prev.filter((m) => m !== menu) : [...prev, menu]));
     };
-
-    useEffect(() => {
-        setOpenMenus((prev) => {
-            const activeMenus = [...prev];
-
-            filteredMenu.forEach((item) => {
-                if (item.children?.some((c) => c.link === pathname) && !activeMenus.includes(item.menu)) {
-                    activeMenus.push(item.menu);
-                }
-            });
-
-            return activeMenus;
-        });
-    }, [pathname]);
 
     /* CLOSE MOBILE SAAT DESKTOP */
     useEffect(() => {
@@ -219,7 +205,7 @@ export default function Sidebar() {
                                     {/* ROTATE ICON */}
                                     <FaChevronDown
                                         className={`transition-transform duration-300 ${
-                                            openMenus.includes(item.menu) ? 'rotate-180' : ''
+                                            openMenus.includes(item.menu) || isParentActive ? 'rotate-180' : ''
                                         }`}
                                     />
                                 </button>
@@ -227,7 +213,7 @@ export default function Sidebar() {
                                 {/* CHILD WITH ANIMATION */}
                                 <div
                                     className={`ml-6 overflow-hidden transition-all duration-300
-                    ${openMenus.includes(item.menu) ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
+                    ${openMenus.includes(item.menu) || isParentActive ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
                                 >
                                     <div className="space-y-1">
                                         {item.children.map((child) => {
