@@ -90,3 +90,8 @@ export const hafalanBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/hafalan`,
     credentials: 'include',
 });
+
+export const homeBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/home`,
+    credentials: 'include',
+});
