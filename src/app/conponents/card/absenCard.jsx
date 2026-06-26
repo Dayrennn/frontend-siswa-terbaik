@@ -1,6 +1,6 @@
 export default function AbsenCard({ rekap, onEdit, user }) {
     const isAdmin = user?.role === 'Admin';
-    const isGuru = user?.role === 'Guru';
+    const WaliKelas = user?.role === 'Guru';
 
     return (
         <div className="bg-white border border-gray-100 rounded-2xl p-5">
@@ -25,7 +25,7 @@ export default function AbsenCard({ rekap, onEdit, user }) {
                         </span>
                     </div>
                 </div>
-                {isAdmin || isGuru && (
+                {isAdmin || WaliKelas && (
                     <button
                         onClick={() => onEdit(rekap)}
                         className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"

@@ -3,13 +3,13 @@ import JuzProgress from '../ui/progress';
 
 export default function HafalanCard({ siswa, onEdit, user }) {
     const isAdmin = user?.role === 'Admin';
-    const isGuru = user?.role === 'Guru';
+    const WaliKelas = user?.role === 'Guru';
     const initial = siswa.namaSiswa?.charAt(0)?.toUpperCase() ?? '?';
 
     return (
         <div className="group relative rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#0F4C42]/30">
             {isAdmin ||
-                (isGuru && (
+                (WaliKelas && (
                     <button
                         type="button"
                         onClick={() => onEdit(siswa)}
