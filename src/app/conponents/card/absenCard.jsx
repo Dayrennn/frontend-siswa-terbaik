@@ -1,4 +1,7 @@
-export default function AbsenCard({ rekap, onEdit }) {
+export default function AbsenCard({ rekap, onEdit, user }) {
+    const isAdmin = user?.role === 'Admin';
+    const isGuru = user?.role === 'Guru';
+
     return (
         <div className="bg-white border border-gray-100 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
@@ -22,12 +25,14 @@ export default function AbsenCard({ rekap, onEdit }) {
                         </span>
                     </div>
                 </div>
-                <button
-                    onClick={() => onEdit(rekap)}
-                    className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"
-                >
-                    Edit
-                </button>
+                {isAdmin || isGuru && (
+                    <button
+                        onClick={() => onEdit(rekap)}
+                        className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"
+                    >
+                        Edit
+                    </button>
+                )}
             </div>
 
             <div className="grid grid-cols-5 gap-2 mb-4">

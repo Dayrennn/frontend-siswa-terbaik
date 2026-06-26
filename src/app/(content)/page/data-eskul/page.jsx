@@ -5,15 +5,17 @@ import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 
-import {
-    useSeeAllEskulQuery,
-    useRemoveEskulMutation,
-} from '@/src/hooks/api/eskulSliceAPI';
+import { useSeeAllEskulQuery, useRemoveEskulMutation } from '@/src/hooks/api/eskulSliceAPI';
 import { FaUserPlus } from 'react-icons/fa';
 import FormEditDataEskul from '@/src/app/conponents/form/crud/edit-data/eskul';
 import FormTambahEskul from '@/src/app/conponents/form/crud/tambah-data/eskul';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 export default function DataEskul() {
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
+
     const [search, setSearch] = useState('');
     const [showModalTambah, setShowModalTambah] = useState(false);
     const [showModalEdit, setShowModalEdit] = useState(false);
@@ -64,21 +66,23 @@ export default function DataEskul() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="flex-1 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button
-                    onClick={handleAdd}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                {isAdmin && (
+                    <button
+                        onClick={handleAdd}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Eskul
-                </button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Eskul
+                    </button>
+                )}
             </div>
 
             {/* Content */}
@@ -117,7 +121,9 @@ export default function DataEskul() {
                             <tr className="bg-gray-50 border-b border-gray-200">
                                 <th className="text-left px-5 py-3 text-gray-500 font-medium w-10">No</th>
                                 <th className="text-left px-5 py-3 text-gray-500 font-medium">Nama Eskul</th>
-                                <th className="text-left px-5 py-3 text-gray-500 font-medium w-32">Aksi</th>
+                                {isAdmin && (
+                                    <th className="text-left px-5 py-3 text-gray-500 font-medium w-32">Aksi</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -132,22 +138,24 @@ export default function DataEskul() {
                                             <span className="text-gray-700 font-medium">{item.namaEskul}</span>
                                         </div>
                                     </td>
-                                    <td className="px-5 py-3.5">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleEdit(item)}
-                                                className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleRemove(item)}
-                                                className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                                            >
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    </td>
+                                    {isAdmin && (
+                                        <td className="px-5 py-3.5">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(item)}
+                                                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRemove(item)}
+                                                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                                                >
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>

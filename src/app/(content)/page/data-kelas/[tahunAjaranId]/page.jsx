@@ -2,22 +2,24 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-
 import Table from '../../../../conponents/table/page';
 import Link from 'next/link';
-
 import { useGetKelasByTahunAjaranQuery, useRemoveKelasMutation } from '../../../../../hooks/api/kelasSliceAPI';
 import { useGetTahunAjaranByIdQuery } from '../../../../../hooks/api/tahunAjaranSliceAPI';
-
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahDataKelas from '@/src/app/conponents/form/crud/tambah-data/kelas';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
+import { useSelector } from 'react-redux';
 
 export default function DataKehadiranByTahunAjaran() {
     const { tahunAjaranId } = useParams();
 
-    const [selectedId, setSelectedId] = useState(null)
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
+
+    const [selectedId, setSelectedId] = useState(null);
 
     const [search, setSearch] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -68,15 +70,17 @@ export default function DataKehadiranByTahunAjaran() {
                             Lihat Data →
                         </span>
                     </Link>
-                    <button
-                        onClick={() => {
-                            setSelectedId(row.id);
-                            setShowDeleteModal(true);
-                        }}
-                        className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
-                    >
-                        Hapus
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => {
+                                setSelectedId(row.id);
+                                setShowDeleteModal(true);
+                            }}
+                            className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                        >
+                            Hapus
+                        </button>
+                    )}
                 </div>
             ),
         },
@@ -118,12 +122,14 @@ export default function DataKehadiranByTahunAjaran() {
                                     className="w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
                                 />
                             </div>
-                            <button
-                                onClick={() => setShowCreateModal(true)}
-                                className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                            >
-                                + Tambah
-                            </button>
+                            {isAdmin && (
+                                <button
+                                    onClick={() => setShowCreateModal(true)}
+                                    className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                                >
+                                    + Tambah
+                                </button>
+                            )}
                         </div>
 
                         {/* Table */}

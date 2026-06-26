@@ -10,6 +10,8 @@ import Table from '@/src/app/conponents/table/page';
 import FormTambahSiswa from '@/src/app/conponents/form/crud/tambah-data/siswa';
 import FormEditDataSiswa from '@/src/app/conponents/form/crud/edit-data/siswa';
 import { exportToExcel } from '@/src/hooks/utils/excelHelper';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
+import { useSelector } from 'react-redux';
 
 export default function DataSemuaSiswa() {
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -19,6 +21,9 @@ export default function DataSemuaSiswa() {
 
     const [deleteSiswa] = useRemoveSiswaMutation();
     const [removeSiswa, setRemoveSiswa] = useState(null);
+
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
 
     const handleRemove = (siswa) => {
         setRemoveSiswa(siswa);
@@ -78,7 +83,7 @@ export default function DataSemuaSiswa() {
                 </span>
             ),
         },
-        {
+        isAdmin && {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
@@ -143,20 +148,22 @@ export default function DataSemuaSiswa() {
                             </div>
 
                             {/* Buttons */}
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={handleExport}
-                                    className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
-                                >
-                                    📤 Export
-                                </button>
-                                <button
-                                    onClick={() => setShowCreateModal(true)}
-                                    className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
-                                >
-                                    Tambah Siswa
-                                </button>
-                            </div>
+                            {isAdmin && (
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={handleExport}
+                                        className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                                    >
+                                        📤 Export
+                                    </button>
+                                    <button
+                                        onClick={() => setShowCreateModal(true)}
+                                        className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                                    >
+                                        Tambah Siswa
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Table */}

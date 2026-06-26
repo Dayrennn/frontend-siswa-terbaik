@@ -18,9 +18,9 @@ export default function AdminPage() {
             value: homeData?.data?.totalSiswa ?? 0,
         },
         {
-            title: 'Total User',
+            title: 'Total Pelajaran',
             icon: FaChalkboardTeacher,
-            value: homeData?.data?.totalUser ?? 0,
+            value: homeData?.data?.totalPelajaran ?? 0,
         },
         {
             title: 'Data Kriteria',

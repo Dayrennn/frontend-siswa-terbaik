@@ -19,55 +19,6 @@ import { useLogoutMutation } from '../../../hooks/api/userSliceAPI';
 import { useState, useEffect } from 'react';
 import LogoutModal from '../modal/logoutModal';
 
-const menuItems = [
-    {
-        menu: 'Dashboard',
-        icon: FaHome,
-        roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
-        links: {
-            Admin: '/dashboard/admin',
-            Guru: '/dashboard/guru',
-            WaliKelas: '/dashboard/wali-kelas',
-            KepalaSekolah: '/dashboard/kepala-sekolah',
-            WakilKepalaSekolah: '/dashboard/wakil-kepala-sekolah',
-        },
-    },
-
-    {
-        menu: 'Menu Siswa',
-        icon: FaUsers,
-        roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
-        children: [
-            { menu: 'Data Pelajaran', link: '/page/data-pelajaran' },
-            { menu: 'Data Siswa', link: '/page/data-siswa' },
-            { menu: 'Data Kelas', link: '/page/data-kelas' },
-            { menu: 'Data Tahun Ajaran', link: '/page/tahun-ajaran' },
-            { menu: 'Data Pelanggaran', link: '/page/data-pelanggaran' },
-            { menu: 'Data Eskul', link: '/page/data-eskul' },
-            { menu: 'Data Absen', link: '/page/data-absen' },
-            { menu: 'Data Hafalan', link: '/page/data-hafalan' },
-        ],
-    },
-
-    {
-        menu: 'Penilaian',
-        icon: FaClipboardList,
-        roles: ['Admin', 'Guru', 'WaliKelas', 'KepalaSekolah', 'WakilKepalaSekolah'],
-        children: [
-            { menu: 'Data Kriteria', link: '/page/data-kriteria' },
-            { menu: 'Data Nilai', link: '/page/data-nilai' },
-            { menu: 'Ranking & SMART', link: '/page/data-ranking' },
-            { menu: 'Hitung Nilai', link: '/page/hitung-nilai' },
-        ],
-    },
-    {
-        menu: 'Master Data',
-        icon: FaUsers,
-        roles: ['Admin'],
-        children: [{ menu: 'Data User', link: '/page/data-user' }],
-    },
-];
-
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const [openMenus, setOpenMenus] = useState([]);
@@ -76,23 +27,29 @@ export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const dispatch = useDispatch();
-    const user = useSelector(selectUser);
+    const user = useSelector(selectUser); // ngambil dari redux
     const [logoutApi, { isLoading: isLogoutLoading }] = useLogoutMutation();
 
-    /* FILTER ROLE */
-    const filteredMenu = menuItems
-        .filter((item) => item.roles.includes(user?.role))
-        .map((item) => ({
-            ...item,
-            link: item.links ? item.links[user?.role] : item.links,
-        }));
+    const isAdmin = user?.role === 'Admin';
+    const isGuru = user?.role === 'Guru';
+    const isWaliKelas = user?.role === 'WaliKelas';
+    const isKepalaSekolah = user?.role === 'KepalaSekolah';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isAll = isAdmin || isGuru || isWaliKelas || isKepalaSekolah || isWakilKepalaSekolah;
 
-    /* TOGGLE MENU (MULTI) */
+    const dashboardLink =
+        isAdmin ? '/dashboard/admin' :
+        isGuru ? '/dashboard/guru' :
+        isWaliKelas ? '/dashboard/wali-kelas' :
+        isKepalaSekolah ? '/dashboard/kepala-sekolah' :
+        isWakilKepalaSekolah ? '/dashboard/wakil-kepala-sekolah' : '/';
+
     const toggleMenu = (menu) => {
         setOpenMenus((prev) => (prev.includes(menu) ? prev.filter((m) => m !== menu) : [...prev, menu]));
     };
 
-    /* CLOSE MOBILE SAAT DESKTOP */
+    const isMenuOpen = (name) => openMenus.includes(name);
+
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 768) setIsOpen(false);
@@ -101,7 +58,6 @@ export default function Sidebar() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    /* LOGOUT */
     const handleLogout = async () => {
         try {
             await logoutApi().unwrap();
@@ -114,7 +70,6 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* MODAL */}
             {showLogoutModal && (
                 <LogoutModal
                     onConfirm={handleLogout}
@@ -123,7 +78,6 @@ export default function Sidebar() {
                 />
             )}
 
-            {/* MOBILE BUTTON */}
             <button
                 className="fixed top-4 left-4 z-50 bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg md:hidden"
                 onClick={() => setIsOpen(!isOpen)}
@@ -131,14 +85,11 @@ export default function Sidebar() {
                 {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
             </button>
 
-            {/* SIDEBAR */}
             <aside
                 className={`fixed top-0 left-0 h-full z-40 transition-transform duration-300
-        w-[80%] sm:w-64 md:w-60 flex flex-col
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
-                style={{
-                    background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%)',
-                }}
+                    w-[80%] sm:w-64 md:w-60 flex flex-col
+                    ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+                style={{ background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%)' }}
             >
                 {/* LOGO */}
                 <div className="h-16 flex items-center gap-3 px-5 border-b border-white/10 shrink-0">
@@ -152,95 +103,201 @@ export default function Sidebar() {
                 </div>
 
                 {/* MENU */}
-                <nav
-                    className="
-          flex-1 overflow-y-auto p-3 mt-2 space-y-1
-          [&::-webkit-scrollbar]:w-1.5
-          [&::-webkit-scrollbar-thumb]:bg-indigo-500
-          [&::-webkit-scrollbar-thumb]:rounded-full
-        "
-                >
+                <nav className="flex-1 overflow-y-auto p-3 mt-2 space-y-1
+                    [&::-webkit-scrollbar]:w-1.5
+                    [&::-webkit-scrollbar-thumb]:bg-indigo-500
+                    [&::-webkit-scrollbar-thumb]:rounded-full">
+
                     <p className="text-indigo-400 text-xs font-semibold px-3 mb-2 uppercase tracking-widest">Menu</p>
 
-                    {filteredMenu.map((item) => {
-                        const Icon = item.icon;
+                    {/* DASHBOARD */}
+                    {isAll && (
+                        <Link
+                            href={dashboardLink}
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                                ${pathname === dashboardLink ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
+                        >
+                            <FaHome />
+                            Dashboard
+                        </Link>
+                    )}
 
-                        /* SINGLE */
-                        if (!item.children) {
-                            const isActive = pathname === item.link;
+                    {/* MENU SISWA */}
+                    {isAll && (
+                        <div>
+                            <button
+                                onClick={() => toggleMenu('Menu Siswa')}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
+                                    ${pathname.startsWith('/page/data-pelajaran') || pathname.startsWith('/page/data-siswa') || pathname.startsWith('/page/data-kelas') || pathname.startsWith('/page/tahun-ajaran') || pathname.startsWith('/page/data-pelanggaran') || pathname.startsWith('/page/data-eskul') || pathname.startsWith('/page/data-absen') || pathname.startsWith('/page/data-hafalan')
+                                        ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
+                            >
+                                <div className="flex items-center gap-3"><FaUsers />Menu Siswa</div>
+                                <FaChevronDown className={`transition-transform duration-300
+                                    ${isMenuOpen('Menu Siswa') || pathname.startsWith('/page/data-pelajaran') || pathname.startsWith('/page/data-siswa') || pathname.startsWith('/page/data-kelas') || pathname.startsWith('/page/tahun-ajaran') || pathname.startsWith('/page/data-pelanggaran') || pathname.startsWith('/page/data-eskul') || pathname.startsWith('/page/data-absen') || pathname.startsWith('/page/data-hafalan') ? 'rotate-180' : ''}`}
+                                />
+                            </button>
 
-                            return (
-                                <Link
-                                    key={item.menu}
-                                    href={item.link}
-                                    onClick={() => setIsOpen(false)}
-                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                    ${isActive ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
-                                >
-                                    <Icon />
-                                    {item.menu}
-                                </Link>
-                            );
-                        }
+                            <div className={`ml-6 overflow-hidden transition-all duration-300
+                                ${isMenuOpen('Menu Siswa') || pathname.startsWith('/page/data-pelajaran') || pathname.startsWith('/page/data-siswa') || pathname.startsWith('/page/data-kelas') || pathname.startsWith('/page/tahun-ajaran') || pathname.startsWith('/page/data-pelanggaran') || pathname.startsWith('/page/data-eskul') || pathname.startsWith('/page/data-absen') || pathname.startsWith('/page/data-hafalan') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
+                                <div className="space-y-1">
 
-                        const isParentActive = item.children.some(
-                            (child) => pathname === child.link || pathname.startsWith(child.link + '/'),
-                        );
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-pelajaran" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-pelajaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Pelajaran
+                                        </Link>
+                                    )}
 
-                        return (
-                            <div key={item.menu}>
-                                {/* PARENT */}
-                                <button
-                                    onClick={() => toggleMenu(item.menu)}
-                                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
-                    ${
-                        isParentActive ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                    }`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Icon />
-                                        {item.menu}
-                                    </div>
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-siswa" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-siswa') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Siswa
+                                        </Link>
+                                    )}
 
-                                    {/* ROTATE ICON */}
-                                    <FaChevronDown
-                                        className={`transition-transform duration-300 ${
-                                            openMenus.includes(item.menu) || isParentActive ? 'rotate-180' : ''
-                                        }`}
-                                    />
-                                </button>
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-kelas" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-kelas') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Kelas
+                                        </Link>
+                                    )}
 
-                                {/* CHILD WITH ANIMATION */}
-                                <div
-                                    className={`ml-6 overflow-hidden transition-all duration-300
-                    ${openMenus.includes(item.menu) || isParentActive ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
-                                >
-                                    <div className="space-y-1">
-                                        {item.children.map((child) => {
-                                            const isActive =
-                                                pathname === child.link || pathname.startsWith(child.link + '/');
+                                    {isAdmin && (
+                                        <Link href="/page/tahun-ajaran" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/tahun-ajaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Tahun Ajaran
+                                        </Link>
+                                    )}
 
-                                            return (
-                                                <Link
-                                                    key={child.menu}
-                                                    href={child.link}
-                                                    onClick={() => setIsOpen(false)}
-                                                    className={`block px-3 py-2 rounded-lg text-sm
-                            ${
-                                isActive
-                                    ? 'bg-white/20 text-white'
-                                    : 'text-indigo-300 hover:bg-white/10 hover:text-white'
-                            }`}
-                                                >
-                                                    {child.menu}
-                                                </Link>
-                                            );
-                                        })}
-                                    </div>
+                                    {isAdmin && (
+                                        <Link href="/page/data-pelanggaran" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-pelanggaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Pelanggaran
+                                        </Link>
+                                    )}
+
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-eskul" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-eskul') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Eskul
+                                        </Link>
+                                    )}
+
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-absen" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-absen') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Absen
+                                        </Link>
+                                    )}
+
+                                    {(isAdmin || isGuru) && (
+                                        <Link href="/page/data-hafalan" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-hafalan') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Hafalan
+                                        </Link>
+                                    )}
+
                                 </div>
                             </div>
-                        );
-                    })}
+                        </div>
+                    )}
+
+                    {/* PENILAIAN */}
+                    {isAll && (
+                        <div>
+                            <button
+                                onClick={() => toggleMenu('Penilaian')}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
+                                    ${pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai')
+                                        ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
+                            >
+                                <div className="flex items-center gap-3"><FaClipboardList />Penilaian</div>
+                                <FaChevronDown className={`transition-transform duration-300
+                                    ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai') ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+
+                            <div className={`ml-6 overflow-hidden transition-all duration-300
+                                ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
+                                <div className="space-y-1">
+
+                                    {isAdmin && (
+                                        <Link href="/page/data-kriteria" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-kriteria') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Kriteria
+                                        </Link>
+                                    )}
+
+                                    {isAdmin && (
+                                        <Link href="/page/data-nilai" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-nilai') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data Nilai
+                                        </Link>
+                                    )}
+
+                                    {isAdmin && (
+                                        <Link href="/page/data-ranking" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-ranking') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Ranking & SMART
+                                        </Link>
+                                    )}
+
+                                    {isAdmin && (
+                                        <Link href="/page/hitung-nilai" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/hitung-nilai') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Hitung Nilai
+                                        </Link>
+                                    )}
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* MASTER DATA - Admin only */}
+                    {isAdmin && (
+                        <div>
+                            <button
+                                onClick={() => toggleMenu('Master Data')}
+                                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
+                                    ${pathname.startsWith('/page/data-user') ? 'bg-white/20 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
+                            >
+                                <div className="flex items-center gap-3"><FaUsers />Master Data</div>
+                                <FaChevronDown className={`transition-transform duration-300
+                                    ${isMenuOpen('Master Data') || pathname.startsWith('/page/data-user') ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+
+                            <div className={`ml-6 overflow-hidden transition-all duration-300
+                                ${isMenuOpen('Master Data') || pathname.startsWith('/page/data-user') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
+                                <div className="space-y-1">
+
+                                    {isAdmin && (
+                                        <Link href="/page/data-user" onClick={() => setIsOpen(false)}
+                                            className={`block px-3 py-2 rounded-lg text-sm
+                                                ${pathname.startsWith('/page/data-user') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
+                                            Data User
+                                        </Link>
+                                    )}
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </nav>
 
                 {/* FOOTER */}
@@ -258,7 +315,7 @@ export default function Sidebar() {
                     <button
                         onClick={() => setShowLogoutModal(true)}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full
-              text-red-300 hover:bg-red-500/20 hover:text-red-200 transition"
+                            text-red-300 hover:bg-red-500/20 hover:text-red-200 transition"
                     >
                         <FaSignOutAlt />
                         Logout
@@ -266,7 +323,6 @@ export default function Sidebar() {
                 </div>
             </aside>
 
-            {/* OVERLAY */}
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"

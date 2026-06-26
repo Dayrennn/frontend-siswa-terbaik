@@ -5,10 +5,13 @@ import HafalanCard from '@/src/app/conponents/card/hafalanCard';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { useState } from 'react';
 import FormEditHafalan from '@/src/app/conponents/form/crud/edit-data/hafalan';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 export default function SiswaHafalanPage() {
     const dispatch = useDispatch();
+    const user = useSelector(selectUser)
+
     const [showEditModal, setShowEditModal] = useState(false);
 
     const { data: siswaList, isLoading, isError, error } = useSeeAllSiswaByHafalanQuery();
@@ -58,7 +61,7 @@ export default function SiswaHafalanPage() {
                 {!isLoading && !isError && data.length > 0 && (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {data.map((siswa) => (
-                            <HafalanCard key={siswa.id} siswa={siswa} onEdit={handleEdit} />
+                            <HafalanCard key={siswa.id} siswa={siswa} onEdit={handleEdit} user={user} />
                         ))}
                     </div>
                 )}

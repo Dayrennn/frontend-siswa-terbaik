@@ -1,18 +1,23 @@
 import { PencilIcon } from 'lucide-react';
 import JuzProgress from '../ui/progress';
 
-export default function HafalanCard({ siswa, onEdit }) {
+export default function HafalanCard({ siswa, onEdit, user }) {
+    const isAdmin = user?.role === 'Admin';
+    const isGuru = user?.role === 'Guru';
     const initial = siswa.namaSiswa?.charAt(0)?.toUpperCase() ?? '?';
 
     return (
         <div className="group relative rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-[#0F4C42]/30">
-            <button
-                type="button"
-                onClick={() => onEdit(siswa)}
-                className="absolute right-4 top-4 rounded-md p-1.5 text-stone-400 transition hover:bg-stone-100 hover:text-[#0F4C42]"
-            >
-                <PencilIcon className="h-4 w-4" />
-            </button>
+            {isAdmin ||
+                (isGuru && (
+                    <button
+                        type="button"
+                        onClick={() => onEdit(siswa)}
+                        className="absolute right-4 top-4 rounded-md p-1.5 text-stone-400 transition hover:bg-stone-100 hover:text-[#0F4C42]"
+                    >
+                        <PencilIcon className="h-4 w-4" />
+                    </button>
+                ))}
 
             <div className="mb-4 flex items-start gap-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#0F4C42] font-serif text-lg text-[#F8F5EE]">

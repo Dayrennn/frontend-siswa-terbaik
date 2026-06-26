@@ -8,11 +8,15 @@ import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { FaUserPlus } from 'react-icons/fa';
 import FormEditAbsen from '@/src/app/conponents/form/crud/edit-data/absen';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 export default function DetailAbsenSiswa() {
     const dispatch = useDispatch();
     const { siswaId } = useParams();
+
+    const user = useSelector(selectUser);
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSiswa, setSelectedSiswa] = useState(null);
     const { data, isLoading, isError } = useGetSiswaByIdQuery(siswaId);
@@ -79,7 +83,8 @@ export default function DetailAbsenSiswa() {
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data absen</p>
                     ) : (
                         siswa.absenRekap.map((rekap) => (
-                            <AbsenCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} />
+                            
+                            <AbsenCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} user={user} />
                         ))
                     )}
                 </div>

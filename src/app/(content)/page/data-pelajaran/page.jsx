@@ -10,12 +10,17 @@ import { useState, useMemo } from 'react';
 import FormEditDataPelajaran from '../../../conponents/form/crud/edit-data/pelajaran';
 import SkeletonCard from '@/src/app/conponents/loading/skeleton/skeletonCard';
 import PelajaranCard from '@/src/app/conponents/card/pelajaranCard';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
+import { useSelector } from 'react-redux';
 
 export default function DataPelajaran() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [search, setSearch] = useState('');
+
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
 
     // hapus
     const [deletePelajaran] = useRemovePelajaranMutation();
@@ -52,29 +57,31 @@ export default function DataPelajaran() {
             <div className="min-h-screen bg-gray-50 p-6">
                 <div className="max-w-6xl mx-auto">
                     {/* ── Header ── */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Data Pelajaran</h1>
-                            <p className="text-sm text-gray-500 mt-1">
-                                {isLoading ? 'Memuat data...' : `${allData.length} mata pelajaran terdaftar`}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => setShowCreateModal(true)}
-                            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-sm"
-                        >
-                            <svg
-                                className="w-4 h-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
+                    {isAdmin && (
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900">Data Pelajaran</h1>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    {isLoading ? 'Memuat data...' : `${allData.length} mata pelajaran terdaftar`}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setShowCreateModal(true)}
+                                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-sm"
                             >
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
-                            Tambah Pelajaran
-                        </button>
-                    </div>
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
+                                Tambah Pelajaran
+                            </button>
+                        </div>
+                    )}
 
                     {/* ── Search ── */}
                     <div className="relative mb-6 max-w-sm">
@@ -167,6 +174,7 @@ export default function DataPelajaran() {
                                                     index={index}
                                                     onEdit={handleEdit}
                                                     onRemove={handleRemove}
+                                                    user={user}
                                                 />
                                             </a>
                                         ))}
