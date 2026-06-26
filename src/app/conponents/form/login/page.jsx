@@ -24,12 +24,15 @@ export default function FormLogin() {
             const result = await login({ email, password }).unwrap();
             const user = result.data;
 
-            dispatch(
-                setCredentials({
-                    user,
-                    token: user.token,
-                }),
-            );
+            // Simpan ke localStorage dulu secara eksplisit
+            localStorage.setItem('token', user.token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // Baru dispatch ke Redux
+            dispatch(setCredentials({
+                user,
+                token: user.token,
+            }));
 
             switch (user.role) {
                 case 'Admin':

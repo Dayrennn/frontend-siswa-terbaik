@@ -2,9 +2,10 @@ import BACKEND_URL from './backendUrl';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const prepareHeaders = (headers, { getState }) => {
-    const token = getState().auth.token || localStorage.getItem('token');
+    const token = getState().auth.token || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
+
     if (token) {
-        headers.set('Authorization', `Bearer ${token}`); // ✅ kirim token di header
+        headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
 };
