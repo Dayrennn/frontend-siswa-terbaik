@@ -18,46 +18,40 @@ export default function FormLogin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setLoginError('');
 
         try {
-            const result = await login({
-                email,
-                password,
-            }).unwrap();
-
+            const result = await login({ email, password }).unwrap();
             const user = result.data;
 
-            dispatch(setCredentials({ user }));
+            dispatch(
+                setCredentials({
+                    user,
+                    token: user.token,
+                }),
+            );
 
             switch (user.role) {
                 case 'Admin':
                     router.push('/dashboard/admin');
                     break;
-
                 case 'Guru':
                     router.push('/dashboard/guru');
                     break;
-
                 case 'WaliKelas':
                     router.push('/dashboard/wali-kelas');
                     break;
-
                 case 'KepalaSekolah':
                     router.push('/dashboard/kepala-sekolah');
                     break;
-
                 case 'WakilKepalaSekolah':
                     router.push('/dashboard/wakil-kepala-sekolah');
                     break;
-
                 default:
                     router.push('/login');
             }
         } catch (err) {
             console.error(err);
-
             setLoginError(err?.data?.message || 'Email atau password yang Anda masukkan salah.');
         }
     };

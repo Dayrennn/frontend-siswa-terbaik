@@ -61,10 +61,11 @@ export default function Sidebar() {
     const handleLogout = async () => {
         try {
             await logoutApi().unwrap();
-            dispatch(logoutAction());
-            router.push('/login');
         } catch (error) {
             console.error('Logout gagal', error);
+        } finally {
+            dispatch(logoutAction());
+            router.push('/login');   
         }
     };
 

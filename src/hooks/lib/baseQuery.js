@@ -1,97 +1,105 @@
 import BACKEND_URL from './backendUrl';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const prepareHeaders = (headers, { getState }) => {
+    const token = getState().auth.token || localStorage.getItem('token');
+    if (token) {
+        headers.set('Authorization', `Bearer ${token}`); // ✅ kirim token di header
+    }
+    return headers;
+};
+
 export const baseQuery = fetchBaseQuery({
     baseUrl: BACKEND_URL,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const kehadiranBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/kehadiran`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const kelasBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/kelas`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const kriteriaBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/kriteria`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const otpBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/otp`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const pelajaranBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/pelajaran`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const pertemuanBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/pertemuan`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const siswaBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/siswa`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const tahunAjaranBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/tahun-ajaran`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const userBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/auth`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const jadwalBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/jadwal`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const poinPlusBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/poin-plus`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const poinMinusBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/poin-minus`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const eskulBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/eskul`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const nilaiEskulBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/nilai-eskul`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const absenRekapBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/absen`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const nilaiBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/nilai`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const hafalanBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/hafalan`,
-    credentials: 'include',
+    prepareHeaders,
 });
 
 export const homeBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/home`,
-    credentials: 'include',
+    prepareHeaders,
 });
