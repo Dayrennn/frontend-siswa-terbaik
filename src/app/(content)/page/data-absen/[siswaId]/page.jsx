@@ -83,8 +83,13 @@ export default function DetailAbsenSiswa() {
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data absen</p>
                     ) : (
                         siswa.absenRekap.map((rekap) => (
-                            
-                            <AbsenCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} user={user} />
+                            <AbsenCard
+                                key={rekap.id}
+                                rekap={rekap}
+                                siswaId={siswa.id}
+                                onEdit={handleEdit}
+                                user={user}
+                            />
                         ))
                     )}
                 </div>

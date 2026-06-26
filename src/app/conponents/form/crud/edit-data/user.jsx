@@ -24,7 +24,7 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
     const [updateUser, { isLoading, isError, error }] = useUpdateMutation();
 
     const [selectedPelajaran, setSelectedPelajaran] = useState(
-        initialData?.pelajaran?.map((p) => p.id) ?? [],
+        initialData?.pelajaran?.map((p) => p.pelajaran?.id) ?? [],
     );
 
     const { data: pelajaranData, isLoading: loadingPelajaran } = useSeeAllPelajaranQuery();
@@ -34,9 +34,7 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
     const allKelas = kelasData?.data ?? [];
 
     const togglePelajaran = (id) => {
-        setSelectedPelajaran((prev) =>
-            prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
-        );
+        setSelectedPelajaran((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
     };
 
     const handleEdit = async (e) => {
@@ -66,68 +64,67 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
     };
 
     return (
-        <form onSubmit={handleEdit} className='space-y-4'>
+        <form onSubmit={handleEdit} className="space-y-4">
             {/* Username */}
             <div>
-                <label className='text-sm text-gray-600'>Username</label>
+                <label className="text-sm text-gray-600">Username</label>
                 <input
-                    type='text'
-                    placeholder='Masukkan username'
+                    type="text"
+                    placeholder="Masukkan username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
 
             {/* Email */}
             <div>
-                <label className='text-sm text-gray-600'>Email</label>
+                <label className="text-sm text-gray-600">Email</label>
                 <input
-                    type='email'
-                    placeholder='Masukkan email'
+                    type="email"
+                    placeholder="Masukkan email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
 
             {/* Password */}
             <div>
-                <label className='text-sm text-gray-600'>
-                    Password{' '}
-                    <span className='text-gray-400 text-xs'>(kosongkan jika tidak diubah)</span>
+                <label className="text-sm text-gray-600">
+                    Password <span className="text-gray-400 text-xs">(kosongkan jika tidak diubah)</span>
                 </label>
                 <input
-                    type='password'
-                    placeholder='Password baru'
+                    type="password"
+                    placeholder="Password baru"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
 
             {/* Telephone */}
             <div>
-                <label className='text-sm text-gray-600'>Telephone</label>
+                <label className="text-sm text-gray-600">Telephone</label>
                 <input
-                    type='text'
-                    placeholder='Masukkan nomor'
+                    type="text"
+                    placeholder="Masukkan nomor"
                     value={telephone}
                     onChange={(e) => setTelephone(e.target.value)}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700"
                 />
             </div>
 
             {/* Role */}
             <div>
-                <label className='text-sm text-gray-600'>Role</label>
+                <label className="text-sm text-gray-600">Role</label>
                 <select
                     value={role}
                     onChange={(e) => {
                         setRole(e.target.value);
-                        setKelasId(''); 
+                        setKelasId('');
                     }}
-                    className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white'
+                    className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white"
                 >
                     {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -140,13 +137,13 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
             {/* Kelas — hanya muncul jika role WaliKelas */}
             {role === 'WaliKelas' && (
                 <div>
-                    <label className='text-sm text-gray-600'>Kelas</label>
+                    <label className="text-sm text-gray-600">Kelas</label>
                     <select
                         value={kelasId}
                         onChange={(e) => setKelasId(e.target.value)}
-                        className='w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white'
+                        className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none text-gray-700 bg-white"
                     >
-                        <option value=''>-- Pilih Kelas --</option>
+                        <option value="">-- Pilih Kelas --</option>
                         {allKelas.map((k) => (
                             <option key={k.id} value={k.id}>
                                 {k.kodeKelas} - {k.namaKelas}
@@ -158,33 +155,31 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
 
             {/* Pelajaran */}
             <div>
-                <label className='text-sm text-gray-600'>
-                    Pelajaran <span className='text-gray-400 text-xs'>(opsional)</span>
+                <label className="text-sm text-gray-600">
+                    Pelajaran <span className="text-gray-400 text-xs">(opsional)</span>
                 </label>
 
                 {loadingPelajaran ? (
-                    <p className='text-xs text-gray-400 mt-1'>Memuat pelajaran...</p>
+                    <p className="text-xs text-gray-400 mt-1">Memuat pelajaran...</p>
                 ) : (
-                    <div className='mt-1 border border-gray-200 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1'>
+                    <div className="mt-1 border border-gray-200 rounded-lg p-2 max-h-40 overflow-y-auto space-y-1">
                         {allPelajaran.length === 0 ? (
-                            <p className='text-xs text-gray-400'>Tidak ada data pelajaran</p>
+                            <p className="text-xs text-gray-400">Tidak ada data pelajaran</p>
                         ) : (
                             allPelajaran.map((p) => (
                                 <label
                                     key={p.id}
-                                    className='flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-50 cursor-pointer'
+                                    className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-50 cursor-pointer"
                                 >
                                     <input
-                                        type='checkbox'
+                                        type="checkbox"
                                         checked={selectedPelajaran.includes(p.id)}
                                         onChange={() => togglePelajaran(p.id)}
-                                        className='accent-indigo-500'
+                                        className="accent-indigo-500"
                                     />
-                                    <span className='text-sm text-gray-700'>
+                                    <span className="text-sm text-gray-700">
                                         {p.namaPelajaran}
-                                        <span className='text-xs text-gray-400 ml-1'>
-                                            ({p.kodePelajaran})
-                                        </span>
+                                        <span className="text-xs text-gray-400 ml-1">({p.kodePelajaran})</span>
                                     </span>
                                 </label>
                             ))
@@ -193,26 +188,24 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
                 )}
 
                 {selectedPelajaran.length > 0 && (
-                    <p className='text-xs text-indigo-500 mt-1'>
-                        {selectedPelajaran.length} pelajaran dipilih
-                    </p>
+                    <p className="text-xs text-indigo-500 mt-1">{selectedPelajaran.length} pelajaran dipilih</p>
                 )}
             </div>
 
             {/* Buttons */}
-            <div className='flex gap-3'>
+            <div className="flex gap-3">
                 <button
                     onClick={onCancel}
-                    type='button'
+                    type="button"
                     disabled={isLoading}
-                    className='flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60'
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60"
                 >
                     Batal
                 </button>
                 <button
-                    type='submit'
+                    type="submit"
                     disabled={isLoading}
-                    className='flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors'
+                    className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-colors"
                 >
                     {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </button>
@@ -220,9 +213,7 @@ export default function FormEditDataUser({ initialData, onSuccess, onCancel }) {
 
             {/* Error */}
             {isError && (
-                <p className='text-red-500 text-sm text-center'>
-                    {error?.data?.message || 'Terjadi kesalahan'}
-                </p>
+                <p className="text-red-500 text-sm text-center">{error?.data?.message || 'Terjadi kesalahan'}</p>
             )}
         </form>
     );
