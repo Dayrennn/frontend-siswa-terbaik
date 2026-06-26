@@ -30,6 +30,8 @@ export default function DataSiswaPerTahun() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isOwnerWaliKelas = user?.waliKelas?.some((kelas) => kelas.id === kelasId) ?? false;
+    const canEdit = isAdmin || isOwnerWaliKelas;
 
     const [deleteSiswa] = useRemoveSiswaMutation();
     const [removeSiswa, setRemoveSiswa] = useState(null);
@@ -98,7 +100,7 @@ export default function DataSiswaPerTahun() {
                 </span>
             ),
         },
-        isAdmin && {
+        canEdit && {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
@@ -154,7 +156,7 @@ export default function DataSiswaPerTahun() {
                             </div>
 
                             {/* Buttons */}
-                            {isAdmin && (
+                            {canEdit && (
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={downloadTemplate}

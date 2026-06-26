@@ -6,11 +6,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { FaUserPlus } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NilaiCard from '@/src/app/conponents/card/nilaiCard';
 import FormEditNilai from '@/src/app/conponents/form/crud/edit-data/nilai';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 export default function DetailNilaiSiswa() {
+    const user = useSelector(selectUser)
     const dispatch = useDispatch();
     const { siswaId } = useParams();
     const [showEditModal, setShowEditModal] = useState(false);
@@ -75,7 +77,7 @@ export default function DetailNilaiSiswa() {
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data nilai</p>
                     ) : (
                         siswa.nilaiRekap.map((rekap) => (
-                            <NilaiCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} />
+                            <NilaiCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} user={user} kelasId={siswa.kelas?.id} />
                         ))
                     )}
                 </div>

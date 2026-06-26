@@ -7,7 +7,7 @@ import { useSeeAllHomeDataQuery } from '@/src/hooks/api/homeSliceAPI';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
 import { useSelector } from 'react-redux';
 
-export default function GuruPage() {
+export default function WaliKelasPage() {
     const { data: homeData, isLoading } = useSeeAllHomeDataQuery();
     const user = useSelector(selectUser);
 

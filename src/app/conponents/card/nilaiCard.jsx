@@ -1,4 +1,9 @@
-export default function NilaiCard({ rekap, onEdit }) {
+export default function NilaiCard({ rekap, onEdit, user, kelasId }) {
+    const isOwnerGuru = user?.pelajaran?.some((akses) => akses.pelajaran?.id === rekap.pelajaran.id) ?? false;
+    const isAdmin = user?.role === 'Admin';
+    const isOwnerWaliKelas = user?.waliKelas?.some((kelas) => kelas.id === kelasId) ?? false;
+    const canEdit = isAdmin || isOwnerWaliKelas || isOwnerGuru;
+
     const keteranganColor = {
         'Sangat Baik': 'bg-green-50 text-green-700',
         'Baik': 'bg-blue-50 text-blue-700',
@@ -30,12 +35,14 @@ export default function NilaiCard({ rekap, onEdit }) {
                             {rekap.keterangan}
                         </span>
                     )}
-                    <button
-                        onClick={() => onEdit(rekap)}
-                        className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"
-                    >
-                        Edit
-                    </button>
+                    {canEdit && (
+                        <button
+                            onClick={() => onEdit(rekap)}
+                            className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"
+                        >
+                            Edit
+                        </button>
+                    )}
                 </div>
             </div>
 
