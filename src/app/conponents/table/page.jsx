@@ -1,4 +1,4 @@
-export default function Table({ columns, data }) {
+export default function Table({ columns = [], data = [] }) {
     return (
         <div className='bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden'>
             <table className='w-full text-sm'>
