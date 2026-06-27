@@ -4,26 +4,34 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Table from '../../../../conponents/table/page';
 import Link from 'next/link';
-import { useGetKelasByTahunAjaranQuery, useRemoveKelasMutation } from '../../../../../hooks/api/kelasSliceAPI';
+import {
+    useGetKelasByTahunAjaranQuery,
+    useRemoveKelasMutation,
+    useModifyKelasMutation,
+} from '../../../../../hooks/api/kelasSliceAPI';
 import { useGetTahunAjaranByIdQuery } from '../../../../../hooks/api/tahunAjaranSliceAPI';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
+import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahDataKelas from '@/src/app/conponents/form/crud/tambah-data/kelas';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
 import { useSelector } from 'react-redux';
+import FormEditDataKelas from '@/src/app/conponents/form/crud/edit-data/kelas';
 
 export default function DataKehadiranByTahunAjaran() {
     const { tahunAjaranId } = useParams();
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
 
     const [selectedId, setSelectedId] = useState(null);
 
     const [search, setSearch] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const { data, isLoading, isError } = useGetKelasByTahunAjaranQuery(tahunAjaranId);
     const [removeKelas] = useRemoveKelasMutation();
@@ -42,6 +50,11 @@ export default function DataKehadiranByTahunAjaran() {
 
     const handleDelete = async () => {
         await removeKelas(selectedId).unwrap();
+    };
+
+    const handleEdit = async (siswa) => {
+        setShowEditModal(true);
+        setSelectedId(siswa);
     };
 
     const columns = [
@@ -70,6 +83,16 @@ export default function DataKehadiranByTahunAjaran() {
                             Lihat Data →
                         </span>
                     </Link>
+                    {(isAdmin || isWakilKepalaSekolah) && (
+                        <button
+                            onClick={() => {
+                                handleEdit(row);
+                            }}
+                            className="text-xs bg-red-50 text-yellow-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                        >
+                            Edit
+                        </button>
+                    )}
                     {isAdmin && (
                         <button
                             onClick={() => {
@@ -122,7 +145,7 @@ export default function DataKehadiranByTahunAjaran() {
                                     className="w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
                                 />
                             </div>
-                            {isAdmin && (
+                            {(isAdmin || isWakilKepalaSekolah) && (
                                 <button
                                     onClick={() => setShowCreateModal(true)}
                                     className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
@@ -168,6 +191,16 @@ export default function DataKehadiranByTahunAjaran() {
                     successMessage="Berhasil"
                     initialData={removeKelas}
                     onConfirm={handleDelete}
+                />
+            )}
+            {showEditModal && (
+                <EditModal
+                    onCancel={() => setShowEditModal(false)}
+                    title="Edit Kelas"
+                    formEdit={FormEditDataKelas}
+                    initialData={selectedId}
+                    successTitle="Kelas Berhasil di Edit"
+                    successMessage="Message"
                 />
             )}
         </>

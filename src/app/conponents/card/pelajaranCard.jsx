@@ -1,5 +1,6 @@
 export default function PelajaranCard({ item, onEdit, onRemove, user }) {
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
 
     const guruName = item.guru?.length > 0 ? item.guru.map((g) => g.guru?.username).join(', ') : null;
 
@@ -57,7 +58,7 @@ export default function PelajaranCard({ item, onEdit, onRemove, user }) {
             <hr className="border-gray-100" />
 
             {/* Aksi */}
-            {isAdmin && (
+            {(isAdmin || isWakilKepalaSekolah) && (
                 <div className="flex gap-2">
                     <button
                         onClick={(e) => {

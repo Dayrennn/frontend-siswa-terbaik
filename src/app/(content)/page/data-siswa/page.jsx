@@ -24,6 +24,7 @@ export default function DataSemuaSiswa() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
 
     const handleRemove = (siswa) => {
         setRemoveSiswa(siswa);
@@ -83,7 +84,7 @@ export default function DataSemuaSiswa() {
                 </span>
             ),
         },
-        isAdmin && {
+        (isAdmin || isWakilKepalaSekolah) && {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
@@ -148,7 +149,7 @@ export default function DataSemuaSiswa() {
                             </div>
 
                             {/* Buttons */}
-                            {isAdmin && (
+                            {(isAdmin || isWakilKepalaSekolah) && (
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={handleExport}

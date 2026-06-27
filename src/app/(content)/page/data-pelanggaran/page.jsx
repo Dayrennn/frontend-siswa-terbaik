@@ -7,6 +7,8 @@ import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 import { getInitials } from '@/src/hooks/utils/initialHelper';
 import { FaUserPlus } from 'react-icons/fa';
 import FormTambahPoinSiswa from '@/src/app/conponents/form/crud/tambah-data/poinPlus';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
+import { useSelector } from 'react-redux';
 
 const STATUS_STYLE = {
     Baik: 'bg-green-50 text-green-700',
@@ -43,6 +45,12 @@ export default function DataPoinSiswa() {
         setSelectedSiswa(siswa);
         setShowTambahModal(true);
     };
+
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isWaliKelas = user?.role === 'WaliKelas';
+    const canEdit = isAdmin || isWakilKepalaSekolah || isWaliKelas;
 
     return (
         <>
@@ -149,12 +157,14 @@ export default function DataPoinSiswa() {
                                                     >
                                                         Lihat →
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleTambah(siswa)}
-                                                        className="text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors font-medium"
-                                                    >
-                                                        + Tambah
-                                                    </button>
+                                                    {canEdit && (
+                                                        <button
+                                                            onClick={() => handleTambah(siswa)}
+                                                            className="text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors font-medium"
+                                                        >
+                                                            + Tambah
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

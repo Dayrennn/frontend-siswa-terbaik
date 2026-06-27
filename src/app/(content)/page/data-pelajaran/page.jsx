@@ -21,6 +21,7 @@ export default function DataPelajaran() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah'
 
     // hapus
     const [deletePelajaran] = useRemovePelajaranMutation();
@@ -57,7 +58,7 @@ export default function DataPelajaran() {
             <div className="min-h-screen bg-gray-50 p-6">
                 <div className="max-w-6xl mx-auto">
                     {/* ── Header ── */}
-                    {isAdmin && (
+                    {(isAdmin || isWakilKepalaSekolah) && (
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900">Data Pelajaran</h1>

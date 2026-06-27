@@ -30,8 +30,9 @@ export default function DataSiswaPerTahun() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah'
     const isOwnerWaliKelas = user?.waliKelas?.some((kelas) => kelas.id === kelasId) ?? false;
-    const canEdit = isAdmin || isOwnerWaliKelas;
+    const canEdit = isAdmin || isOwnerWaliKelas || isWakilKepalaSekolah;
 
     const [deleteSiswa] = useRemoveSiswaMutation();
     const [removeSiswa, setRemoveSiswa] = useState(null);

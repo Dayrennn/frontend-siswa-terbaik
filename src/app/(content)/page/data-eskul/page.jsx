@@ -15,6 +15,8 @@ import { selectUser } from '@/src/hooks/api/authSliceAPI';
 export default function DataEskul() {
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const canEdit = isAdmin || isWakilKepalaSekolah;
 
     const [search, setSearch] = useState('');
     const [showModalTambah, setShowModalTambah] = useState(false);
@@ -66,7 +68,7 @@ export default function DataEskul() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="flex-1 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {isAdmin && (
+                {canEdit && (
                     <button
                         onClick={handleAdd}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
@@ -121,7 +123,7 @@ export default function DataEskul() {
                             <tr className="bg-gray-50 border-b border-gray-200">
                                 <th className="text-left px-5 py-3 text-gray-500 font-medium w-10">No</th>
                                 <th className="text-left px-5 py-3 text-gray-500 font-medium">Nama Eskul</th>
-                                {isAdmin && (
+                                {canEdit && (
                                     <th className="text-left px-5 py-3 text-gray-500 font-medium w-32">Aksi</th>
                                 )}
                             </tr>
@@ -138,7 +140,7 @@ export default function DataEskul() {
                                             <span className="text-gray-700 font-medium">{item.namaEskul}</span>
                                         </div>
                                     </td>
-                                    {isAdmin && (
+                                    {canEdit && (
                                         <td className="px-5 py-3.5">
                                             <div className="flex items-center gap-2">
                                                 <button
