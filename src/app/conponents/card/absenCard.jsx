@@ -2,7 +2,6 @@ export default function AbsenCard({ rekap, onEdit, user }) {
     const isAdmin = user?.role === 'Admin';
     // const isGuru = user?.role === 'Guru';
     const isOwnerGuru = user?.pelajaran?.some((akses) => akses.pelajaran?.id === rekap.pelajaran.id) ?? false;
-
     return (
         <div className="bg-white border border-gray-100 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">

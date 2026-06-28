@@ -213,7 +213,7 @@ export default function Sidebar() {
                     )}
 
                     {/* PENILAIAN */}
-                    {(isAdmin || isWaliKelas) && (
+                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah || isGuru) && (
                         <div>
                             <button
                                 onClick={() => toggleMenu('Penilaian')}
@@ -231,7 +231,7 @@ export default function Sidebar() {
                                 ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                                 <div className="space-y-1">
 
-                                    {isAdmin && (
+                                    {(isAdmin || isWakilKepalaSekolah || isGuru || isWaliKelas) && (
                                         <Link href="/page/data-kriteria" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-kriteria') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -239,7 +239,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isWaliKelas) && (
+                                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah || isGuru) && (
                                         <Link href="/page/data-nilai" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-nilai') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -247,7 +247,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {isAdmin && (
+                                    {(isAdmin || isWakilKepalaSekolah || isGuru) && (
                                         <Link href="/page/data-ranking" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-ranking') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
