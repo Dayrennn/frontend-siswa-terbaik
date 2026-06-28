@@ -13,6 +13,8 @@ import FormEditPoinPlus from '@/src/app/conponents/form/crud/edit-data/poinPlus'
 import FormEditPoinMinus from '@/src/app/conponents/form/crud/edit-data/poinMinus';
 import { useDispatch } from 'react-redux';
 import { getInitials } from '@/src/hooks/utils/initialHelper';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 function formatTanggal(iso) {
     if (!iso) return '-';
@@ -30,6 +32,12 @@ export default function SemuaPoin() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const { siswaId } = useParams();
     const { data, isLoading, isError } = useGetSiswaByIdQuery(siswaId);
+
+    const user = useSelector(selectUser);
+    const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isWaliKelas = user?.role === 'WaliKelas';
+    const canEdit = isAdmin || isWakilKepalaSekolah || isWaliKelas;
 
     const SISWA = data?.data ?? null;
     const poinPlus = SISWA?.poinPlus ?? [];
@@ -175,20 +183,22 @@ export default function SemuaPoin() {
                                     <span className="col-span-2 text-center text-xs text-gray-400">
                                         {formatTanggal(p.tanggal)}
                                     </span>
-                                    <span className="col-span-3 flex items-center justify-end gap-1.5">
-                                        <button
-                                            onClick={() => handleEdit(p)}
-                                            className="text-xs bg-amber-50 text-amber-600 px-2.5 py-1 rounded-lg hover:bg-amber-100 transition-colors font-medium"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(p)}
-                                            className="text-xs bg-red-50 text-red-500 px-2.5 py-1 rounded-lg hover:bg-red-100 transition-colors font-medium"
-                                        >
-                                            Hapus
-                                        </button>
-                                    </span>
+                                    {canEdit && (
+                                        <span className="col-span-3 flex items-center justify-end gap-1.5">
+                                            <button
+                                                onClick={() => handleEdit(p)}
+                                                className="text-xs bg-amber-50 text-amber-600 px-2.5 py-1 rounded-lg hover:bg-amber-100 transition-colors font-medium"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(p)}
+                                                className="text-xs bg-red-50 text-red-500 px-2.5 py-1 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </span>
+                                    )}
                                 </div>
                             ))}
                         </div>

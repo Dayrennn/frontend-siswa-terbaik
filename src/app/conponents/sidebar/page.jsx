@@ -143,7 +143,7 @@ export default function Sidebar() {
                                 ${isMenuOpen('Menu Siswa') || pathname.startsWith('/page/data-pelajaran') || pathname.startsWith('/page/data-siswa') || pathname.startsWith('/page/data-kelas') || pathname.startsWith('/page/tahun-ajaran') || pathname.startsWith('/page/data-pelanggaran') || pathname.startsWith('/page/data-eskul') || pathname.startsWith('/page/data-absen') || pathname.startsWith('/page/data-hafalan') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                                 <div className="space-y-1">
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-pelajaran" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-pelajaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -151,7 +151,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-siswa" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-siswa') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -159,7 +159,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-kelas" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-kelas') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -167,7 +167,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/tahun-ajaran" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/tahun-ajaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -175,7 +175,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-pelanggaran" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-pelanggaran') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -183,7 +183,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-eskul" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-eskul') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -199,7 +199,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link href="/page/data-hafalan" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-hafalan') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>
@@ -213,7 +213,7 @@ export default function Sidebar() {
                     )}
 
                     {/* PENILAIAN */}
-                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah || isGuru) && (
+                    {(isAdmin || isWaliKelas || isWakilKepalaSekolah || isGuru || isKepalaSekolah) && (
                         <div>
                             <button
                                 onClick={() => toggleMenu('Penilaian')}
@@ -247,7 +247,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isWakilKepalaSekolah || isGuru) && (
+                                    {(isAdmin || isWakilKepalaSekolah || isGuru || isKepalaSekolah) && (
                                         <Link href="/page/data-ranking" onClick={() => setIsOpen(false)}
                                             className={`block px-3 py-2 rounded-lg text-sm
                                                 ${pathname.startsWith('/page/data-ranking') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}>

@@ -1,6 +1,9 @@
 'use client';
-import Link from "next/link"; 
-import { getInitials } from "@/src/hooks/utils/initialHelper";
+
+import Link from 'next/link';
+import { getInitials } from '@/src/hooks/utils/initialHelper';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 const STATUS_STYLE = {
     Baik: 'bg-green-50 text-green-700',
@@ -120,11 +123,12 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                                             </span>
                                         </div>
                                     ))}
-                                    {countPlus > selectedSiswa.poinPlus.length && (
-                                        <Link href={linkSiswa} className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2">
-                                            Lihat semua {countPlus} poin plus
-                                        </Link>
-                                    )}
+                                    <Link
+                                        href={linkSiswa}
+                                        className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2"
+                                    >
+                                        Lihat semua {countPlus} poin plus
+                                    </Link>
                                 </>
                             )}
                         </div>
@@ -149,11 +153,12 @@ export default function DetailPoin({ selectedSiswa, activeTab, setActiveTab, onC
                                             </span>
                                         </div>
                                     ))}
-                                    {countMinus > selectedSiswa.poinMinus.length && (
-                                        <Link href={linkSiswa} className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2">
-                                            Lihat semua {countMinus} poin minus
-                                        </Link>
-                                    )}
+                                    <Link
+                                        href={linkSiswa}
+                                        className="w-full text-center text-xs text-indigo-500 hover:text-indigo-700 py-2"
+                                    >
+                                        Lihat semua {countMinus} poin minus
+                                    </Link>
                                 </>
                             )}
                         </div>
