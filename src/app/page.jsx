@@ -1,5 +1,9 @@
-import Navbar from '../app/conponents/navbar/page';
+import RankingLandingPage from './conponents/landingPage/page';
 
 export default function app() {
-    return <Navbar />;
+    return (
+        <>
+            <RankingLandingPage />
+        </>
+    );
 }
