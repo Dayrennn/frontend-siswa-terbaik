@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 export default function WaliKelasPage() {
     const { data: homeData, isLoading } = useSeeAllHomeDataQuery();
     const user = useSelector(selectUser);
-
+    if (!user) return null;
     const cardItems = [
         {
             title: 'Total Siswa',

@@ -8,13 +8,6 @@ import { useSeeAllTahunAjaranQuery } from '@/src/hooks/api/tahunAjaranSliceAPI';
 
 const EMPTY_MESSAGE = 'Ranking belum tersedia. Pastikan data nilai sudah diinput dan SMART sudah dihitung.';
 
-const isKelasEnam = (kelas) => {
-    const kodeKelas = String(kelas?.kodeKelas ?? '').trim().toLowerCase();
-    const namaKelas = String(kelas?.namaKelas ?? '').trim().toLowerCase();
-
-    return kodeKelas.startsWith('6') || kodeKelas.startsWith('vi') || namaKelas.includes('kelas 6');
-};
-
 const getKelasLabel = (ranking) => {
     const kelas = ranking?.kelas ?? ranking?.siswa?.kelas;
     if (!kelas) return '-';
@@ -45,9 +38,10 @@ export default function DataRanking() {
         skip: !activeTahunAjaranId,
     });
 
-    const kelasEnamList = useMemo(() => (kelasData?.data ?? []).filter(isKelasEnam), [kelasData]);
-    const kelasMasihAda = kelasEnamList.some((kelas) => kelas.id === kelasId);
-    const activeKelasId = kelasMasihAda ? kelasId : kelasEnamList[0]?.id ?? '';
+    // Semua kelas pada tahun ajaran terpilih, tidak difilter berdasarkan tingkat tertentu
+    const kelasList = useMemo(() => kelasData?.data ?? [], [kelasData]);
+    const kelasMasihAda = kelasList.some((kelas) => kelas.id === kelasId);
+    const activeKelasId = kelasMasihAda ? kelasId : (kelasList[0]?.id ?? '');
 
     const {
         data: rankingKelasData,
@@ -71,23 +65,17 @@ export default function DataRanking() {
     const rankingSource = mode === 'kelas' ? rankingKelasData?.data : rankingAngkatanData?.data;
     const rankingData = useMemo(() => {
         const data = rankingSource ?? [];
-        const kelasEnamIds = new Set(kelasEnamList.map((kelas) => kelas.id));
 
+        // Tidak ada lagi filter kelas tertentu — tampilkan semua data dari backend
         return data
-            .filter((ranking) => {
-                if (mode === 'kelas') return true;
-
-                const rankingKelas = ranking?.kelas ?? ranking?.siswa?.kelas;
-                return kelasEnamIds.has(rankingKelas?.id) || isKelasEnam(rankingKelas);
-            })
             .slice()
             .sort((a, b) => (a.peringkat ?? Number.MAX_SAFE_INTEGER) - (b.peringkat ?? Number.MAX_SAFE_INTEGER));
-    }, [kelasEnamList, mode, rankingSource]);
+    }, [rankingSource]);
 
     const isLoadingRanking = mode === 'kelas' ? isFetchingRankingKelas : isFetchingRankingAngkatan;
     const isErrorRanking = mode === 'kelas' ? isErrorRankingKelas : isErrorRankingAngkatan;
     const selectedTahunAjaran = tahunAjaranList.find((tahun) => tahun.id === activeTahunAjaranId);
-    const selectedKelas = kelasEnamList.find((kelas) => kelas.id === activeKelasId);
+    const selectedKelas = kelasList.find((kelas) => kelas.id === activeKelasId);
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -96,7 +84,7 @@ export default function DataRanking() {
                     <div>
                         <h1 className="text-xl font-medium text-gray-900">Ranking & SMART</h1>
                         <p className="mt-0.5 text-sm text-gray-400">
-                            Hasil ranking SMART dari backend untuk siswa kelas 6
+                            Hasil ranking SMART dari backend untuk seluruh siswa
                         </p>
                     </div>
                     <div className="inline-flex w-fit items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">
@@ -108,9 +96,7 @@ export default function DataRanking() {
                 <div className="grid grid-cols-1 gap-3 mb-5 md:grid-cols-3">
                     <div className="bg-white rounded-xl border border-gray-100 px-4 py-3">
                         <p className="text-xs text-gray-400 mb-1">Mode</p>
-                        <p className="text-2xl font-medium text-gray-800">
-                            {mode === 'kelas' ? 'Kelas' : 'Angkatan'}
-                        </p>
+                        <p className="text-2xl font-medium text-gray-800">{mode === 'kelas' ? 'Kelas' : 'Angkatan'}</p>
                     </div>
                     <div className="bg-white rounded-xl border border-gray-100 px-4 py-3">
                         <p className="text-xs text-gray-400 mb-1">Tahun Ajaran</p>
@@ -147,17 +133,15 @@ export default function DataRanking() {
                             </label>
 
                             <label className="block">
-                                <span className="text-xs font-medium text-gray-500">Kelas 6</span>
+                                <span className="text-xs font-medium text-gray-500">Kelas</span>
                                 <select
                                     value={activeKelasId}
                                     onChange={(event) => setKelasId(event.target.value)}
-                                    disabled={!activeTahunAjaranId || isLoadingKelas || kelasEnamList.length === 0}
+                                    disabled={!activeTahunAjaranId || isLoadingKelas || kelasList.length === 0}
                                     className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:text-gray-400"
                                 >
-                                    <option value="">
-                                        {isLoadingKelas ? 'Memuat kelas...' : 'Pilih kelas 6'}
-                                    </option>
-                                    {kelasEnamList.map((kelas) => (
+                                    <option value="">{isLoadingKelas ? 'Memuat kelas...' : 'Pilih kelas'}</option>
+                                    {kelasList.map((kelas) => (
                                         <option key={kelas.id} value={kelas.id}>
                                             {kelas.kodeKelas} - {kelas.namaKelas}
                                         </option>
@@ -194,12 +178,6 @@ export default function DataRanking() {
                         </div>
                     </div>
 
-                    {mode === 'angkatan' && (
-                        <div className="mb-4 rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                            Ranking angkatan dari backend difilter di frontend agar sementara hanya menampilkan kelas 6.
-                        </div>
-                    )}
-
                     {mode === 'kelas' && selectedKelas && (
                         <div className="mb-4 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-500">
                             Menampilkan ranking kelas {selectedKelas.kodeKelas} - {selectedKelas.namaKelas}
@@ -223,9 +201,9 @@ export default function DataRanking() {
                         !isErrorRanking &&
                         mode === 'kelas' &&
                         activeTahunAjaranId &&
-                        kelasEnamList.length === 0 && (
+                        kelasList.length === 0 && (
                             <p className="text-center text-gray-400 py-12 text-sm">
-                                Tidak ada kelas 6 pada tahun ajaran ini.
+                                Tidak ada kelas pada tahun ajaran ini.
                             </p>
                         )}
 
@@ -233,80 +211,77 @@ export default function DataRanking() {
                         !isLoadingRanking &&
                         !isErrorRanking &&
                         activeTahunAjaranId &&
-                        (mode === 'angkatan' || kelasEnamList.length > 0) &&
+                        (mode === 'angkatan' || kelasList.length > 0) &&
                         rankingData.length === 0 && (
                             <p className="text-center text-gray-400 py-12 text-sm">{EMPTY_MESSAGE}</p>
                         )}
 
-                    {!isLoadingTahunAjaran &&
-                        !isLoadingRanking &&
-                        !isErrorRanking &&
-                        rankingData.length > 0 && (
-                            <div className="overflow-x-auto rounded-xl border border-gray-100">
-                                <table className="w-full min-w-[900px] text-sm">
-                                    <thead>
-                                        <tr className="border-b border-gray-100 bg-gray-50">
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                Peringkat
-                                            </th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                Nama Siswa
-                                            </th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                NIS
-                                            </th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                Kelas
-                                            </th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                Nilai Akhir SMART
-                                            </th>
-                                            <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                                Scope
-                                            </th>
+                    {!isLoadingTahunAjaran && !isLoadingRanking && !isErrorRanking && rankingData.length > 0 && (
+                        <div className="overflow-x-auto rounded-xl border border-gray-100">
+                            <table className="w-full min-w-[900px] text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-100 bg-gray-50">
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            Peringkat
+                                        </th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            Nama Siswa
+                                        </th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            NIS
+                                        </th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            Kelas
+                                        </th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            Nilai Akhir SMART
+                                        </th>
+                                        <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                            Scope
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 bg-white">
+                                    {rankingData.map((ranking) => (
+                                        <tr key={ranking.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-5 py-3 text-gray-700">
+                                                <span className="inline-flex items-center gap-2 font-medium text-gray-900">
+                                                    <FaMedal className="text-amber-500" />
+                                                    {ranking.peringkat ?? '-'}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3 text-gray-700">
+                                                <span className="font-medium text-gray-800">
+                                                    {ranking.siswa?.namaSiswa ?? '-'}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3 text-gray-500">{ranking.siswa?.nis ?? '-'}</td>
+                                            <td className="px-5 py-3 text-gray-700">
+                                                <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                                                    {getKelasLabel(ranking)}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3 text-gray-700">
+                                                <span className="font-semibold text-gray-900">
+                                                    {formatNilaiAkhir(ranking.nilaiAkhir)}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3 text-gray-700">
+                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+                                                    {ranking.scope ?? '-'}
+                                                </span>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-50 bg-white">
-                                        {rankingData.map((ranking) => (
-                                            <tr key={ranking.id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="px-5 py-3 text-gray-700">
-                                                    <span className="inline-flex items-center gap-2 font-medium text-gray-900">
-                                                        <FaMedal className="text-amber-500" />
-                                                        {ranking.peringkat ?? '-'}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-3 text-gray-700">
-                                                    <span className="font-medium text-gray-800">
-                                                        {ranking.siswa?.namaSiswa ?? '-'}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-3 text-gray-500">{ranking.siswa?.nis ?? '-'}</td>
-                                                <td className="px-5 py-3 text-gray-700">
-                                                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                                                        {getKelasLabel(ranking)}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-3 text-gray-700">
-                                                    <span className="font-semibold text-gray-900">
-                                                        {formatNilaiAkhir(ranking.nilaiAkhir)}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-3 text-gray-700">
-                                                    <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-                                                        {ranking.scope ?? '-'}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
 
                     {!isLoadingTahunAjaran && !isLoadingRanking && !isErrorRanking && (
                         <div className="mt-4 pt-4 border-t border-gray-100">
                             <p className="text-xs text-gray-400">
-                                Menampilkan {rankingData.length} ranking kelas 6
+                                Menampilkan {rankingData.length} ranking
                                 {selectedTahunAjaran ? ` pada tahun ajaran ${selectedTahunAjaran.namaTahunAjaran}` : ''}
                             </p>
                         </div>

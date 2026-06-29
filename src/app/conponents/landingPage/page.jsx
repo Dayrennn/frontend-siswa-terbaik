@@ -9,16 +9,6 @@ import Link from 'next/link';
 
 const EMPTY_MESSAGE = 'Ranking belum tersedia. Pastikan data nilai sudah diinput dan SMART sudah dihitung.';
 
-const isKelasEnam = (kelas) => {
-    const kodeKelas = String(kelas?.kodeKelas ?? '')
-        .trim()
-        .toLowerCase();
-    const namaKelas = String(kelas?.namaKelas ?? '')
-        .trim()
-        .toLowerCase();
-    return kodeKelas.startsWith('6') || kodeKelas.startsWith('vi') || namaKelas.includes('kelas 6');
-};
-
 const getKelasLabel = (ranking) => {
     const kelas = ranking?.kelas ?? ranking?.siswa?.kelas;
     if (!kelas) return '-';
@@ -68,13 +58,13 @@ export default function RankingLandingPage() {
     }, [tahunAjaranList]);
     const activeTahunAjaranId = tahunAjaranId || defaultTahunAjaranId;
 
-    // ===== Kelas 6 untuk mode "Ranking Kelas" =====
+    // ===== Semua kelas untuk mode "Ranking Kelas" (tidak difilter ke tingkat tertentu) =====
     const { data: kelasData, isLoading: isLoadingKelas } = useGetKelasByTahunAjaranQuery(activeTahunAjaranId, {
         skip: !activeTahunAjaranId,
     });
-    const kelasEnamList = useMemo(() => (kelasData?.data ?? []).filter(isKelasEnam), [kelasData]);
-    const kelasMasihAda = kelasEnamList.some((kelas) => kelas.id === kelasId);
-    const activeKelasId = kelasMasihAda ? kelasId : (kelasEnamList[0]?.id ?? '');
+    const kelasList = useMemo(() => kelasData?.data ?? [], [kelasData]);
+    const kelasMasihAda = kelasList.some((kelas) => kelas.id === kelasId);
+    const activeKelasId = kelasMasihAda ? kelasId : (kelasList[0]?.id ?? '');
 
     // ===== Ranking dari backend =====
     const {
@@ -97,17 +87,12 @@ export default function RankingLandingPage() {
     const rankingSource = mode === 'kelas' ? rankingKelasData?.data : rankingAngkatanData?.data;
     const rankingData = useMemo(() => {
         const data = rankingSource ?? [];
-        const kelasEnamIds = new Set(kelasEnamList.map((kelas) => kelas.id));
 
+        // Tidak ada lagi filter kelas tertentu — tampilkan semua data dari backend
         return data
-            .filter((ranking) => {
-                if (mode === 'kelas') return true;
-                const rankingKelas = ranking?.kelas ?? ranking?.siswa?.kelas;
-                return kelasEnamIds.has(rankingKelas?.id) || isKelasEnam(rankingKelas);
-            })
             .slice()
             .sort((a, b) => (a.peringkat ?? Number.MAX_SAFE_INTEGER) - (b.peringkat ?? Number.MAX_SAFE_INTEGER));
-    }, [kelasEnamList, mode, rankingSource]);
+    }, [rankingSource]);
 
     const isLoadingRanking = mode === 'kelas' ? isFetchingRankingKelas : isFetchingRankingAngkatan;
     const isErrorRanking = mode === 'kelas' ? isErrorRankingKelas : isErrorRankingAngkatan;
@@ -135,7 +120,7 @@ export default function RankingLandingPage() {
                 </div>
                 <h1 className="mt-4 text-3xl md:text-4xl font-bold text-gray-900">Peringkat Siswa Terbaik</h1>
                 <p className="mt-2 text-gray-500 max-w-xl mx-auto">
-                    Daftar siswa kelas 6 dengan nilai akhir tertinggi berdasarkan hasil perhitungan SMART (Simple Multi
+                    Daftar siswa dengan nilai akhir tertinggi berdasarkan hasil perhitungan SMART (Simple Multi
                     Attribute Rating Technique).
                 </p>
                 {selectedTahunAjaran && (
@@ -192,11 +177,11 @@ export default function RankingLandingPage() {
                             <select
                                 value={activeKelasId}
                                 onChange={(event) => setKelasId(event.target.value)}
-                                disabled={!activeTahunAjaranId || isLoadingKelas || kelasEnamList.length === 0}
+                                disabled={!activeTahunAjaranId || isLoadingKelas || kelasList.length === 0}
                                 className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:text-gray-400"
                             >
-                                <option value="">{isLoadingKelas ? 'Memuat kelas...' : 'Pilih kelas 6'}</option>
-                                {kelasEnamList.map((kelas) => (
+                                <option value="">{isLoadingKelas ? 'Memuat kelas...' : 'Pilih kelas'}</option>
+                                {kelasList.map((kelas) => (
                                     <option key={kelas.id} value={kelas.id}>
                                         {kelas.kodeKelas} - {kelas.namaKelas}
                                     </option>
@@ -225,15 +210,15 @@ export default function RankingLandingPage() {
                 !isErrorRanking &&
                 activeTahunAjaranId &&
                 mode === 'kelas' &&
-                kelasEnamList.length === 0 && (
-                    <p className="text-center text-gray-400 py-16 text-sm">Tidak ada kelas 6 pada tahun ajaran ini.</p>
+                kelasList.length === 0 && (
+                    <p className="text-center text-gray-400 py-16 text-sm">Tidak ada kelas pada tahun ajaran ini.</p>
                 )}
 
             {!isLoadingTahunAjaran &&
                 !isLoadingRanking &&
                 !isErrorRanking &&
                 activeTahunAjaranId &&
-                (mode === 'angkatan' || kelasEnamList.length > 0) &&
+                (mode === 'angkatan' || kelasList.length > 0) &&
                 rankingData.length === 0 && <p className="text-center text-gray-400 py-16 text-sm">{EMPTY_MESSAGE}</p>}
 
             {/* PODIUM TOP 3 */}

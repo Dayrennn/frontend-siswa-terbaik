@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 export default function AdminPage() {
     const { data: homeData, isLoading } = useSeeAllHomeDataQuery();
     const user = useSelector(selectUser);
+    if (!user) return null;
 
     const cardItems = [
         {
