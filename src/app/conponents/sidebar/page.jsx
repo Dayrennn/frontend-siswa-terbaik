@@ -265,8 +265,7 @@ export default function Sidebar() {
                                     ${
                                         pathname.startsWith('/page/data-kriteria') ||
                                         pathname.startsWith('/page/data-nilai') ||
-                                        pathname.startsWith('/page/data-ranking') ||
-                                        pathname.startsWith('/page/hitung-nilai')
+                                        pathname.startsWith('/page/data-ranking') 
                                             ? 'bg-white/20 text-white'
                                             : 'text-indigo-200 hover:bg-white/10 hover:text-white'
                                     }`}
@@ -277,13 +276,13 @@ export default function Sidebar() {
                                 </div>
                                 <FaChevronDown
                                     className={`transition-transform duration-300
-                                    ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai') ? 'rotate-180' : ''}`}
+                                    ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') ? 'rotate-180' : ''}`}
                                 />
                             </button>
 
                             <div
                                 className={`ml-6 overflow-hidden transition-all duration-300
-                                ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking') || pathname.startsWith('/page/hitung-nilai') ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
+                                ${isMenuOpen('Penilaian') || pathname.startsWith('/page/data-kriteria') || pathname.startsWith('/page/data-nilai') || pathname.startsWith('/page/data-ranking')  ? 'max-h-96 opacity-100 mt-1' : 'max-h-0 opacity-0'}`}
                             >
                                 <div className="space-y-1">
                                     {(isAdmin || isWakilKepalaSekolah || isGuru || isWaliKelas) && (
@@ -316,17 +315,6 @@ export default function Sidebar() {
                                                 ${pathname.startsWith('/page/data-ranking') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}
                                         >
                                             Ranking & SMART
-                                        </Link>
-                                    )}
-
-                                    {isAdmin && (
-                                        <Link
-                                            href="/page/hitung-nilai"
-                                            onClick={() => setIsOpen(false)}
-                                            className={`block px-3 py-2 rounded-lg text-sm
-                                                ${pathname.startsWith('/page/hitung-nilai') ? 'bg-white/20 text-white' : 'text-indigo-300 hover:bg-white/10 hover:text-white'}`}
-                                        >
-                                            Hitung Nilai
                                         </Link>
                                     )}
                                 </div>

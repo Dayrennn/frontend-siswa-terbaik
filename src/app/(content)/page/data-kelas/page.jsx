@@ -7,8 +7,7 @@ import Table from '../../../conponents/table/page';
 export default function DataKelas() {
     const { data, isLoading, isError } = useSeeAllTahunAjaranQuery();
 
-    const tahunAjaranData =
-        data?.data?.map((item, index) => ({ no: index + 1, ...item })) ?? [];
+    const tahunAjaranData = data?.data?.map((item, index) => ({ no: index + 1, ...item })) ?? [];
 
     const totalAktif = data?.data?.filter((item) => item.status === 'Aktif').length ?? 0;
     const totalTahun = data?.data?.length ?? 0;
@@ -19,7 +18,7 @@ export default function DataKelas() {
             key: 'namaTahunAjaran',
             label: 'Tahun Ajaran',
             render: (row) => (
-                <span className='font-medium text-gray-800'>{row.namaTahunAjaran || '-'}</span>
+                <span className="font-medium text-gray-800 whitespace-nowrap">{row.namaTahunAjaran || '-'}</span>
             ),
         },
         {
@@ -27,10 +26,8 @@ export default function DataKelas() {
             label: 'Status',
             render: (row) => (
                 <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        row.status === 'Aktif'
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-gray-100 text-gray-500'
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
+                        row.status === 'Aktif' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'
                     }`}
                 >
                     {row.status === 'Aktif' ? '● Aktif' : '○ Tidak Aktif'}
@@ -42,7 +39,7 @@ export default function DataKelas() {
             label: 'Aksi',
             render: (row) => (
                 <Link href={`data-kelas/${row.id}`}>
-                    <span className='inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer'>
+                    <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer whitespace-nowrap">
                         Lihat Data →
                     </span>
                 </Link>
@@ -51,43 +48,39 @@ export default function DataKelas() {
     ];
 
     return (
-        <div className='min-h-screen bg-gray-50 p-6'>
-            <div className='mx-auto max-w-7xl'>
-
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+            <div className="mx-auto max-w-7xl">
                 {/* Header */}
-                <div className='mb-5'>
-                    <h1 className='text-xl font-medium text-gray-900'>Data Kelas</h1>
-                    <p className='text-sm text-gray-400 mt-0.5'>Pilih tahun ajaran untuk melihat data kelas</p>
+                <div className="mb-4 sm:mb-5">
+                    <h1 className="text-lg sm:text-xl font-medium text-gray-900">Data Kelas</h1>
+                    <p className="text-xs sm:text-sm text-gray-400 mt-0.5">
+                        Pilih tahun ajaran untuk melihat data kelas
+                    </p>
                 </div>
 
                 {/* Stat Cards */}
-                <div className='grid grid-cols-2 gap-3 mb-5'>
-                    <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
-                        <p className='text-xs text-gray-400 mb-1'>Total Tahun Ajaran</p>
-                        <p className='text-2xl font-medium text-gray-800'>{totalTahun}</p>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
+                    <div className="bg-white rounded-xl border border-gray-100 px-3 sm:px-4 py-2.5 sm:py-3">
+                        <p className="text-xs text-gray-400 mb-1">Total Tahun Ajaran</p>
+                        <p className="text-xl sm:text-2xl font-medium text-gray-800">{totalTahun}</p>
                     </div>
-                    <div className='bg-white rounded-xl border border-gray-100 px-4 py-3'>
-                        <p className='text-xs text-gray-400 mb-1'>Tahun Ajaran Aktif</p>
-                        <p className='text-2xl font-medium text-green-600'>{totalAktif}</p>
+                    <div className="bg-white rounded-xl border border-gray-100 px-3 sm:px-4 py-2.5 sm:py-3">
+                        <p className="text-xs text-gray-400 mb-1">Tahun Ajaran Aktif</p>
+                        <p className="text-xl sm:text-2xl font-medium text-green-600">{totalAktif}</p>
                     </div>
                 </div>
 
                 {/* Main Card */}
-                <div className='bg-white rounded-xl border border-gray-100 shadow-sm p-5'>
-
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 sm:p-5">
                     {/* Table */}
-                    {isLoading && (
-                        <p className='text-center text-gray-400 py-12 text-sm'>Memuat data...</p>
-                    )}
-                    {isError && (
-                        <p className='text-center text-red-400 py-12 text-sm'>Gagal memuat data</p>
-                    )}
+                    {isLoading && <p className="text-center text-gray-400 py-12 text-sm">Memuat data...</p>}
+                    {isError && <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>}
                     {!isLoading && !isError && <Table columns={columns} data={tahunAjaranData} />}
 
                     {/* Footer */}
                     {!isLoading && !isError && (
-                        <div className='mt-4 pt-4 border-t border-gray-100'>
-                            <p className='text-xs text-gray-400'>
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                            <p className="text-xs text-gray-400">
                                 {totalTahun} tahun ajaran terdaftar · {totalAktif} aktif
                             </p>
                         </div>

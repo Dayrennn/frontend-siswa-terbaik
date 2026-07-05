@@ -1,7 +1,7 @@
 'use client';
 
 import { useSeeAllSiswaQuery, useRemoveSiswaMutation } from '@/src/hooks/api/siswaSliceAPI';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import CreateModal from '@/src/app/conponents/modal/crud/createModal';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import RemoveModal from '@/src/app/conponents/modal/crud/deleteModal';
@@ -18,6 +18,10 @@ export default function DataSemuaSiswa() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [search, setSearch] = useState('');
+
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const pageSizeOptions = [10, 50, 100];
 
     const [deleteSiswa] = useRemoveSiswaMutation();
     const [removeSiswa, setRemoveSiswa] = useState(null);
@@ -41,45 +45,64 @@ export default function DataSemuaSiswa() {
         setShowEditModal(true);
     };
 
-    const { data, isLoading, isError } = useSeeAllSiswaQuery();
+    const { data, isLoading, isFetching, isError } = useSeeAllSiswaQuery({ page, limit: pageSize });
 
-    const tableData =
-        data?.data
-            ?.map((siswa, index) => ({ no: index + 1, ...siswa }))
+    const siswaList = data?.data?.data ?? [];
+    const meta = data?.data?.meta ?? { page: 1, limit: pageSize, total: 0, totalPages: 1 };
+
+    const tableData = useMemo(() => {
+        const start = (meta.page - 1) * meta.limit;
+        return siswaList
+            .map((siswa, index) => ({ no: start + index + 1, ...siswa }))
             .filter((item) => {
                 const keyword = search.toLowerCase();
+                if (!keyword) return true;
                 return Object.values(item).some((value) =>
                     String(value ?? '')
                         .toLowerCase()
                         .includes(keyword),
                 );
-            }) ?? [];
+            });
+    }, [siswaList, search, meta.page, meta.limit]);
 
-    const totalSiswa = data?.data?.length ?? 0;
-    const totalKelas = new Set(data?.data?.map((s) => s.kelas?.kodeKelas).filter(Boolean)).size;
+    const totalSiswa = meta.total ?? 0;
+    const totalPages = meta.totalPages ?? 1;
+    const currentPage = meta.page ?? page;
+
+    const totalKelas = new Set(siswaList.map((s) => s.kelas?.kodeKelas).filter(Boolean)).size;
 
     const columns = [
         { key: 'no', label: 'No' },
         {
             key: 'namaSiswa',
             label: 'Nama Siswa',
-            render: (row) => <span className="font-medium text-gray-800">{row.namaSiswa || '-'}</span>,
+            render: (row) => (
+                <span className="font-medium text-gray-800 whitespace-nowrap">{row.namaSiswa || '-'}</span>
+            ),
         },
         {
             key: 'tanggalLahir',
             label: 'Tanggal Lahir',
-            render: (row) => <span className="text-sm text-gray-500">{row.tanggalLahir?.split('T')[0] || '-'}</span>,
+            render: (row) => (
+                <span className="text-sm text-gray-500 whitespace-nowrap">
+                    {row.tanggalLahir?.split('T')[0] || '-'}
+                </span>
+            ),
         },
         {
             key: 'tahunAjaran',
             label: 'Tahun Ajaran',
-            render: (row) => <span className="text-sm text-gray-500">{row.tahunAjaran?.namaTahunAjaran || '-'}</span>,
+            render: (row) => (
+                <span className="text-sm text-gray-500 whitespace-nowrap">
+                    {row.tahunAjaran?.namaTahunAjaran || '-'}
+                </span>
+            ),
         },
         {
             key: 'kelas',
             label: 'Kelas',
             render: (row) => (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 whitespace-nowrap">
                     {row.kelas ? `${row.kelas.kodeKelas} · ${row.kelas.namaKelas}` : '-'}
                 </span>
             ),
@@ -88,16 +111,16 @@ export default function DataSemuaSiswa() {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 min-w-[140px]">
                     <button
                         onClick={() => handleEdit(row)}
-                        className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium"
+                        className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium whitespace-nowrap"
                     >
                         ✏️ Edit
                     </button>
                     <button
                         onClick={() => handleRemove(row)}
-                        className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                        className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium whitespace-nowrap"
                     >
                         🗑️ Hapus
                     </button>
@@ -110,30 +133,30 @@ export default function DataSemuaSiswa() {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-50 p-6">
+            <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
                 <div className="mx-auto max-w-7xl">
                     {/* Header */}
-                    <div className="mb-5">
-                        <h1 className="text-xl font-medium text-gray-900">Data Siswa</h1>
-                        <p className="text-sm text-gray-400 mt-0.5">Seluruh data siswa terdaftar</p>
+                    <div className="mb-4 sm:mb-5">
+                        <h1 className="text-lg sm:text-xl font-medium text-gray-900">Data Siswa</h1>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-0.5">Seluruh data siswa terdaftar</p>
                     </div>
 
                     {/* Stat Cards */}
-                    <div className="grid grid-cols-2 gap-3 mb-5">
-                        <div className="bg-white rounded-xl border border-gray-100 px-4 py-3">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
+                        <div className="bg-white rounded-xl border border-gray-100 px-3 sm:px-4 py-2.5 sm:py-3">
                             <p className="text-xs text-gray-400 mb-1">Total Siswa</p>
-                            <p className="text-2xl font-medium text-gray-800">{totalSiswa}</p>
+                            <p className="text-xl sm:text-2xl font-medium text-gray-800">{totalSiswa}</p>
                         </div>
-                        <div className="bg-white rounded-xl border border-gray-100 px-4 py-3">
-                            <p className="text-xs text-gray-400 mb-1">Total Kelas</p>
-                            <p className="text-2xl font-medium text-gray-800">{totalKelas}</p>
+                        <div className="bg-white rounded-xl border border-gray-100 px-3 sm:px-4 py-2.5 sm:py-3">
+                            <p className="text-xs text-gray-400 mb-1">Total Kelas (di halaman ini)</p>
+                            <p className="text-xl sm:text-2xl font-medium text-gray-800">{totalKelas}</p>
                         </div>
                     </div>
 
                     {/* Main Card */}
-                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 sm:p-5">
                         {/* Toolbar */}
-                        <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
                             {/* Search */}
                             <div className="relative w-full md:w-72">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm">
@@ -141,7 +164,7 @@ export default function DataSemuaSiswa() {
                                 </span>
                                 <input
                                     type="text"
-                                    placeholder="Cari nama, kelas, atau data siswa..."
+                                    placeholder="Cari di halaman ini..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     className="w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
@@ -150,16 +173,16 @@ export default function DataSemuaSiswa() {
 
                             {/* Buttons */}
                             {(isAdmin || isWakilKepalaSekolah) && (
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
                                     <button
                                         onClick={handleExport}
-                                        className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                                        className="inline-flex items-center justify-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors w-full sm:w-auto"
                                     >
                                         📤 Export
                                     </button>
                                     <button
                                         onClick={() => setShowCreateModal(true)}
-                                        className="inline-flex items-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                                        className="inline-flex items-center justify-center gap-1.5 text-sm text-white bg-green-500 px-3.5 py-2 rounded-lg hover:bg-green-600 transition-colors w-full sm:w-auto"
                                     >
                                         Tambah Siswa
                                     </button>
@@ -172,12 +195,52 @@ export default function DataSemuaSiswa() {
                         {isError && <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>}
                         {!isLoading && !isError && <Table columns={columns} data={tableData} />}
 
-                        {/* Footer */}
+                        {/* Footer + Pagination */}
                         {!isLoading && !isError && (
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <p className="text-xs text-gray-400">
-                                    Menampilkan {tableData.length} dari {totalSiswa} siswa
+                            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <p className="text-xs text-gray-400 text-center sm:text-left">
+                                    Menampilkan {siswaList.length} dari {totalSiswa} siswa (halaman {currentPage})
+                                    {search && ' — pencarian hanya berlaku di halaman ini'}
                                 </p>
+
+                                <div className="flex flex-col xs:flex-row sm:flex-row items-center justify-center sm:justify-end gap-2 sm:gap-3">
+                                    {/* Page size selector */}
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-xs text-gray-400 whitespace-nowrap">Tampilkan</span>
+                                        <select
+                                            value={pageSize}
+                                            onChange={(e) => setPageSize(Number(e.target.value))}
+                                            className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                        >
+                                            {pageSizeOptions.map((size) => (
+                                                <option key={size} value={size}>
+                                                    {size} data
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Prev / Next */}
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                            disabled={currentPage <= 1 || isFetching}
+                                            className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                        >
+                                            ← Prev
+                                        </button>
+                                        <span className="text-xs text-gray-500 px-1 whitespace-nowrap">
+                                            Hal {currentPage} / {totalPages}
+                                        </span>
+                                        <button
+                                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                            disabled={currentPage >= totalPages || isFetching}
+                                            className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                        >
+                                            Next →
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>

@@ -12,7 +12,7 @@ export default function DataNilai() {
 
     const tableData =
         data?.data
-            ?.map((siswa, index) => ({ no: index + 1, ...siswa }))
+            ?.data?.map((siswa, index) => ({ no: index + 1, ...siswa }))
             .filter((item) => {
                 const keyword = search.toLowerCase();
                 return Object.values(item).some((value) =>

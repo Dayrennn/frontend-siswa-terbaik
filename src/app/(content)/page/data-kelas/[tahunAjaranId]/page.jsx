@@ -63,7 +63,7 @@ export default function DataKehadiranByTahunAjaran() {
             key: 'kodeKelas',
             label: 'Kode Kelas',
             render: (row) => (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 whitespace-nowrap">
                     {row.kodeKelas || '-'}
                 </span>
             ),
@@ -71,15 +71,17 @@ export default function DataKehadiranByTahunAjaran() {
         {
             key: 'namaKelas',
             label: 'Nama Kelas',
-            render: (row) => <span className="font-medium text-gray-800">{row.namaKelas || '-'}</span>,
+            render: (row) => (
+                <span className="font-medium text-gray-800 whitespace-nowrap">{row.namaKelas || '-'}</span>
+            ),
         },
         {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-2">
                     <Link href={`/page/data-kelas/${tahunAjaranId}/${row.id}`}>
-                        <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
+                        <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer whitespace-nowrap">
                             Lihat Data →
                         </span>
                     </Link>
@@ -88,7 +90,7 @@ export default function DataKehadiranByTahunAjaran() {
                             onClick={() => {
                                 handleEdit(row);
                             }}
-                            className="text-xs bg-red-50 text-yellow-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                            className="text-xs bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium whitespace-nowrap"
                         >
                             Edit
                         </button>
@@ -99,7 +101,7 @@ export default function DataKehadiranByTahunAjaran() {
                                 setSelectedId(row.id);
                                 setShowDeleteModal(true);
                             }}
-                            className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                            className="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium whitespace-nowrap"
                         >
                             Hapus
                         </button>
@@ -111,26 +113,26 @@ export default function DataKehadiranByTahunAjaran() {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-50 p-6">
+            <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
                 <div className="mx-auto max-w-7xl">
                     {/* Header */}
-                    <div className="mb-5">
-                        <h1 className="text-xl font-medium text-gray-900">
+                    <div className="mb-4 sm:mb-5">
+                        <h1 className="text-lg sm:text-xl font-medium text-gray-900">
                             Data Kelas <span className="text-gray-400 font-normal">{namaTahunAjaran}</span>
                         </h1>
-                        <p className="text-sm text-gray-400 mt-0.5">Pilih kelas untuk melihat detail data</p>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-0.5">Pilih kelas untuk melihat detail data</p>
                     </div>
 
                     {/* Stat Card */}
-                    <div className="grid grid-cols-1 gap-3 mb-5 max-w-xs">
-                        <div className="bg-white rounded-xl border border-gray-100 px-4 py-3">
+                    <div className="grid grid-cols-1 gap-3 mb-4 sm:mb-5 max-w-full sm:max-w-xs">
+                        <div className="bg-white rounded-xl border border-gray-100 px-3 sm:px-4 py-2.5 sm:py-3">
                             <p className="text-xs text-gray-400 mb-1">Total Kelas</p>
-                            <p className="text-2xl font-medium text-gray-800">{totalKelas}</p>
+                            <p className="text-xl sm:text-2xl font-medium text-gray-800">{totalKelas}</p>
                         </div>
                     </div>
 
                     {/* Main Card */}
-                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 sm:p-5">
                         {/* Toolbar */}
                         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                             <div className="relative w-full md:w-72">
@@ -148,7 +150,7 @@ export default function DataKehadiranByTahunAjaran() {
                             {(isAdmin || isWakilKepalaSekolah) && (
                                 <button
                                     onClick={() => setShowCreateModal(true)}
-                                    className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                                    className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors w-full md:w-auto"
                                 >
                                     + Tambah
                                 </button>

@@ -12,7 +12,7 @@ import FormEditNilai from '@/src/app/conponents/form/crud/edit-data/nilai';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
 export default function DetailNilaiSiswa() {
-    const user = useSelector(selectUser)
+    const user = useSelector(selectUser);
     const dispatch = useDispatch();
     const { siswaId } = useParams();
     const [showEditModal, setShowEditModal] = useState(false);
@@ -40,44 +40,56 @@ export default function DetailNilaiSiswa() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
             <div className="mx-auto max-w-4xl">
                 <Link
                     href="/page/data-nilai"
-                    className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-4 sm:mb-5 transition-colors"
                 >
                     ← Kembali
                 </Link>
 
                 {/* Header Siswa */}
-                <div className="bg-white border border-gray-100 rounded-2xl p-5 mb-5 flex items-center gap-4 flex-wrap">
-                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-base shrink-0">
-                        {inisial}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 text-base">{siswa.namaSiswa}</p>
-                        <div className="flex gap-2 mt-1 flex-wrap">
-                            <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full">
-                                Kelas {siswa.kelas?.kodeKelas} · {siswa.kelas?.namaKelas}
-                            </span>
+                <div className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4 sm:mb-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-sm sm:text-base shrink-0">
+                            {inisial}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{siswa.namaSiswa}</p>
+                            <div className="flex gap-2 mt-1 flex-wrap">
+                                <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                                    Kelas {siswa.kelas?.kodeKelas} · {siswa.kelas?.namaKelas}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex gap-6 text-center ml-auto">
-                        <div>
+
+                    {/* Rata-rata */}
+                    <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 sm:pl-4 sm:border-l">
+                        <p className="text-xs text-gray-400 sm:hidden">Rata-rata Nilai</p>
+                        <div className="text-center">
                             <p className="text-xl font-medium text-gray-900">{ringkasan.rataRataNilai}</p>
-                            <p className="text-xs text-gray-400">Rata-rata Nilai</p>
+                            <p className="text-xs text-gray-400 hidden sm:block">Rata-rata Nilai</p>
                         </div>
                     </div>
                 </div>
 
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Rekap per pelajaran</p>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5 sm:gap-3">
                     {siswa.nilaiRekap.length === 0 ? (
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data nilai</p>
                     ) : (
                         siswa.nilaiRekap.map((rekap) => (
-                            <NilaiCard key={rekap.id} rekap={rekap} siswaId={siswa.id} onEdit={handleEdit} user={user} kelasId={siswa.kelas?.id} />
+                            <NilaiCard
+                                key={rekap.id}
+                                rekap={rekap}
+                                siswaId={siswa.id}
+                                onEdit={handleEdit}
+                                user={user}
+                                kelasId={siswa.kelas?.id}
+                            />
                         ))
                     )}
                 </div>

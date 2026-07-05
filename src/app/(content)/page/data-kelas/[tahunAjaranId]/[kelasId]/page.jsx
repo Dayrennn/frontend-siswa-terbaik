@@ -30,7 +30,7 @@ export default function DataSiswaPerTahun() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
-    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah'
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
     const isOwnerWaliKelas = user?.waliKelas?.some((kelas) => kelas.id === kelasId) ?? false;
     const canEdit = isAdmin || isOwnerWaliKelas || isWakilKepalaSekolah;
 
@@ -75,28 +75,32 @@ export default function DataSiswaPerTahun() {
         {
             key: 'nis',
             label: 'NIS',
-            render: (row) => <span className="text-gray-700">{row.nis || '-'}</span>,
+            render: (row) => <span className="text-gray-700 whitespace-nowrap">{row.nis || '-'}</span>,
         },
         {
             key: 'namaSiswa',
             label: 'Nama Siswa',
-            render: (row) => <span className="text-gray-700">{row.namaSiswa || '-'}</span>,
+            render: (row) => <span className="text-gray-700 whitespace-nowrap">{row.namaSiswa || '-'}</span>,
         },
         {
             key: 'tanggalLahir',
             label: 'Tanggal Lahir',
-            render: (row) => <span className="text-gray-700">{row.tanggalLahir?.split('T')[0] || '-'}</span>,
+            render: (row) => (
+                <span className="text-gray-700 whitespace-nowrap">{row.tanggalLahir?.split('T')[0] || '-'}</span>
+            ),
         },
         {
             key: 'tahunAjaran',
             label: 'Tahun Ajaran',
-            render: (row) => <span className="text-gray-700">{row.tahunAjaran?.namaTahunAjaran || '-'}</span>,
+            render: (row) => (
+                <span className="text-gray-700 whitespace-nowrap">{row.tahunAjaran?.namaTahunAjaran || '-'}</span>
+            ),
         },
         {
             key: 'kelas',
             label: 'Kelas',
             render: (row) => (
-                <span className="text-gray-700">
+                <span className="text-gray-700 whitespace-nowrap">
                     {row.kelas ? `${row.kelas.kodeKelas} - ${row.kelas.namaKelas}` : '-'}
                 </span>
             ),
@@ -105,16 +109,16 @@ export default function DataSiswaPerTahun() {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap sm:flex-nowrap gap-2">
                     <button
                         onClick={() => handleEdit(row)}
-                        className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
+                        className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors whitespace-nowrap"
                     >
                         Edit
                     </button>
                     <button
                         onClick={() => handleRemove(row)}
-                        className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
+                        className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors whitespace-nowrap"
                     >
                         Hapus
                     </button>
@@ -138,13 +142,13 @@ export default function DataSiswaPerTahun() {
     return (
         <>
             <div className="min-h-screen bg-gray-100">
-                <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
+                <div className="mx-auto max-w-7xl bg-white p-4 sm:p-6 shadow-md rounded-xl">
                     {/* ── Judul ── */}
-                    <h1 className="text-2xl font-bold text-gray-800">Data Siswa {namaTahunAjaran}</h1>
+                    <h1 className="text-lg sm:text-2xl font-bold text-gray-800">Data Siswa {namaTahunAjaran}</h1>
 
                     {/* ── Konten Tab ── */}
                     <div className="mt-5">
-                        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3 gap-3">
                             {/* Search */}
                             <div className="relative w-full md:w-80">
                                 <input
@@ -158,16 +162,16 @@ export default function DataSiswaPerTahun() {
 
                             {/* Buttons */}
                             {canEdit && (
-                                <div className="flex items-center gap-2">
+                                <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full md:w-auto">
                                     <button
                                         onClick={downloadTemplate}
-                                        className="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                                        className="text-sm bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors whitespace-nowrap"
                                     >
                                         📄 Template
                                     </button>
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="text-sm bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                                        className="text-sm bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors whitespace-nowrap"
                                     >
                                         📥 Import
                                     </button>
@@ -180,13 +184,13 @@ export default function DataSiswaPerTahun() {
                                     />
                                     <button
                                         onClick={handleExport}
-                                        className="text-sm bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors"
+                                        className="text-sm bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors whitespace-nowrap"
                                     >
                                         📤 Export
                                     </button>
                                     <button
                                         onClick={() => setShowCreateModal(true)}
-                                        className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                                        className="text-sm bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap"
                                     >
                                         + Tambah
                                     </button>

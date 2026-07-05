@@ -37,24 +37,24 @@ export default function DetailNilaiSiswa() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
             <div className="mx-auto max-w-4xl">
                 <Link
                     href="/page/data-nilai"
-                    className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-5 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-4 sm:mb-5 transition-colors"
                 >
                     ← Kembali
                 </Link>
 
                 {/* Header Siswa */}
-                <div className="bg-white border border-gray-100 rounded-2xl p-5 mb-5 flex items-center gap-4 flex-wrap">
-                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-base shrink-0">
+                <div className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4 sm:mb-5 flex items-center gap-3 sm:gap-4 flex-wrap">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-medium text-sm sm:text-base shrink-0">
                         {inisial}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 text-base">{siswa.namaSiswa}</p>
+                        <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{siswa.namaSiswa}</p>
                         <div className="flex gap-2 mt-1 flex-wrap">
-                            <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full">
+                            <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full whitespace-nowrap">
                                 Kelas {siswa.kelas?.kodeKelas} · {siswa.kelas?.namaKelas}
                             </span>
                         </div>
@@ -63,7 +63,7 @@ export default function DetailNilaiSiswa() {
 
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Rekap per pelajaran</p>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5 sm:gap-3">
                     {siswa.nilaiEskulRekap.length === 0 ? (
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data nilai</p>
                     ) : (
