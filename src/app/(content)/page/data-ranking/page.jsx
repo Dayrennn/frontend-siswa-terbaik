@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { FaChartLine, FaLayerGroup, FaMedal, FaUsers } from 'react-icons/fa';
 import { useGetKelasByTahunAjaranQuery } from '@/src/hooks/api/kelasSliceAPI';
+import { useSeeAllKelasIndukQuery } from '@/src/hooks/api/kelasIndukSliceAPI';
 import { useSeeRankingAngkatanQuery, useSeeRankingKelasQuery } from '@/src/hooks/api/siswaSliceAPI';
 import { useSeeAllTahunAjaranQuery } from '@/src/hooks/api/tahunAjaranSliceAPI';
 
@@ -26,6 +27,7 @@ export default function DataRanking() {
     const [mode, setMode] = useState('kelas');
     const [tahunAjaranId, setTahunAjaranId] = useState('');
     const [kelasId, setKelasId] = useState('');
+    const [kelasIndukId, setKelasIndukId] = useState('');
 
     const { data: tahunAjaranData, isLoading: isLoadingTahunAjaran } = useSeeAllTahunAjaranQuery();
     const tahunAjaranList = useMemo(() => tahunAjaranData?.data ?? [], [tahunAjaranData]);
@@ -34,14 +36,33 @@ export default function DataRanking() {
         return (tahunAktif ?? tahunAjaranList[0])?.id ?? '';
     }, [tahunAjaranList]);
     const activeTahunAjaranId = tahunAjaranId || defaultTahunAjaranId;
+
     const { data: kelasData, isLoading: isLoadingKelas } = useGetKelasByTahunAjaranQuery(activeTahunAjaranId, {
         skip: !activeTahunAjaranId,
     });
 
-    // Semua kelas pada tahun ajaran terpilih, tidak difilter berdasarkan tingkat tertentu
-    const kelasList = useMemo(() => kelasData?.data ?? [], [kelasData]);
+    // Semua kelas pada tahun ajaran terpilih (dipakai kedua mode)
+    const allKelasList = useMemo(() => kelasData?.data ?? [], [kelasData]);
+
+    // Kelas Induk untuk mode "Ranking Angkatan"
+    const { data: kelasIndukData, isLoading: isLoadingKelasInduk } = useSeeAllKelasIndukQuery(undefined, {
+        skip: mode !== 'angkatan',
+    });
+    const kelasIndukList = useMemo(() => kelasIndukData?.data ?? [], [kelasIndukData]);
+    const kelasIndukMasihAda = kelasIndukList.some((k) => k.id === kelasIndukId);
+    const activeKelasIndukId = kelasIndukMasihAda ? kelasIndukId : (kelasIndukList[0]?.id ?? '');
+
+    // Mode kelas: semua kelas dalam tahun ajaran
+    // Mode angkatan: hanya kelas yang berada di bawah kelas induk terpilih (filter tampilan opsional)
+    const kelasList = useMemo(() => {
+        if (mode === 'kelas') return allKelasList;
+        if (!activeKelasIndukId) return [];
+        return allKelasList.filter((kelas) => kelas.kelasInduk?.id === activeKelasIndukId);
+    }, [mode, allKelasList, activeKelasIndukId]);
+
     const kelasMasihAda = kelasList.some((kelas) => kelas.id === kelasId);
-    const activeKelasId = kelasMasihAda ? kelasId : (kelasList[0]?.id ?? '');
+    const activeKelasId =
+        mode === 'kelas' ? (kelasMasihAda ? kelasId : (kelasList[0]?.id ?? '')) : kelasMasihAda ? kelasId : '';
 
     const {
         data: rankingKelasData,
@@ -58,24 +79,31 @@ export default function DataRanking() {
         data: rankingAngkatanData,
         isFetching: isFetchingRankingAngkatan,
         isError: isErrorRankingAngkatan,
-    } = useSeeRankingAngkatanQuery(activeTahunAjaranId, {
-        skip: mode !== 'angkatan' || !activeTahunAjaranId,
-    });
+    } = useSeeRankingAngkatanQuery(
+        { tahunAjaranId: activeTahunAjaranId, kelasIndukId: activeKelasIndukId },
+        { skip: mode !== 'angkatan' || !activeTahunAjaranId || !activeKelasIndukId },
+    );
 
     const rankingSource = mode === 'kelas' ? rankingKelasData?.data : rankingAngkatanData?.data;
     const rankingData = useMemo(() => {
-        const data = rankingSource ?? [];
+        let data = rankingSource ?? [];
 
-        // Tidak ada lagi filter kelas tertentu — tampilkan semua data dari backend
+        // Mode angkatan: kalau kelas dipilih, saring tampilan ke kelas itu saja,
+        // peringkat yang ditampilkan tetap peringkat asli se-angkatan (tidak dihitung ulang)
+        if (mode === 'angkatan' && activeKelasId) {
+            data = data.filter((ranking) => (ranking.kelas?.id ?? ranking.siswa?.kelas?.id) === activeKelasId);
+        }
+
         return data
             .slice()
             .sort((a, b) => (a.peringkat ?? Number.MAX_SAFE_INTEGER) - (b.peringkat ?? Number.MAX_SAFE_INTEGER));
-    }, [rankingSource]);
+    }, [rankingSource, mode, activeKelasId]);
 
     const isLoadingRanking = mode === 'kelas' ? isFetchingRankingKelas : isFetchingRankingAngkatan;
     const isErrorRanking = mode === 'kelas' ? isErrorRankingKelas : isErrorRankingAngkatan;
     const selectedTahunAjaran = tahunAjaranList.find((tahun) => tahun.id === activeTahunAjaranId);
     const selectedKelas = kelasList.find((kelas) => kelas.id === activeKelasId);
+    const selectedKelasInduk = kelasIndukList.find((k) => k.id === activeKelasIndukId);
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -112,7 +140,11 @@ export default function DataRanking() {
 
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                     <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                        <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 lg:max-w-2xl">
+                        <div
+                            className={`grid w-full grid-cols-1 gap-3 md:grid-cols-2 ${
+                                mode === 'angkatan' ? 'lg:max-w-3xl lg:grid-cols-3' : 'lg:max-w-2xl'
+                            }`}
+                        >
                             <label className="block">
                                 <span className="text-xs font-medium text-gray-500">Tahun Ajaran</span>
                                 <select
@@ -120,6 +152,7 @@ export default function DataRanking() {
                                     onChange={(event) => {
                                         setTahunAjaranId(event.target.value);
                                         setKelasId('');
+                                        setKelasIndukId('');
                                     }}
                                     className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                                 >
@@ -132,15 +165,49 @@ export default function DataRanking() {
                                 </select>
                             </label>
 
+                            {mode === 'angkatan' && (
+                                <label className="block">
+                                    <span className="text-xs font-medium text-gray-500">Kelas Induk (Angkatan)</span>
+                                    <select
+                                        value={activeKelasIndukId}
+                                        onChange={(event) => {
+                                            setKelasIndukId(event.target.value);
+                                            setKelasId('');
+                                        }}
+                                        disabled={isLoadingKelasInduk || kelasIndukList.length === 0}
+                                        className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:text-gray-400"
+                                    >
+                                        <option value="">
+                                            {isLoadingKelasInduk ? 'Memuat angkatan...' : 'Pilih kelas induk'}
+                                        </option>
+                                        {kelasIndukList.map((k) => (
+                                            <option key={k.id} value={k.id}>
+                                                {k.namaKelasInduk}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
+
                             <label className="block">
                                 <span className="text-xs font-medium text-gray-500">Kelas</span>
                                 <select
                                     value={activeKelasId}
                                     onChange={(event) => setKelasId(event.target.value)}
-                                    disabled={!activeTahunAjaranId || isLoadingKelas || kelasList.length === 0}
+                                    disabled={
+                                        mode === 'kelas'
+                                            ? !activeTahunAjaranId || isLoadingKelas || kelasList.length === 0
+                                            : !activeKelasIndukId || isLoadingKelas || kelasList.length === 0
+                                    }
                                     className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:text-gray-400"
                                 >
-                                    <option value="">{isLoadingKelas ? 'Memuat kelas...' : 'Pilih kelas'}</option>
+                                    <option value="">
+                                        {isLoadingKelas
+                                            ? 'Memuat kelas...'
+                                            : mode === 'angkatan'
+                                              ? 'Semua kelas dalam angkatan'
+                                              : 'Pilih kelas'}
+                                    </option>
                                     {kelasList.map((kelas) => (
                                         <option key={kelas.id} value={kelas.id}>
                                             {kelas.kodeKelas} - {kelas.namaKelas}
@@ -153,7 +220,10 @@ export default function DataRanking() {
                         <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1">
                             <button
                                 type="button"
-                                onClick={() => setMode('kelas')}
+                                onClick={() => {
+                                    setMode('kelas');
+                                    setKelasId('');
+                                }}
                                 className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                                     mode === 'kelas'
                                         ? 'bg-white text-blue-600 shadow-sm'
@@ -165,7 +235,10 @@ export default function DataRanking() {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setMode('angkatan')}
+                                onClick={() => {
+                                    setMode('angkatan');
+                                    setKelasId('');
+                                }}
                                 className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                                     mode === 'angkatan'
                                         ? 'bg-white text-blue-600 shadow-sm'
@@ -181,6 +254,13 @@ export default function DataRanking() {
                     {mode === 'kelas' && selectedKelas && (
                         <div className="mb-4 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-500">
                             Menampilkan ranking kelas {selectedKelas.kodeKelas} - {selectedKelas.namaKelas}
+                        </div>
+                    )}
+
+                    {mode === 'angkatan' && selectedKelasInduk && (
+                        <div className="mb-4 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-500">
+                            Menampilkan ranking angkatan {selectedKelasInduk.namaKelasInduk}
+                            {selectedKelas ? ` — disaring ke kelas ${selectedKelas.kodeKelas} - ${selectedKelas.namaKelas}` : ''}
                         </div>
                     )}
 
@@ -210,8 +290,21 @@ export default function DataRanking() {
                     {!isLoadingTahunAjaran &&
                         !isLoadingRanking &&
                         !isErrorRanking &&
+                        mode === 'angkatan' &&
                         activeTahunAjaranId &&
-                        (mode === 'angkatan' || kelasList.length > 0) &&
+                        !isLoadingKelasInduk &&
+                        kelasIndukList.length === 0 && (
+                            <p className="text-center text-gray-400 py-12 text-sm">
+                                Belum ada data kelas induk (angkatan).
+                            </p>
+                        )}
+
+                    {!isLoadingTahunAjaran &&
+                        !isLoadingRanking &&
+                        !isErrorRanking &&
+                        activeTahunAjaranId &&
+                        ((mode === 'kelas' && kelasList.length > 0) ||
+                            (mode === 'angkatan' && activeKelasIndukId)) &&
                         rankingData.length === 0 && (
                             <p className="text-center text-gray-400 py-12 text-sm">{EMPTY_MESSAGE}</p>
                         )}

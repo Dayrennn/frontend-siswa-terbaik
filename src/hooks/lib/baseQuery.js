@@ -104,3 +104,8 @@ export const homeBaseQuery = fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/home`,
     prepareHeaders,
 });
+
+export const kelasindukBaseQuery = fetchBaseQuery({
+    baseUrl: `${BACKEND_URL}/kelas-induk`,
+    prepareHeaders,
+});

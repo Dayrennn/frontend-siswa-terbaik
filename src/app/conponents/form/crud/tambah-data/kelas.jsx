@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useCreateKelasMutation } from '../../../../../hooks/api/kelasSliceAPI';
+import KelasIndukSearchDropdown from '../../../ui/kelasIndukSearchDropdown';
 
 export default function FormTambahDataKelas({ onSuccess, onCancel, tahunAjaranId }) {
     const [kodeKelas, setKodeKelas] = useState('');
     const [namaKelas, setNamaKelas] = useState('');
+    const [kelasIndukId, setKelasIndukId] = useState(null);
 
     const [createKelas, { isLoading, isError, error }] = useCreateKelasMutation();
 
@@ -15,11 +17,13 @@ export default function FormTambahDataKelas({ onSuccess, onCancel, tahunAjaranId
         try {
             const result = await createKelas({
                 tahunAjaranId,
+                kelasIndukId,
                 data: { kodeKelas, namaKelas },
             }).unwrap();
 
             setKodeKelas('');
             setNamaKelas('');
+            setKelasIndukId(null);
 
             // jika sukses (untuk triger modal sukses)
             if (onSuccess) onSuccess(result);
@@ -40,7 +44,10 @@ export default function FormTambahDataKelas({ onSuccess, onCancel, tahunAjaranId
                     className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none  text-gray-700"
                 />
             </div>
-
+            <div>
+                <label className="text-sm text-gray-600">Kelas Induk</label>
+                <KelasIndukSearchDropdown value={kelasIndukId} onChange={(val) => setKelasIndukId(val)} />
+            </div>
             <div>
                 <label className="text-sm text-gray-600">Nama Kelas</label>
                 <input

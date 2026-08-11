@@ -15,6 +15,7 @@ import { absenRekapAPI } from '../hooks/api/absenRekapSliceAPI';
 import { nilaiRekapAPI } from '../hooks/api/nilaiRekapSliceAPI';
 import { hafalanAPI } from '../hooks/api/hafalanSliceAPI';
 import { homeAPI } from '../hooks/api/homeSliceAPI';
+import { kelasIndukAPI } from '../hooks/api/kelasIndukSliceAPI';
 
 export const store = configureStore({
     reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
         [nilaiRekapAPI.reducerPath]: nilaiRekapAPI.reducer,
         [hafalanAPI.reducerPath]: hafalanAPI.reducer,
         [homeAPI.reducerPath]: homeAPI.reducer,
+        [kelasIndukAPI.reducerPath]: kelasIndukAPI.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
@@ -51,5 +53,6 @@ export const store = configureStore({
             .concat(absenRekapAPI.middleware)
             .concat(nilaiRekapAPI.middleware)
             .concat(hafalanAPI.middleware)
-            .concat(homeAPI.middleware),
+            .concat(homeAPI.middleware)
+            .concat(kelasIndukAPI.middleware),
 });
