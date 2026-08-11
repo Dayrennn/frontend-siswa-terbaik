@@ -80,7 +80,7 @@ export default function DataRanking() {
         isFetching: isFetchingRankingAngkatan,
         isError: isErrorRankingAngkatan,
     } = useSeeRankingAngkatanQuery(
-        { tahunAjaranId: activeTahunAjaranId, kelasIndukId: activeKelasIndukId },
+        { tahunAjaranId: activeTahunAjaranId, kelasIndukId: activeKelasIndukId, limit: 10 },
         { skip: mode !== 'angkatan' || !activeTahunAjaranId || !activeKelasIndukId },
     );
 

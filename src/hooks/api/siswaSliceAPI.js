@@ -67,9 +67,9 @@ export const siswaAPI = createApi({
             providesTags: ['siswaAPI'],
         }),
         seeRankingAngkatan: builder.query({
-            query: ({ tahunAjaranId, kelasIndukId }) => ({
+            query: ({ tahunAjaranId, kelasIndukId, limit = 10 }) => ({
                 url: '/ranking/angkatan',
-                params: { tahunAjaranId, kelasIndukId },
+                params: { tahunAjaranId, kelasIndukId, limit },
             }),
             providesTags: ['siswaAPI'],
         }),
