@@ -3,8 +3,9 @@ import JuzProgress from '../ui/progress';
 
 export default function HafalanCard({ siswa, onEdit, user }) {
     const isAdmin = user?.role === 'Admin';
-    const isGuru = user?.role === 'Guru';
-    const canEdit = isAdmin || isGuru;
+    const isWaliKelas = user?.role === 'WaliKelas';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const canEdit = isAdmin || isWaliKelas || isWakilKepalaSekolah;
     const initial = siswa.namaSiswa?.charAt(0)?.toUpperCase() ?? '?';
 
     return (

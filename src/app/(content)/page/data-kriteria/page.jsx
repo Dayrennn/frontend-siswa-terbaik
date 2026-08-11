@@ -70,26 +70,26 @@ export default function DataKriteria() {
             label: 'Jenis',
             render: (row) => <span className="text-gray-700">{row.jenis || '-'}</span>,
         },
-        canEdit && {
-            key: 'aksi',
-            label: 'Aksi',
-            render: (row) => (
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => handleEdit(row)}
-                        className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        onClick={() => handleRemove(row)}
-                        className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
-                    >
-                        Hapus
-                    </button>
-                </div>
-            ),
-        },
+        // canEdit && {
+        //     key: 'aksi',
+        //     label: 'Aksi',
+        //     render: (row) => (
+        //         <div className="flex gap-2">
+        //             <button
+        //                 onClick={() => handleEdit(row)}
+        //                 className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors"
+        //             >
+        //                 Edit
+        //             </button>
+        //             <button
+        //                 onClick={() => handleRemove(row)}
+        //                 className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors"
+        //             >
+        //                 Hapus
+        //             </button>
+        //         </div>
+        //     ),
+        // },
     ];
 
     return (
@@ -97,7 +97,7 @@ export default function DataKriteria() {
             <div className="min-h-screen bg-gray-100">
                 <div className="mx-auto max-w-7xl bg-white p-6 shadow-md rounded-xl">
                     <h1 className="text-2xl font-bold text-gray-800">Data Kriteria</h1>
-                    {canEdit && (
+                    {/* {canEdit && (
                         <div className="flex justify-end mt-5 mb-3">
                             <button
                                 onClick={() => setShowCreateModal(true)}
@@ -106,7 +106,7 @@ export default function DataKriteria() {
                                 + Tambah
                             </button>
                         </div>
-                    )}
+                    )} */}
 
                     {isLoading && <p className="text-center text-gray-400 py-8">Memuat Data...</p>}
 

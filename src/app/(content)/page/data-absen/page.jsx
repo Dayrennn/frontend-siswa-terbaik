@@ -6,23 +6,31 @@ import Table from '@/src/app/conponents/table/page';
 import Link from 'next/link';
 
 export default function DataAbsen() {
-    const [search, setSearch] = useState('');
+    const [keyword, setKeyword] = useState('');
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const pageSizeOptions = [10, 50, 100];
 
-    const { data, isLoading, isError } = useSeeAllSiswaQuery();
+    const handleKeywordChange = (e) => {
+        setKeyword(e.target.value);
+        setPage(1);
+    };
 
-    const tableData =
-        data?.data
-            ?.data?.map((siswa, index) => ({ no: index + 1, ...siswa }))
-            .filter((item) => {
-                const keyword = search.toLowerCase();
-                return Object.values(item).some((value) =>
-                    String(value ?? '')
-                        .toLowerCase()
-                        .includes(keyword),
-                );
-            }) ?? [];
+    const { data, isLoading, isFetching, isError } = useSeeAllSiswaQuery({
+        page,
+        limit: pageSize,
+        search: keyword,
+    });
 
-    const totalSiswa = data?.data?.length ?? 0;
+    const siswaList = data?.data?.data ?? [];
+    const meta = data?.data?.meta ?? { page: 1, limit: pageSize, total: 0, totalPages: 1 };
+
+    const start = (meta.page - 1) * meta.limit;
+    const tableData = siswaList.map((siswa, index) => ({ no: start + index + 1, ...siswa }));
+
+    const totalSiswa = meta.total ?? 0;
+    const totalPages = meta.totalPages ?? 1;
+    const currentPage = meta.page ?? page;
 
     const columns = [
         { key: 'no', label: 'No' },
@@ -86,9 +94,9 @@ export default function DataAbsen() {
                                 </span>
                                 <input
                                     type="text"
-                                    placeholder="Cari nama, kelas, atau data siswa..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Cari nama siswa..."
+                                    value={keyword}
+                                    onChange={handleKeywordChange}
                                     className="w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
                                 />
                             </div>
@@ -99,12 +107,54 @@ export default function DataAbsen() {
                         {isError && <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>}
                         {!isLoading && !isError && <Table columns={columns} data={tableData} />}
 
-                        {/* Footer */}
+                        {/* Footer + Pagination */}
                         {!isLoading && !isError && (
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <p className="text-xs text-gray-400">
-                                    Menampilkan {tableData.length} dari {totalSiswa} siswa
+                            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <p className="text-xs text-gray-400 text-center sm:text-left">
+                                    Menampilkan {siswaList.length} dari {totalSiswa} siswa (halaman {currentPage})
                                 </p>
+
+                                <div className="flex flex-col xs:flex-row sm:flex-row items-center justify-center sm:justify-end gap-2 sm:gap-3">
+                                    {/* Page size selector */}
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-xs text-gray-400 whitespace-nowrap">Tampilkan</span>
+                                        <select
+                                            value={pageSize}
+                                            onChange={(e) => {
+                                                setPageSize(Number(e.target.value));
+                                                setPage(1);
+                                            }}
+                                            className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                        >
+                                            {pageSizeOptions.map((size) => (
+                                                <option key={size} value={size}>
+                                                    {size} data
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Prev / Next */}
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                            disabled={currentPage <= 1 || isFetching}
+                                            className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                        >
+                                            ← Prev
+                                        </button>
+                                        <span className="text-xs text-gray-500 px-1 whitespace-nowrap">
+                                            Hal {currentPage} / {totalPages}
+                                        </span>
+                                        <button
+                                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                            disabled={currentPage >= totalPages || isFetching}
+                                            className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                                        >
+                                            Next →
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>

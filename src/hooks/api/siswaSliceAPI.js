@@ -25,7 +25,8 @@ export const siswaAPI = createApi({
             invalidatesTags: ['siswaAPI'],
         }),
         seeAllSiswa: builder.query({
-            query: ({ page = 1, limit = 10 } = {}) => `?page=${page}&limit=${limit}`,
+            query: ({ page = 1, limit = 10, search = '' } = {}) =>
+                `?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`,
             providesTags: ['siswaAPI'],
         }),
         getSiswaById: builder.query({

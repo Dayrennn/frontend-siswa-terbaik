@@ -66,7 +66,7 @@ export default function DataEskul() {
                     placeholder="Cari eskul..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 px-4 py-2 rounded-lg border border-gray-200 bg- text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {canEdit && (
                     <button

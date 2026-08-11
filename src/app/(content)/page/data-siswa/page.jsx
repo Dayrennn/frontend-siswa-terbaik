@@ -17,7 +17,8 @@ export default function DataSemuaSiswa() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
-    const [search, setSearch] = useState('');
+
+    const [keyword, setKeyword] = useState('');
 
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -28,7 +29,16 @@ export default function DataSemuaSiswa() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
+    const isGuru = user?.role === 'Guru';
+    const isWaliKelas = user?.role === 'WaliKelas';
     const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const canCreateOrEdit = isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah;
+    const canDelete = isAdmin || isWaliKelas || isWakilKepalaSekolah;
+
+    const handleKeywordChange = (e) => {
+        setKeyword(e.target.value);
+        setPage(1);
+    };
 
     const handleRemove = (siswa) => {
         setRemoveSiswa(siswa);
@@ -45,25 +55,20 @@ export default function DataSemuaSiswa() {
         setShowEditModal(true);
     };
 
-    const { data, isLoading, isFetching, isError } = useSeeAllSiswaQuery({ page, limit: pageSize });
+    const { data, isLoading, isFetching, isError } = useSeeAllSiswaQuery({
+        page,
+        limit: pageSize,
+        search: keyword,
+    });
 
     const siswaList = data?.data?.data ?? [];
     const meta = data?.data?.meta ?? { page: 1, limit: pageSize, total: 0, totalPages: 1 };
 
+    // Data sudah difilter & dipaginasi oleh backend
     const tableData = useMemo(() => {
         const start = (meta.page - 1) * meta.limit;
-        return siswaList
-            .map((siswa, index) => ({ no: start + index + 1, ...siswa }))
-            .filter((item) => {
-                const keyword = search.toLowerCase();
-                if (!keyword) return true;
-                return Object.values(item).some((value) =>
-                    String(value ?? '')
-                        .toLowerCase()
-                        .includes(keyword),
-                );
-            });
-    }, [siswaList, search, meta.page, meta.limit]);
+        return siswaList.map((siswa, index) => ({ no: start + index + 1, ...siswa }));
+    }, [siswaList, meta.page, meta.limit]);
 
     const totalSiswa = meta.total ?? 0;
     const totalPages = meta.totalPages ?? 1;
@@ -107,23 +112,27 @@ export default function DataSemuaSiswa() {
                 </span>
             ),
         },
-        (isAdmin || isWakilKepalaSekolah) && {
+        canCreateOrEdit && {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
                 <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 min-w-[140px]">
-                    <button
-                        onClick={() => handleEdit(row)}
-                        className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium whitespace-nowrap"
-                    >
-                        ✏️ Edit
-                    </button>
-                    <button
-                        onClick={() => handleRemove(row)}
-                        className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium whitespace-nowrap"
-                    >
-                        🗑️ Hapus
-                    </button>
+                    {canCreateOrEdit && (
+                        <button
+                            onClick={() => handleEdit(row)}
+                            className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-amber-100 transition-colors font-medium whitespace-nowrap"
+                        >
+                            ✏️ Edit
+                        </button>
+                    )}
+                    {canDelete && (
+                        <button
+                            onClick={() => handleRemove(row)}
+                            className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-medium whitespace-nowrap"
+                        >
+                            🗑️ Hapus
+                        </button>
+                    )}
                 </div>
             ),
         },
@@ -164,15 +173,15 @@ export default function DataSemuaSiswa() {
                                 </span>
                                 <input
                                     type="text"
-                                    placeholder="Cari di halaman ini..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Cari nama siswa..."
+                                    value={keyword}
+                                    onChange={handleKeywordChange}
                                     className="w-full pl-8 pr-4 py-2 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
                                 />
                             </div>
 
                             {/* Buttons */}
-                            {(isAdmin || isWakilKepalaSekolah) && (
+                            {canCreateOrEdit && (
                                 <div className="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
                                     <button
                                         onClick={handleExport}
@@ -200,7 +209,6 @@ export default function DataSemuaSiswa() {
                             <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <p className="text-xs text-gray-400 text-center sm:text-left">
                                     Menampilkan {siswaList.length} dari {totalSiswa} siswa (halaman {currentPage})
-                                    {search && ' — pencarian hanya berlaku di halaman ini'}
                                 </p>
 
                                 <div className="flex flex-col xs:flex-row sm:flex-row items-center justify-center sm:justify-end gap-2 sm:gap-3">
@@ -209,7 +217,10 @@ export default function DataSemuaSiswa() {
                                         <span className="text-xs text-gray-400 whitespace-nowrap">Tampilkan</span>
                                         <select
                                             value={pageSize}
-                                            onChange={(e) => setPageSize(Number(e.target.value))}
+                                            onChange={(e) => {
+                                                setPageSize(Number(e.target.value));
+                                                setPage(1);
+                                            }}
                                             className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
                                         >
                                             {pageSizeOptions.map((size) => (
