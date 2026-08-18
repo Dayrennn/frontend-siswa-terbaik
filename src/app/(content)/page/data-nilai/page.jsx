@@ -80,6 +80,11 @@ export default function DataNilai() {
                             Nilai Eskul →
                         </span>
                     </Link>
+                    <Link href={`/page/data-nilai/${row.id}/nilai-hafalan`}>
+                        <span className="inline-flex items-center gap-1 text-xs bg-green-50 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors font-medium cursor-pointer">
+                            Nilai Hafalan →
+                        </span>
+                    </Link>
                 </div>
             ),
         },

@@ -19,7 +19,7 @@ import { selectUser } from '@/src/hooks/api/authSliceAPI';
 import { useSelector } from 'react-redux';
 import FormEditDataKelas from '@/src/app/conponents/form/crud/edit-data/kelas';
 
-export default function DataKehadiranByTahunAjaran() {
+export default function DataKelasByTahunAjaran() {
     const { tahunAjaranId } = useParams();
 
     const user = useSelector(selectUser);

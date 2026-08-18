@@ -1,7 +1,7 @@
 'use client';
 
 import { siswaAPI, useGetSiswaByIdQuery } from '@/src/hooks/api/siswaSliceAPI';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
@@ -11,6 +11,7 @@ import EskulCard from '@/src/app/conponents/card/nilaiEskulCard';
 import FormEditNilaiEskul from '@/src/app/conponents/form/crud/edit-data/nilaiEskul';
 
 export default function DetailNilaiSiswa() {
+    const router = useRouter();
     const dispatch = useDispatch();
     const { siswaId } = useParams();
     const [showEditModal, setShowEditModal] = useState(false);
@@ -39,12 +40,12 @@ export default function DetailNilaiSiswa() {
     return (
         <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
             <div className="mx-auto max-w-4xl">
-                <Link
-                    href="/page/data-nilai"
+                <button
+                    onClick={() => router.back()}
                     className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 mb-4 sm:mb-5 transition-colors"
                 >
                     ← Kembali
-                </Link>
+                </button>
 
                 {/* Header Siswa */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 mb-4 sm:mb-5 flex items-center gap-3 sm:gap-4 flex-wrap">

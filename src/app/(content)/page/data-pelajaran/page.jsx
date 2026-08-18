@@ -21,7 +21,9 @@ export default function DataPelajaran() {
 
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
-    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah'
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isKepalaSekolah = user?.role === 'KepalaSekolah';
+    const onEdit = isAdmin || isWakilKepalaSekolah || isKepalaSekolah;
 
     // hapus
     const [deletePelajaran] = useRemovePelajaranMutation();
@@ -58,7 +60,7 @@ export default function DataPelajaran() {
             <div className="min-h-screen bg-gray-50 p-6">
                 <div className="max-w-6xl mx-auto">
                     {/* ── Header ── */}
-                    {(isAdmin || isWakilKepalaSekolah) && (
+                    {(onEdit) && (
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900">Data Pelajaran</h1>
@@ -175,7 +177,7 @@ export default function DataPelajaran() {
                                                     index={index}
                                                     onEdit={handleEdit}
                                                     onRemove={handleRemove}
-                                                    user={user}
+                                                    canEdit={onEdit}
                                                 />
                                             </a>
                                         ))}

@@ -1,5 +1,7 @@
 export default function AbsenCard({ rekap, onEdit, user }) {
     const isAdmin = user?.role === 'Admin';
+    const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isKepalaSekolah = user?.role === 'KepalaSekolah';
     // const isGuru = user?.role === 'Guru';
     const isOwnerGuru = user?.pelajaran?.some((akses) => akses.pelajaran?.id === rekap.pelajaran.id) ?? false;
     return (
@@ -25,7 +27,7 @@ export default function AbsenCard({ rekap, onEdit, user }) {
                         </span>
                     </div>
                 </div>
-                {(isAdmin || isOwnerGuru) && (
+                {(isAdmin || isOwnerGuru || isWakilKepalaSekolah || isKepalaSekolah) && (
                     <button
                         onClick={() => onEdit(rekap)}
                         className="text-xs inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors font-medium"

@@ -1,6 +1,6 @@
 'use client';
 
-import { siswaAPI, useGetSiswaByIdQuery } from '@/src/hooks/api/siswaSliceAPI';
+import { siswaAPI, useSeeOneNilaiSiswaQuery } from '@/src/hooks/api/siswaSliceAPI';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
@@ -14,10 +14,10 @@ export default function DataNilaiSiswa() {
     const router = useRouter();
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
-    const { siswaId } = useParams();
+    const { tahunAjaranId, kelasId, siswaId } = useParams();
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSiswa, setSelectedSiswa] = useState(null);
-    const { data, isLoading, isError } = useGetSiswaByIdQuery(siswaId);
+    const { data, isLoading, isError } = useSeeOneNilaiSiswaQuery({tahunAjaranId, kelasId, siswaId});
     const siswa = data?.data;
 
     if (isLoading) return <p className="text-center text-gray-400 py-12 text-sm">Memuat data...</p>;

@@ -1,9 +1,8 @@
 'use client';
 
-import { siswaAPI, useGetSiswaByIdQuery } from '@/src/hooks/api/siswaSliceAPI';
+import { siswaAPI, useSeeOneSiswaAbsenQuery } from '@/src/hooks/api/siswaSliceAPI';
 import { useParams, useRouter } from 'next/navigation';
 import AbsenCard from '@/src/app/conponents/card/absenCard';
-import Link from 'next/link';
 import { useState } from 'react';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import { FaUserPlus } from 'react-icons/fa';
@@ -11,23 +10,23 @@ import FormEditAbsen from '@/src/app/conponents/form/crud/edit-data/absen';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
+
 export default function DetailAbsenSiswa() {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { siswaId } = useParams();
+    const { tahunAjaranId, kelasId, siswaId } = useParams();
 
     const user = useSelector(selectUser);
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSiswa, setSelectedSiswa] = useState(null);
-    const { data, isLoading, isError } = useGetSiswaByIdQuery(siswaId);
-    const siswa = data?.data;
+    const { data, isLoading, isError } = useSeeOneSiswaAbsenQuery({ tahunAjaranId, kelasId, siswaId });
+    const result = data?.data;
 
     if (isLoading) return <p className="text-center text-gray-400 py-12 text-sm">Memuat data...</p>;
-    if (isError || !siswa) return <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>;
+    if (isError || !result) return <p className="text-center text-red-400 py-12 text-sm">Gagal memuat data</p>;
 
-    const { ringkasan } = siswa;
-    const inisial = siswa.namaSiswa
+    const inisial = result.siswa?.namaSiswa
         .split(' ')
         .slice(0, 2)
         .map((w) => w[0])
@@ -41,6 +40,11 @@ export default function DetailAbsenSiswa() {
     const handleAfterSuccess = () => {
         dispatch(siswaAPI.util.invalidateTags(['siswaAPI']));
     };
+
+    const siswa = result.siswa;
+    const absenRekap = result.absenRekap;
+    const rekapKehadiran = result.rekapKehadiran;
+    const presentaseHadir = result.presentaseHadir;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -58,20 +62,20 @@ export default function DetailAbsenSiswa() {
                         {inisial}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 text-base">{siswa.namaSiswa}</p>
+                        <p className="font-medium text-gray-900 text-base">{result.siswa?.namaSiswa}</p>
                         <div className="flex gap-2 mt-1 flex-wrap">
                             <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full">
-                                Kelas {siswa.kelas?.kodeKelas} · {siswa.kelas?.namaKelas}
+                                Kelas {result.siswa?.kelas?.kodeKelas} · {result.siswa?.kelas?.namaKelas}
                             </span>
                         </div>
                     </div>
                     <div className="flex gap-6 text-center ml-auto">
                         <div>
-                            <p className="text-xl font-medium text-gray-900">{ringkasan.persentaseHadir}%</p>
+                            <p className="text-xl font-medium text-gray-900">{presentaseHadir}%</p>
                             <p className="text-xs text-gray-400">Kehadiran</p>
                         </div>
                         <div>
-                            <p className="text-xl font-medium text-red-500">{ringkasan.rekapKehadiran.alpha}</p>
+                            <p className="text-xl font-medium text-red-500">{rekapKehadiran.alpha}</p>
                             <p className="text-xs text-gray-400">Alpha</p>
                         </div>
                     </div>
@@ -80,10 +84,10 @@ export default function DetailAbsenSiswa() {
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Rekap per pelajaran</p>
 
                 <div className="flex flex-col gap-3">
-                    {siswa.absenRekap.length === 0 ? (
+                    {absenRekap.length === 0 ? (
                         <p className="text-sm text-gray-400 text-center py-8">Belum ada data absen</p>
                     ) : (
-                        siswa.absenRekap.map((rekap) => (
+                        absenRekap.map((rekap) => (
                             <AbsenCard
                                 key={rekap.id}
                                 rekap={rekap}

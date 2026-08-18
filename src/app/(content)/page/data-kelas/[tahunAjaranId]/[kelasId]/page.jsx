@@ -17,8 +17,9 @@ import FormTambahSiswa from '../../../../../conponents/form/crud/tambah-data/sis
 import FormEditDataSiswa from '../../../../../conponents/form/crud/edit-data/siswa';
 import { exportToExcel, downloadTemplate, parseImportedExcel } from '../../../../../../hooks/utils/excelHelper';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
+import Link from 'next/link';
 
-export default function DataSiswaPerTahun() {
+export default function DataSiswaPerKelasDanTahun() {
     const dispatch = useDispatch();
     const { tahunAjaranId, kelasId } = useParams();
 
@@ -29,10 +30,14 @@ export default function DataSiswaPerTahun() {
     const fileInputRef = useRef();
 
     const user = useSelector(selectUser);
+    const isGuru = user?.role === 'Guru';
+    const isWaliKelas = user?.role === 'WaliKelas';
     const isAdmin = user?.role === 'Admin';
     const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
+    const isKepalaSekolah = user?.role === 'KepalaSekolah';
     const isOwnerWaliKelas = user?.waliKelas?.some((kelas) => kelas.id === kelasId) ?? false;
-    const canEdit = isAdmin || isOwnerWaliKelas || isWakilKepalaSekolah;
+    const canEdit = isAdmin || isOwnerWaliKelas || isWakilKepalaSekolah || isKepalaSekolah;
+    const canSee = isGuru || isWaliKelas || isAdmin;
 
     const [deleteSiswa] = useRemoveSiswaMutation();
     const [removeSiswa, setRemoveSiswa] = useState(null);
@@ -105,23 +110,49 @@ export default function DataSiswaPerTahun() {
                 </span>
             ),
         },
-        canEdit && {
+        {
             key: 'aksi',
             label: 'Aksi',
             render: (row) => (
                 <div className="flex flex-wrap sm:flex-nowrap gap-2">
-                    <button
-                        onClick={() => handleEdit(row)}
-                        className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors whitespace-nowrap"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        onClick={() => handleRemove(row)}
-                        className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors whitespace-nowrap"
-                    >
-                        Hapus
-                    </button>
+                    {canEdit && (
+                        <>
+                            <button
+                                onClick={() => handleEdit(row)}
+                                className="text-xs bg-yellow-100 text-yellow-600 px-3 py-1 rounded-lg hover:bg-yellow-200 transition-colors whitespace-nowrap"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onClick={() => handleRemove(row)}
+                                className="text-xs bg-red-100 text-red-500 px-3 py-1 rounded-lg hover:bg-red-200 transition-colors whitespace-nowrap"
+                            >
+                                Hapus
+                            </button>
+                        </>
+                    )}
+                </div>
+            ),
+        },
+        {
+            key: 'nilai',
+            label: 'Nilai',
+            render: (row) => (
+                <div className="flex flex-wrap sm:flex-nowrap gap-2">
+                    {canSee && (
+                        <>
+                            <Link href={`/page/data-kelas/${tahunAjaranId}/${kelasId}/${row.id}/absen`}>
+                                <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
+                                    Lihat Absen
+                                </span>
+                            </Link>
+                            <Link href={`/page/data-kelas/${tahunAjaranId}/${kelasId}/${row.id}/nilai`}>
+                                <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
+                                    Lihat Nilai
+                                </span>
+                            </Link>
+                        </>
+                    )}
                 </div>
             ),
         },

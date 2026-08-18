@@ -64,11 +64,8 @@ export default function DataSemuaSiswa() {
     const siswaList = data?.data?.data ?? [];
     const meta = data?.data?.meta ?? { page: 1, limit: pageSize, total: 0, totalPages: 1 };
 
-    // Data sudah difilter & dipaginasi oleh backend
-    const tableData = useMemo(() => {
-        const start = (meta.page - 1) * meta.limit;
-        return siswaList.map((siswa, index) => ({ no: start + index + 1, ...siswa }));
-    }, [siswaList, meta.page, meta.limit]);
+    const start = (meta.page - 1) * meta.limit;
+    const tableData = siswaList.map((siswa, index) => ({ no: start + index + 1, ...siswa }));
 
     const totalSiswa = meta.total ?? 0;
     const totalPages = meta.totalPages ?? 1;

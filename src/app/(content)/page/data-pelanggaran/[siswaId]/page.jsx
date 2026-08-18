@@ -37,7 +37,8 @@ export default function SemuaPoin() {
     const isAdmin = user?.role === 'Admin';
     const isWakilKepalaSekolah = user?.role === 'WakilKepalaSekolah';
     const isWaliKelas = user?.role === 'WaliKelas';
-    const canEdit = isAdmin || isWakilKepalaSekolah || isWaliKelas;
+    const isKepalaSekolah = user?.role === 'KepalaSekolah'
+    const canEdit = isAdmin || isWakilKepalaSekolah || isWaliKelas || isKepalaSekolah;
 
     const SISWA = data?.data ?? null;
     const poinPlus = SISWA?.poinPlus ?? [];

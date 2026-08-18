@@ -175,7 +175,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
+                                    {(isAdmin || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link
                                             href="/page/data-siswa"
                                             onClick={() => setIsOpen(false)}
@@ -230,7 +230,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah) && (
+                                    {(isAdmin || isKepalaSekolah || isWakilKepalaSekolah) && (
                                         <Link
                                             href="/page/data-absen"
                                             onClick={() => setIsOpen(false)}
