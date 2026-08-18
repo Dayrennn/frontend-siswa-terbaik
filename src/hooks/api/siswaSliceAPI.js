@@ -86,6 +86,10 @@ export const siswaAPI = createApi({
             query: ({ tahunAjaranId, siswaId, kelasId }) => `/${tahunAjaranId}/${kelasId}/${siswaId}/nilai`,
             providesTags: ['siswaAPI'],
         }),
+        seeOneSiswaHafalan: builder.query({
+            query: ({ siswaId, tahunAjaranId, kelasId }) => `/${tahunAjaranId}/${kelasId}/${siswaId}/hafalan`,
+            providesTags: ['siswaAPI']
+        }),
     }),
 });
 
@@ -103,5 +107,6 @@ export const {
     useSeeRankingAngkatanQuery,
     useGetOneSiswaHafalanQuery,
     useSeeOneSiswaAbsenQuery,
-    useSeeOneNilaiSiswaQuery
+    useSeeOneNilaiSiswaQuery,
+    useSeeOneSiswaHafalanQuery
 } = siswaAPI;

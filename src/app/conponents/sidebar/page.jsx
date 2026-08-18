@@ -241,7 +241,7 @@ export default function Sidebar() {
                                         </Link>
                                     )}
 
-                                    {(isAdmin || isGuru || isWaliKelas || isWakilKepalaSekolah || isKepalaSekolah) && (
+                                    {(isAdmin || isWakilKepalaSekolah || isKepalaSekolah) && (
                                         <Link
                                             href="/page/data-hafalan"
                                             onClick={() => setIsOpen(false)}

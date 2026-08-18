@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetOneSiswaHafalanQuery, siswaAPI } from '@/src/hooks/api/siswaSliceAPI';
+import { useSeeOneSiswaHafalanQuery, siswaAPI } from '@/src/hooks/api/siswaSliceAPI';
 import EditModal from '@/src/app/conponents/modal/crud/editModal';
 import FormEditHafalan from '@/src/app/conponents/form/crud/edit-data/hafalan';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,8 +9,8 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { selectUser } from '@/src/hooks/api/authSliceAPI';
 
-export default function SiswaHafalan() {
-    const { siswaId } = useParams();
+export default function SiswaSatuHafalan() {
+    const { siswaId, tahunAjaranId, kelasId } = useParams();
     const dispatch = useDispatch();
     const user = useSelector(selectUser);
     const isAdmin = user?.role === 'Admin';
@@ -18,7 +18,7 @@ export default function SiswaHafalan() {
     const isKepalaSekolah = user?.role === 'KepalaSekolah';
     const canEdit = isAdmin || isWakilKepalaSekolah || isKepalaSekolah;
 
-    const { data, isLoading, isError, error } = useGetOneSiswaHafalanQuery(siswaId);
+    const { data, isLoading, isError, error } = useSeeOneSiswaHafalanQuery({ siswaId, tahunAjaranId, kelasId });
     const siswa = data?.data;
 
     const [showEditModal, setShowEditModal] = useState(false);

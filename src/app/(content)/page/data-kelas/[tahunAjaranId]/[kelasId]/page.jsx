@@ -151,6 +151,11 @@ export default function DataSiswaPerKelasDanTahun() {
                                     Lihat Nilai
                                 </span>
                             </Link>
+                            <Link href={`/page/data-kelas/${tahunAjaranId}/${kelasId}/${row.id}/hafalan`}>
+                                <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer">
+                                    Lihat Hafalan
+                                </span>
+                            </Link>
                         </>
                     )}
                 </div>
